@@ -1,5 +1,3 @@
-import rioxarray as rxr # Work with raster data
-
 def process_image(uri, bounds_gdf):
     """
     Load, crop, and scale a raster image from earthaccess
@@ -16,6 +14,8 @@ def process_image(uri, bounds_gdf):
     cropped_da: rxr.DataArray
       Processed raster
     """
+    import rioxarray as rxr # Work with raster data
+
     # Connect to the raster image
     da = rxr.open_rasterio(uri, mask_and_scale=True).squeeze()
 

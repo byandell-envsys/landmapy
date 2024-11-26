@@ -1,5 +1,3 @@
-import numpy as np # Process bit-wise cloud mask
-
 def process_cloud_mask(cloud_uri, bounds_gdf, bits_to_mask):
     """
     Load an 8-bit Fmask file and process to a boolean mask
@@ -18,6 +16,8 @@ def process_cloud_mask(cloud_uri, bounds_gdf, bits_to_mask):
     cloud_mask: np.array
       Cloud mask
     """
+    import numpy as np # Process bit-wise cloud mask
+
     # Open fmask file
     fmask_da = process_image(cloud_uri, bounds_gdf)
 
