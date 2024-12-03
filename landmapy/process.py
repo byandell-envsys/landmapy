@@ -31,7 +31,7 @@ def process_image(uri, bounds_gdf):
 
     return cropped_da
 
-# process_image(city_files[8], city_redlining_gdf).plot()
+# process_image(city_files[8], city_gdf).plot()
 
 def process_cloud_mask(cloud_uri, bounds_gdf, bits_to_mask):
     """
@@ -166,7 +166,7 @@ def process_bands(city_gdf, raster_df):
         fmask_file = tile_df[tile_df.band_id=='Fmask'].file.values[0]
         cloud_mask = process_cloud_mask(
             fmask_file, 
-            city_redlining_gdf, 
+            city_gdf, 
             [1, 2, 3, 5])
 
         for band_id, row in tile_df.groupby('band_id'):
@@ -176,7 +176,7 @@ def process_bands(city_gdf, raster_df):
                 # Process band
                 band_da = process_image(
                     row.file.values[0], 
-                    city_redlining_gdf)
+                    city_gdf)
 
                 # Mask band
                 band_masked_da = band_da.where(cloud_mask)
@@ -194,5 +194,5 @@ def process_bands(city_gdf, raster_df):
 
     return city_merged_das
 
-# city_merged_das = process_bands(city_gdf, raster_df)
+# city_merged_das = process_bands(city_redlining_gdf, raster_df)
 # city_merged_das['green'].plot(cmap='Greens', robust=True)
