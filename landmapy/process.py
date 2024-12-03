@@ -101,7 +101,7 @@ def process_metadata(city_files):
 
     Returns
     -------
-    raster_df: np.array
+    raster_df: DataFrame
       DataFrame with the metadata
     """
     import re # Use regular expressions to extract metadata
