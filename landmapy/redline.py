@@ -38,7 +38,7 @@ def redline_gdf(data_dir):
 
 def plot_redline(redlining_gdf):
     """
-    Plot ovverlay of redlining GeoDataFrame with state boundaries.
+    Plot overlay of redlining GeoDataFrame with state boundaries.
 
     Parameters
     ----------

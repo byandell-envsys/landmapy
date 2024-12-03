@@ -1,6 +1,6 @@
 def process_image(uri, bounds_gdf):
     """
-    Load, crop, and scale a raster image from earthaccess
+    Load, crop, and scale a raster image from earthaccess.
 
     Parameters
     ----------
@@ -31,11 +31,11 @@ def process_image(uri, bounds_gdf):
 
     return cropped_da
 
-# process_image(denver_files[8], denver_redlining_gdf).plot()
+# process_image(city_files[8], city_redlining_gdf).plot()
 
 def process_cloud_mask(cloud_uri, bounds_gdf, bits_to_mask):
     """
-    Load an 8-bit Fmask file and process to a boolean mask
+    Load an 8-bit Fmask file and process to a boolean mask.
 
     Parameters
     ----------
@@ -83,9 +83,116 @@ def process_cloud_mask(cloud_uri, bounds_gdf, bits_to_mask):
     
     return cloud_mask
 
-# blue_da = process_image(denver_files[1], denver_redlining_gdf)
-# denver_cloud_mask = process_cloud_mask(
-#     denver_files[-1],
-#     denver_redlining_gdf,
+# blue_da = process_image(city_files[1], city_redlining_gdf)
+# city_cloud_mask = process_cloud_mask(
+#     city_files[-1],
+#     city_redlining_gdf,
 #     [1, 2, 3, 5])
-# blue_da.where(denver_cloud_mask).plot()
+# blue_da.where(city_cloud_mask).plot()
+
+def process_metadata(city_files):
+    """
+    Process raster data from earthaccess metadata.
+
+    Parameters
+    ----------
+    city_files: file-like URI
+      File names from earthaccess
+
+    Returns
+    -------
+    raster_df: np.array
+      DataFrame with the metadata
+    """
+    import re # Use regular expressions to extract metadata
+    import pandas as pd # Group and aggregate
+
+    # Compile a regular expression to search for metadata
+    uri_re = re.compile(
+        r"HLS\.L30\."
+        r"(?P<tile_id>T[0-9A-Z]+)\."  # `tile_id`
+        r"(?P<date>\d+)T\d+\.v2\.0\." # `date` as `yyyyjjj` (year and Julian date)
+        r"(?P<band_id>.+)\.tif")      # `band_id`
+    # Find all the metadata in the file name
+    uri_groups = [
+        uri_re.search(city_file.full_name).groupdict()
+        for city_file in city_files]
+
+    # Create a DataFrame with the metadata
+    raster_df = pd.DataFrame(uri_groups)
+
+    # Add the File-like URI to the DataFrame
+    raster_df['file'] = city_files
+
+    return raster_df
+
+# raster_df = process_metadata(city_files)
+# raster_df.head()
+
+def process_bands(city_gdf, raster_df):
+    """
+    Process bands from GeoDataFrame and metadata.
+
+    Parameters
+    ----------
+    city_gdf: GeoDataFrame
+      GeoDataFrame for a city
+    raster_df: DataFrame
+      DataFrame of city metadata
+
+    Returns
+    -------
+    city_das: DataArray
+      DataArray with image data
+    """
+    import re # Use regular expressions to extract metadata
+    import pandas as pd # Group and aggregate
+    import rioxarray as rxr # Work with raster data
+    from rioxarray.merge import merge_arrays # Merge rasters
+
+    # Labels for each band to process
+    bands = {
+        'B02': 'red',
+        'B03': 'green',
+        'B04': 'blue',
+        'B05': 'nir'
+    }
+    # Initialize structure for saving images
+    city_das = {band_name: [] for band_name in bands.values()}
+    print('Loading...')
+    for tile_id, tile_df in raster_df.groupby('tile_id'):
+        print(tile_id)
+        # Load the cloud mask
+        fmask_file = tile_df[tile_df.band_id=='Fmask'].file.values[0]
+        cloud_mask = process_cloud_mask(
+            fmask_file, 
+            city_redlining_gdf, 
+            [1, 2, 3, 5])
+
+        for band_id, row in tile_df.groupby('band_id'):
+            if band_id in bands:
+                band_name = bands[band_id]
+                print(band_id, band_name)
+                # Process band
+                band_da = process_image(
+                    row.file.values[0], 
+                    city_redlining_gdf)
+
+                # Mask band
+                band_masked_da = band_da.where(cloud_mask)
+
+                # Store the resulting DataArray for later
+                city_das[band_name].append(band_masked_da)
+
+    print('Done.')
+
+    # Merge all tiles
+    city_merged_das = {
+        band_name: merge_arrays(das) 
+        for band_name, das 
+        in city_das.items()}
+
+    return city_merged_das
+
+# city_merged_das = process_bands(city_gdf, raster_df)
+# city_merged_das['green'].plot(cmap='Greens', robust=True)
