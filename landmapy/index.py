@@ -49,6 +49,7 @@ def redline_mask(city_redlining_gdf, city_ndvi_da):
 def index_hv_plot(redlining_gdf, ndvi_stats, city):
     """Merge  NDVI stats with redlining geometry into one GeoDataFrame and plot."""
     import hvplot.pandas # Interactive plots with pandas
+    import pandas as pd
     redlining_ndvi_gdf = redlining_gdf.merge(
         ndvi_stats.set_index('zone'),
         left_index=True, right_index=True)
