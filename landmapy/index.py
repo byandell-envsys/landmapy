@@ -41,6 +41,8 @@ def redline_mask(city_redlining_gdf, city_ndvi_da):
         overlap=False,
         # We're not using geographic coordinates
         wrap_lon=False)
+    
+    return redlining_mask
 
 # redlining_mask = redline_mask(city_redlining_gdf, city_ndvi_da)
 
