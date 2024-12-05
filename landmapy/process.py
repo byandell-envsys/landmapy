@@ -1,3 +1,10 @@
+"""
+Process functions.
+
+Process metadata into raster DataArray,
+which is used to process multi-spectral image bands.
+Function `process_bands` calls `process_image` and `process_cloud_mask`.
+"""
 def process_image(uri, bounds_gdf):
     """
     Load, crop, and scale a raster image from earthaccess.

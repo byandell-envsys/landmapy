@@ -1,3 +1,8 @@
+"""
+Redline functions.
+
+Read redlining data for US cities and plot a map.
+"""
 def redline_gdf(data_dir):
     """
     Read redlining GeoDataFrame from Mapping Inequality.
@@ -33,6 +38,8 @@ def redline_gdf(data_dir):
     redlining_gdf = gpd.read_file(redlining_path)
     
     return redlining_gdf
+
+# redlining_gdf = redline_gdf(data_dir)
 
 # redline_map(data_dir)
 
