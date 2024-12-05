@@ -4,7 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "landmapy"
-version = "0.1"
+version = "0.2"
 dependencies = [
-    # List your package dependencies here
+    "cartopy", "geopandas", "hvplot", "matplotlib",
+    "numpy", "pandas", "regionmask", "rioxarray"
 ]
+# "os", "re": not found
+# "sklearn": deprecated in favor of "scikit-learn"

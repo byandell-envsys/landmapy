@@ -16,6 +16,7 @@ def plot_index(city_ndvi_da, city):
       Name of selected city
     """
     import matplotlib.pyplot as plt # Overlay raster and vector data
+
     #Plot the ndvi_da to see CRS
     city_ndvi_da.plot(
         cbar_kwargs={"label": "NDVI"},
@@ -72,6 +73,7 @@ def redline_mask(city_redlining_gdf, city_ndvi_da):
       GeoDataFrame with `regionmask` applied.
     """
     import regionmask # Convert shapefile to mask
+
     redlining_mask = regionmask.mask_geopandas(
         # Put gdf in same CRS as raster
         city_redlining_gdf.to_crs(city_ndvi_da.rio.crs),
@@ -103,6 +105,7 @@ def redline_index_gdf(redlining_gdf, ndvi_stats):
       GeoDataFrame with zonal stats.
     """
     import pandas as pd
+
     redlining_ndvi_gdf = redlining_gdf.merge(
         ndvi_stats.set_index('zone'),
         left_index=True, right_index=True)
@@ -137,6 +140,7 @@ def index_grade_hv(redlining_ndvi_gdf, city):
       HV plot objects for mean index and redline grade.
     """
     import hvplot.pandas # Interactive plots with pandas
+    
     ndvi_hv = redlining_ndvi_gdf.hvplot(
         c='mean', geo=True,
         xaxis='Longitude', yaxis='Latitude',
