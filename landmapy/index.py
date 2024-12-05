@@ -83,12 +83,11 @@ def index_grade_hv(redlining_ndvi_gdf, city):
 
     return ndvi_hv, grade_hv
 
-# ndvi_hv, grade_hv = ndvi_hv_plot(redlining_ndvi_gdf, city)
+# ndvi_hv, grade_hv = index_grade_hv(redlining_ndvi_gdf, city)
 
 def index_tree(redlining_ndvi_gdf):
     """# Convert categories to numbers"""
-    from sklearn.tree import DecisionTreeClassifier, plot_tree
-    from sklearn.model_selection import train_test_split, cross_val_score
+    from sklearn.tree import DecisionTreeClassifier
 
     redlining_ndvi_gdf['grade_codes'] = (
         redlining_ndvi_gdf.grade.cat.codes)
