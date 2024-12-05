@@ -46,9 +46,8 @@ def redline_mask(city_redlining_gdf, city_ndvi_da):
 
 # redlining_mask = redline_mask(city_redlining_gdf, city_ndvi_da)
 
-def index_hv_plot(redlining_gdf, ndvi_stats, city):
+def redline_index_gdf(redlining_gdf, ndvi_stats):
     """Merge  NDVI stats with redlining geometry into one GeoDataFrame and plot."""
-    import hvplot.pandas # Interactive plots with pandas
     import pandas as pd
     redlining_ndvi_gdf = redlining_gdf.merge(
         ndvi_stats.set_index('zone'),
@@ -62,8 +61,14 @@ def index_hv_plot(redlining_gdf, ndvi_stats, city):
 
     # Drop rows with NA grades
     redlining_ndvi_gdf = redlining_ndvi_gdf.dropna()
+
+    return redlining_ndvi_gdf
+
+# redlining_ndvi_gdf = redline_index_gdf(redlining_gdf, ndvi_stats)
     
-    # HV Plots
+def index_grade_hv(redlining_ndvi_gdf, city):
+    """HV plots for index and grade."""
+    import hvplot.pandas # Interactive plots with pandas
     ndvi_hv = redlining_ndvi_gdf.hvplot(
         c='mean', geo=True,
         xaxis='Longitude', yaxis='Latitude',
@@ -78,7 +83,7 @@ def index_hv_plot(redlining_gdf, ndvi_stats, city):
 
     return ndvi_hv, grade_hv
 
-# ndvi_hv, grade_hv = ndvi_hv_plot(redlining_gdf, ndvi_stats, city)
+# ndvi_hv, grade_hv = ndvi_hv_plot(redlining_ndvi_gdf, city)
 
 def index_tree(redlining_ndvi_gdf):
     """# Convert categories to numbers"""
