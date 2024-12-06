@@ -29,40 +29,42 @@ def plot_index(city_ndvi_da, city):
 
 # plot_index(city_ndvi_da, city)
 
-def redline_over_index(city_redlining_gdf, city_ndvi_da):
+def redline_over_index(place_gdf, city_ndvi_da, edgecolor='black'):
     """
     Overlay redlining grades on NDVI map.
     
     Parameters
     ----------
-    city_redlining_gdf: GeoDataFrame
+    place_gdf: GeoDataFrame
       GeoDataFrame for redlined city
     city_ndvi_da: DataArray
       DataArray containing NDVI index for city
     city: character string
       Name of selected city
+    edgecolor: character string
+      Name of color for edges of `place_gdf`
     """
     import cartopy.crs as ccrs # CRSs
     import matplotlib.pyplot as plt # Overlay raster and vector data
 
-    city_plot_gdf = city_redlining_gdf.to_crs(ccrs.Mercator())
+    city_plot_gdf = place_gdf.to_crs(ccrs.Mercator())
     ndvi_plot_da = city_ndvi_da.rio.reproject(ccrs.Mercator())
 
     ndvi_plot_da.plot(vmin=0, robust=True)
-    city_plot_gdf.plot(ax=plt.gca(), color='none')
+    city_plot_gdf.plot(ax=plt.gca(), color='none', edgecolor=edgecolor)
     plt.gca().set(
         xlabel='', ylabel='', xticks=[], yticks=[])
     plt.show()
 
-# redline_over_index(city_redlining_gdf, city_ndvi_da)
+# redline_over_index(place_gdf, city_ndvi_da)
 
-def redline_mask(city_redlining_gdf, city_ndvi_da):
+def redline_mask(place_gdf, city_ndvi_da):
     """
     Define new variable for denver redlining mask, using regionmask.
     
     Parameters
     ----------
-    city_redlining_gdf: GeoDataFrame
+    place_gdf: GeoDataFrame
       GeoDataFrame for redlined city
     city_ndvi_da: DataArray
       DataArray containing NDVI index for city
@@ -76,7 +78,7 @@ def redline_mask(city_redlining_gdf, city_ndvi_da):
 
     redlining_mask = regionmask.mask_geopandas(
         # Put gdf in same CRS as raster
-        city_redlining_gdf.to_crs(city_ndvi_da.rio.crs),
+        place_gdf.to_crs(city_ndvi_da.rio.crs),
         # x and y coordinates from raster data x=504 y=447
         city_ndvi_da.x, city_ndvi_da.y,
         # The regions do not overlap
@@ -86,7 +88,7 @@ def redline_mask(city_redlining_gdf, city_ndvi_da):
     
     return redlining_mask
 
-# redlining_mask = redline_mask(city_redlining_gdf, city_ndvi_da)
+# redlining_mask = redline_mask(place_gdf, city_ndvi_da)
 
 def redline_index_gdf(redlining_gdf, ndvi_stats):
     """
