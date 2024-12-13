@@ -227,8 +227,8 @@ def maca_year(maca_df, row=0, year=2027):
         DataArray for year and row selected.
     """
     maca_da = maca_df.loc[row, 'da']
-    # Find the average precipitation for each pixel across all months for each individual year?
-    maca_yearly_da= maca_da.groupby('time.year').mean()
+    # Find the total precipitation for each pixel across all months for each individual year?
+    maca_yearly_da= maca_da.groupby('time.year').sum()
     
     # Calculate the total annual precipitation for each year?
     # maca_annual = maca_yearly_da.groupby('year').sum(["lat", "lon"])

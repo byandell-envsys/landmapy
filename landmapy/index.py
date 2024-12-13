@@ -4,13 +4,13 @@ Plot map for created index and overlay with redlining grades.
 Mask map by redline grades and create a `GeoDataFrame`.
 Fit a tree model and compare maps.
 """
-def plot_index(city_ndvi_da, city):
+def plot_index(index_da, city):
     """
     Show plot of index.
 
     Parameters
     ----------
-    city_ndvi_da: DataArray
+    index_da: DataArray
       DataArray containing NDVI index for city
     city: character string
       Name of selected city
@@ -18,7 +18,7 @@ def plot_index(city_ndvi_da, city):
     import matplotlib.pyplot as plt # Overlay raster and vector data
 
     #Plot the ndvi_da to see CRS
-    city_ndvi_da.plot(
+    index_da.plot(
         cbar_kwargs={"label": "NDVI"},
         robust=True)
     plt.gca().set(
@@ -27,17 +27,20 @@ def plot_index(city_ndvi_da, city):
         ylabel='')
     plt.show()
 
-# plot_index(city_ndvi_da, city)
+# plot_index(index_da, city)
 
-def redline_over_index(place_gdf, city_ndvi_da, edgecolor='black'):
+def redline_over_index(place_gdf, index_da, edgecolor='black', cmap='terrain'):
     """
     Overlay redlining grades on NDVI map.
     
+    Default `cmap` is 'viridis`;
+    See <https://matplotlib.org/stable/users/explain/colors/colormaps.html>.
+
     Parameters
     ----------
     place_gdf: GeoDataFrame
       GeoDataFrame for redlined city
-    city_ndvi_da: DataArray
+    index_da: DataArray
       DataArray containing NDVI index for city
     city: character string
       Name of selected city
@@ -47,18 +50,25 @@ def redline_over_index(place_gdf, city_ndvi_da, edgecolor='black'):
     import cartopy.crs as ccrs # CRSs
     import matplotlib.pyplot as plt # Overlay raster and vector data
 
-    city_plot_gdf = place_gdf.to_crs(ccrs.Mercator())
-    ndvi_plot_da = city_ndvi_da.rio.reproject(ccrs.Mercator())
-
-    ndvi_plot_da.plot(vmin=0, robust=True)
-    city_plot_gdf.plot(ax=plt.gca(), color='none', edgecolor=edgecolor)
+    # Plot index.
+    index_da = index_da.rio.reproject(ccrs.Mercator())
+    index_da.plot(vmin=0, robust=True, cmap=cmap)
+    # Plot place outline
+    for idx in range(0, len(place_gdf)):
+      #print(buffalo_gdf.iloc[[idx]])
+      place_idx_gdf = place_gdf.iloc[[idx]].to_crs(ccrs.Mercator())
+      # Use color column from place_gdf if provided
+      if 'color' in place_idx_gdf.columns:
+          edgecolor = place_idx_gdf['color'].values[0]
+      place_idx_gdf.plot(ax=plt.gca(), color='none', edgecolor=edgecolor)
+    # Strip labels and ticks of and plot.
     plt.gca().set(
         xlabel='', ylabel='', xticks=[], yticks=[])
     plt.show()
 
-# redline_over_index(place_gdf, city_ndvi_da)
+# redline_over_index(place_gdf, index_da)
 
-def redline_mask(place_gdf, city_ndvi_da):
+def redline_mask(place_gdf, index_da):
     """
     Define new variable for denver redlining mask, using regionmask.
     
@@ -66,7 +76,7 @@ def redline_mask(place_gdf, city_ndvi_da):
     ----------
     place_gdf: GeoDataFrame
       GeoDataFrame for redlined city
-    city_ndvi_da: DataArray
+    index_da: DataArray
       DataArray containing NDVI index for city
     
     Returns
@@ -78,9 +88,9 @@ def redline_mask(place_gdf, city_ndvi_da):
 
     redlining_mask = regionmask.mask_geopandas(
         # Put gdf in same CRS as raster
-        place_gdf.to_crs(city_ndvi_da.rio.crs),
+        place_gdf.to_crs(index_da.rio.crs),
         # x and y coordinates from raster data x=504 y=447
-        city_ndvi_da.x, city_ndvi_da.y,
+        index_da.x, index_da.y,
         # The regions do not overlap
         overlap=False,
         # We're not using geographic coordinates
@@ -88,7 +98,7 @@ def redline_mask(place_gdf, city_ndvi_da):
     
     return redlining_mask
 
-# redlining_mask = redline_mask(place_gdf, city_ndvi_da)
+# redlining_mask = redline_mask(place_gdf, index_da)
 
 def redline_index_gdf(redlining_gdf, ndvi_stats):
     """
