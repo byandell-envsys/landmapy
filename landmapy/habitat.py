@@ -123,6 +123,8 @@ def da_bounds(place_gdf, da, buffer = 0.1):
     """
     Clip bounds from place_gdf on da extended by buffer.
 
+    The buffer value could be 0.025 instead of 0.1
+    
     Parameters
     ----------
     place_gdf: GeoDataFrame
