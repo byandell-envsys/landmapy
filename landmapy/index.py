@@ -1,9 +1,16 @@
-"""Index functions.
+"""
+Index functions.
 
 Plot map for created index and overlay with redlining grades.
 Mask map by redline grades and create a `GeoDataFrame`.
 Fit a tree model and compare maps.
 """
+def redline_over_index(place_gdf, index_da, edgecolor='black', cmap='terrain'):
+    """
+    Deprecated. Use gdf_over_da
+    """
+    return gdf_over_da(place_gdf, index_da, edgecolor, cmap)
+
 def plot_index(index_da, city):
     """
     Show plot of index.
@@ -29,9 +36,9 @@ def plot_index(index_da, city):
 
 # plot_index(index_da, city)
 
-def redline_over_index(place_gdf, index_da, edgecolor='black', cmap='terrain'):
+def gdf_over_da(place_gdf, index_da, edgecolor='black', cmap='terrain'):
     """
-    Overlay redlining grades on NDVI map.
+    Overlay GeoDataFrame on DataArray map.
     
     Default `cmap` is 'viridis`;
     See <https://matplotlib.org/stable/users/explain/colors/colormaps.html>.
@@ -60,13 +67,13 @@ def redline_over_index(place_gdf, index_da, edgecolor='black', cmap='terrain'):
       # Use color column from place_gdf if provided
       if 'color' in place_idx_gdf.columns:
           edgecolor = place_idx_gdf['color'].values[0]
-      place_idx_gdf.plot(ax=plt.gca(), color='none', edgecolor=edgecolor)
+      place_idx_gdf.boundary.plot(ax=plt.gca(), color=edgecolor)
     # Strip labels and ticks of and plot.
     plt.gca().set(
         xlabel='', ylabel='', xticks=[], yticks=[])
     plt.show()
 
-# redline_over_index(place_gdf, index_da)
+# gdf_over_da(place_gdf, index_da)
 
 def redline_mask(place_gdf, index_da):
     """
