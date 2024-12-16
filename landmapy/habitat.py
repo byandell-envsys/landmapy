@@ -304,6 +304,17 @@ def srtm_slope(srtm_da, UTM = 32613):
     Calculate slope from SRTM data.
 
     Project to UTM to calculate slope, then project back.
+
+    Parameters
+    ----------
+    srtm_da: DataArray
+        DataArray with elevation information
+    UTM: number or character string
+        UTM value (default is for UTM13N)
+    Returns
+    -------
+    slope_da: DataArray
+        DataArray with slopes (may be slightly different shape from srtm_da)
     """
     import xrspatial
     import rioxarray as rxr
@@ -315,3 +326,35 @@ def srtm_slope(srtm_da, UTM = 32613):
     return slope_da
 
 # slope_da = srtm_slope(srtm_da, 32613)
+
+def ramp_logic(data, ramps):
+    """
+    Fuzzy ramp logic.
+
+    Parameters
+    ----------
+    data: DataArray
+        DataArray with land measurements
+    ramps: list of floats
+        Either 2 (ramp) or 4 (mesa) values for fuzzy ramp
+    Returns
+    -------
+    fuzzy_data: DataArray
+        Ramp with values between 0 and 1
+    """
+    # Apply fuzzy logic: data > ramps[0] but it could be < ramps[1] with a ramp
+    # Ramp up.
+    fuzzy_data = data
+    if(len(ramps) >= 2):
+        fuzzy_data = (data > ramps[1])
+        ramp_mask = (data > ramps[0]) & (data <= ramps[1])
+        fuzzy_data = fuzzy_data + ramp_mask * (data - ramps[0]) / (ramps[1] - ramps[0])
+        # Optional ramp down.
+        if(len(ramps) >= 4):
+            fuzzy_data = fuzzy_data * (data <= ramps[3])
+            ramp_mask = (data > ramps[2]) & (data <= ramps[3])
+            fuzzy_data = fuzzy_data - ramp_mask * (data - ramps[2]) / (ramps[3] - ramps[2])
+
+    return fuzzy_data
+
+# ramp_logic(data, 0.4, 0.5)
