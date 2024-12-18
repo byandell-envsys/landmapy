@@ -327,7 +327,7 @@ def srtm_slope(srtm_da, UTM = 32613):
 
 # slope_da = srtm_slope(srtm_da, 32613)
 
-def ramp_logic(data, ramps):
+def ramp_logic(data, up = (), down = ()):
     """
     Fuzzy ramp logic.
 
@@ -335,26 +335,37 @@ def ramp_logic(data, ramps):
     ----------
     data: DataArray
         DataArray with land measurements
-    ramps: list of floats
-        Either 2 (ramp) or 4 (mesa) values for fuzzy ramp
+    up, down: lists of floats
+        Either 1 (cliff) or 2 (ramp) values for fuzzy on-off
     Returns
     -------
     fuzzy_data: DataArray
         Ramp with values between 0 and 1
     """
+    import xarray as xr
+
     # Apply fuzzy logic: data > ramps[0] but it could be < ramps[1] with a ramp
+    def ramp(data, fuzzy_data, up, sign=1.0):
+        if(isinstance(up, float) | isinstance(up, int)):
+            up = (up,)
+        if(len(up)):
+            fuzzy_data = fuzzy_data * (sign * data >= sign * max(up))
+            if(len(up) > 1):
+                up = sorted(up[:2])
+                diff = up[1] - up[0]
+                if(diff > 0):
+                    ramp_mask = (data > up[0]) & (data <= up[1])
+                    fuzzy_data = fuzzy_data + sign * ramp_mask * (data - up[0]) / diff
+        return fuzzy_data
+
+    # Set `fuzzy_data` to 1.0.
+    fuzzy_data = xr.full_like(data, 1.0)
     # Ramp up.
-    fuzzy_data = data
-    if(len(ramps) >= 2):
-        fuzzy_data = (data > ramps[1])
-        ramp_mask = (data > ramps[0]) & (data <= ramps[1])
-        fuzzy_data = fuzzy_data + ramp_mask * (data - ramps[0]) / (ramps[1] - ramps[0])
-        # Optional ramp down.
-        if(len(ramps) >= 4):
-            fuzzy_data = fuzzy_data * (data <= ramps[3])
-            ramp_mask = (data > ramps[2]) & (data <= ramps[3])
-            fuzzy_data = fuzzy_data - ramp_mask * (data - ramps[2]) / (ramps[3] - ramps[2])
+    fuzzy_data = ramp(data, fuzzy_data, up, 1.0)
+    # Ramp down.
+    fuzzy_data = ramp(data, fuzzy_data, down, -1.0)
 
     return fuzzy_data
 
-# ramp_logic(data, 0.4, 0.5)
+# data = x = xr.DataArray([float(i) for i in  range(21)])
+# ramp_logic(data, (5.0, 10.0), 15)

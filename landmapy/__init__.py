@@ -15,4 +15,13 @@ Functions:
     index.index_grade_hv(redlining_ndvi_gdf, city)
     index.index_tree(redlining_ndvi_gdf)
     index.plot_index_pred(redlining_ndvi_gdf, tree_classifier, city)
+    habitat.creata_data_dir(new_dir)
+    habitat.soil_url_dict(place_gdf, soil_var, soil_sum, soil_depth)
+    habitat.merge_soil(place_gdf, soil_var, soil_sum, soil_depth, buffer)
+    habitat.da_bounds(place_gdf, da, buffer)
+    habitat.process_maca(sites, scenarios, climates, years, buffer)
+    habitat.maca_year(maca_df, row, year)
+    habitat.srtm_download(place_gdf, elevation_dir, buffer)
+    habitat.srtm_slope(srtm_da, UTM)
+    habitat.ramp_logic(data, up, down)
 """
