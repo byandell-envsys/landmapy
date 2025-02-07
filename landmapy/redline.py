@@ -7,15 +7,10 @@ def redline_gdf(data_dir):
     """
     Read redlining GeoDataFrame from Mapping Inequality.
 
-    Parameters
-    ----------
-    data_dir: character string
-      Name of data directory
-
-    Returns
-    -------
-    redlining_gdf: GeoDataFrame
-      GeoDataFrame
+    Args:
+        data_dir (char): Name of data directory
+    Returns:
+        redlining_gdf (gdf): GeoDataFrame for place
     """
     import os # Interoperable file paths
     import geopandas as gpd # Work with vector data
@@ -47,15 +42,10 @@ def plot_redline(redlining_gdf):
     """
     Plot overlay of redlining GeoDataFrame with state boundaries.
 
-    Parameters
-    ----------
-    redlining_gdf: GeoDataFrame object
-      `gdf` with redlining cities
-
-    Returns
-    -------
-    cropped_da: rxr.DataArray
-      Processed raster
+    Args:
+        redlining_gdf (gdf): gdf with redlining cities
+    Returns:
+        cropped_da (da): Processed raster da
     """
     import matplotlib.pyplot as plt
     import geopandas as gpd # Work with vector data
