@@ -9,7 +9,7 @@ def redline_over_index(place_gdf, index_da, edgecolor='black', cmap='terrain'):
     """
     Deprecated. Use gdf_da
     """
-    return plot_gdf_over_da(place_gdf, index_da, edgecolor, cmap)
+    return plot_gdf_da(place_gdf, index_da, edgecolor, cmap)
 
 def gdf_over_da(place_gdf, index_da, edgecolor='black', cmap='terrain'):
     """

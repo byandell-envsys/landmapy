@@ -1,38 +1,32 @@
-def da_bounds(place_gdf, da, buffer = 0.1):
-    """
-    Deprecated: use gdf_da_bounds()
-    """
-    return gdf_da_bounds(place_gdf, da, buffer)
-
 def soil_url_dict(place_gdf, soil_var="sand", soil_sum="mean", soil_depth="100_200"):
     """
     Deprecated: use landmapy.polaris.soil_url_dict()
     """
-    from landmapy import polaris.soil_url_dict
-    return polaris.soil_url_dict(place_gdf, soil_var, soil_sum, soil_depth)
+    from landmapy.polaris import soil_url_dict
+    return soil_url_dict(place_gdf, soil_var, soil_sum, soil_depth)
     
 def merge_soil(place_gdf, soil_var="sand", soil_sum="mean", soil_depth="100_200",
                buffer = 0.1):
     """
     Deprecated: use landmapy.polaris.merge_soil()
     """
-    from landmapy import polaris.merge_soil
-    return polaris.merge_soil(place_gdf, soil_var, soil_sum, soil_depth, buffer)
+    from landmapy.polaris import merge_soil
+    return merge_soil(place_gdf, soil_var, soil_sum, soil_depth, buffer)
 
 def process_maca(sites, scenarios=['pr'], climates=['rcp85', 'rcp45'], years = [2026],
                  buffer = 0.1):
     """
     Deprecated: use landmapy.thredds.process_maca()
     """
-    from landmapy import thredds.process_maca
-    return thredds.process_maca(sites, scenarios, climates, years, buffer)
+    from landmapy.thredds import process_maca
+    return process_maca(sites, scenarios, climates, years, buffer)
 
 def maca_year(maca_df, row=0, year=2027):
     """
     Deprecated: use landmapy.thredds.maca_year()
     """
-    from landmapy import thredds.maca_year
-    return thredds.maca_year(maca_df, row, year)
+    from landmapy.thredds import maca_year
+    return maca_year(maca_df, row, year)
 
 def create_data_dir(new_dir='habitat'):
     """
@@ -57,27 +51,6 @@ def create_data_dir(new_dir='habitat'):
     return data_dir
 
 # create_data_dir('habitat')
-
-def gdf_da_bounds(place_gdf, da, buffer = 0.1):
-    """
-    Clip bounds from place_gdf on da extended by buffer.
-
-    The buffer value could be 0.025 instead of 0.1
-    
-    Args:
-        place_gdf (gdf): gdf of selected location
-        da (da): da from calling routine
-        buffer (float): Buffer around bounds of place_gdf
-    Results:
-        da (da): da with restricted to bounds of place_gdf 
-    """
-    bounds = place_gdf.to_crs(da.rio.crs).total_bounds
-    bounds = bounds + [x * buffer for x in [-1,-1,1,1]] # buffer around place_gdf
-    da = da.rio.clip_box(*bounds)
-
-    return da
-
-# da = gdf_da_bounds(place_gdf, da, 0.1)
 
 def srtm_download(place_gdf, elevation_dir, buffer = 0.1):
     """
