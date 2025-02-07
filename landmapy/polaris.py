@@ -54,6 +54,7 @@ def merge_soil(place_gdf, soil_var="sand", soil_sum="mean", soil_depth="100_200"
     import geopandas as gpd
     import rioxarray as rxr
     from rioxarray.merge import merge_arrays # Merge rasters
+    from landmapy.habitit import gdf_da_bounds
     
     soil_urls = soil_url_dict(place_gdf, soil_var, soil_sum, soil_depth)
     
@@ -77,7 +78,7 @@ def merge_soil(place_gdf, soil_var="sand", soil_sum="mean", soil_depth="100_200"
     #bounds = bounds + [x * buffer for x in [-1,-1,1,1]] # buffer around place_gdf
     #print(bounds)
     #soil_merged_das = soil_merged_das.rio.clip_box(*bounds)
-    soil_merged_das = da_bounds(place_gdf, soil_merged_das, buffer)
+    soil_merged_das = gdf_da_bounds(place_gdf, soil_merged_das, buffer)
 
     return soil_merged_das
 

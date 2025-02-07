@@ -1,24 +1,3 @@
-def gdf_da_bounds(place_gdf, da, buffer = 0.1):
-    """
-    Clip bounds from place_gdf on da extended by buffer.
-
-    The buffer value could be 0.025 instead of 0.1
-    
-    Args:
-        place_gdf (gdf): gdf of selected location
-        da (da): da from calling routine
-        buffer (float): Buffer around bounds of place_gdf
-    Results:
-        da (da): da with restricted to bounds of place_gdf 
-    """
-    bounds = place_gdf.to_crs(da.rio.crs).total_bounds
-    bounds = bounds + [x * buffer for x in [-1,-1,1,1]] # buffer around place_gdf
-    da = da.rio.clip_box(*bounds)
-
-    return da
-
-# da = gdf_da_bounds(place_gdf, da, 0.1)
-
 def process_maca(sites, scenarios=['pr'], climates=['rcp85', 'rcp45'], years = [2026],
                  buffer = 0.1):
     """
@@ -37,6 +16,7 @@ def process_maca(sites, scenarios=['pr'], climates=['rcp85', 'rcp45'], years = [
     import xarray as xr
     import pandas as pd
     import geopandas as gpd
+    from landmapy.habitat import gdf_da_bounds
     
     def convert_lonlat(longitude):
         return ((longitude + 180) % 360) - 180
