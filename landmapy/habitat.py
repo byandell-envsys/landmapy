@@ -1,11 +1,17 @@
+def da_bounds(place_gdf, da, buffer = 0.1):
+    """
+    Deprecated: use gdf_da_bounds()
+    """
+    return gdf_da_bounds(place_gdf, da, buffer)
+    
 def create_data_dir(new_dir='habitat'):
     """
     Create Data Directory if it does not exist.
 
-    Parameters
-    ----------
-    new_dir: character string
-        Name of new directory
+    Args:
+        new_dir (char, optional): Name of new directory
+    Returns:
+        data_dir (char): path to new directory
     """
     import os
     import pathlib
@@ -26,17 +32,11 @@ def soil_url_dict(place_gdf, soil_var="sand", soil_sum="mean", soil_depth="100_2
     """
     Set up soil URLs based on place.
     
-    Parameters
-    ----------
-    place_gdf: GeoDataFrame
-        GeoDataFrame of selected location
-    soil_var, soil_sum, soil_depth: character string
-        Name of soil variable, summary and depth
-
-    Results
-    -------
-    soil_url: dict
-        Dictionary of URLs
+    Args:
+        place_gdf (gdf): gdf of selected location
+        soil_var, soil_sum, soil_depth (char): Names of soil variable, summary and depth
+    Results:
+        soil_url (dict): Dictionary of URLs
     """
     from math import floor, ceil
     
@@ -74,18 +74,12 @@ def merge_soil(place_gdf, soil_var="sand", soil_sum="mean", soil_depth="100_200"
     """
     Merge soil data.
 
-    Parameters
-    ----------
-    place_gdf: GeoDataFrame
-        GeoDataFrame of selected location
-    soil_var, soil_sum, soil_depth: character string
-        Name of soil variable, summary and depth
-    buffer: number
-        Buffer around bounds of place_gdf
-    Results
-    -------
-    soil_merged_das: DataFrame
-        DataFrame with soil estimates clipped to bounds of place_gdf 
+    Args:
+        place_gdf (gdf): gdf of selected location
+        soil_var, soil_sum, soil_depth (char): Names of soil variable, summary and depth
+        buffer (float): Buffer around bounds of place_gdf
+    Results:
+        soil_merged_das (da): soil estimates clipped to bounds of place_gdf 
     """
     import geopandas as gpd
     import rioxarray as rxr
@@ -119,24 +113,18 @@ def merge_soil(place_gdf, soil_var="sand", soil_sum="mean", soil_depth="100_200"
 
 # soil_merged_das = merge_soil(place_gdf, "sand", "mean", "100_200", 0.1)
 
-def da_bounds(place_gdf, da, buffer = 0.1):
+def gdf_da_bounds(place_gdf, da, buffer = 0.1):
     """
     Clip bounds from place_gdf on da extended by buffer.
 
     The buffer value could be 0.025 instead of 0.1
     
-    Parameters
-    ----------
-    place_gdf: GeoDataFrame
-        GeoDataFrame of selected location
-    da: DataFrame
-        DataFrame from calling routine
-    buffer: number
-        Buffer around bounds of place_gdf
-    Results
-    -------
-    da: DataFrame
-        DataFrame with restricted to bounds of place_gdf 
+    Args:
+        place_gdf (gdf): gdf of selected location
+        da (da): da from calling routine
+        buffer (float): Buffer around bounds of place_gdf
+    Results:
+        da (da): da with restricted to bounds of place_gdf 
     """
     bounds = place_gdf.to_crs(da.rio.crs).total_bounds
     bounds = bounds + [x * buffer for x in [-1,-1,1,1]] # buffer around place_gdf
@@ -144,31 +132,21 @@ def da_bounds(place_gdf, da, buffer = 0.1):
 
     return da
 
-# da_bounds(place_gdf, da, 0.1)
-
+# da = gdf_da_bounds(place_gdf, da, 0.1)
 
 def process_maca(sites, scenarios=['pr'], climates=['rcp85', 'rcp45'], years = [2026],
                  buffer = 0.1):
     """
     Process MACA Monthly Data.
 
-    Parameters
-    ----------
-    sites: dict of GeoDataFrames
-       dictionary with GeoDataFrames
-    scenarios: character string
-        'pr' = precipitation
-    climates: character string
-        'rcp' = relative concentration pathway
-    years: numeric
-        first year of 5-year period
-    buffer: number
-        Buffer around bounds of place_gdf
-
-    Returns
-    -------
-    maca_df: DataFrame
-        data frame with parameters and values
+    Args:
+        sites (dict): dictionary with gdfs
+        scenarios (char, optional): 'pr' = precipitation
+        climates (char, optional): 'rcp' = relative concentration pathway
+        years (int, optional) : first year of 5-year period
+        buffer (float): Buffer around bounds of place_gdf
+    Returns:
+        maca_df (df): df with parameters and values
     """
     import rioxarray as rxr
     import xarray as xr
@@ -218,15 +196,10 @@ def maca_year(maca_df, row=0, year=2027):
     """
     Extract and print year data
 
-    Parameters
-    ----------
-    maca_df: DataFrame
-        DataFrame with MACA data by row
-
-    Returns
-    -------
-    maca_year: DataArray
-        DataArray for year and row selected.
+    Args:
+        maca_df (df): DataFrame with MACA data by row
+    Returns:
+        maca_year (da): da for year and row selected.
     """
     maca_da = maca_df.loc[row, 'da']
     # Find the total precipitation for each pixel across all months for each individual year?
@@ -305,16 +278,11 @@ def srtm_slope(srtm_da, UTM = 32613):
 
     Project to UTM to calculate slope, then project back.
 
-    Parameters
-    ----------
-    srtm_da: DataArray
-        DataArray with elevation information
-    UTM: number or character string
-        UTM value (default is for UTM13N)
-    Returns
-    -------
-    slope_da: DataArray
-        DataArray with slopes (may be slightly different shape from srtm_da)
+    Args:
+        srtm_da (da): da with elevation information
+        UTM (int or char): UTM value (default is for UTM13N)
+    Returns:
+        slope_da (da): da with slopes (may be slightly different shape from srtm_da)
     """
     import xrspatial
     import rioxarray as rxr
@@ -331,16 +299,11 @@ def ramp_logic(data, up = (), down = ()):
     """
     Fuzzy ramp logic.
 
-    Parameters
-    ----------
-    data: DataArray
-        DataArray with land measurements
-    up, down: lists of floats
-        Either 1 (cliff) or 2 (ramp) values for fuzzy on-off
-    Returns
-    -------
-    fuzzy_data: DataArray
-        Ramp with values between 0 and 1
+    Args:
+        data (da): da with land measurements
+        up, down (list of floats, optional): Either 1 (cliff) or 2 (ramp) values for fuzzy on-off
+    Returns:
+        fuzzy_data (da): Ramp with values between 0 and 1
     """
     import xarray as xr
 
