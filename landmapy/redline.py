@@ -7,7 +7,7 @@ def plot_redline(place_gdf):
     """
     Deprecated. plot_gdf
     """
-    return plot_gdf(place_gdf)
+    return plot_gdf_state(place_gdf)
 
 def redline_gdf(data_dir):
     """
@@ -44,7 +44,7 @@ def redline_gdf(data_dir):
 
 # redline_map(data_dir)
 
-def plot_gdf(place_gdf):
+def plot_gdf_state(place_gdf):
     """
     Plot overlay of redlining GeoDataFrame with state boundaries.
 
@@ -74,4 +74,4 @@ def plot_gdf(place_gdf):
 
     return plt.show()
 
-# plot_gdf(place_gdf)
+# plot_gdf_state(place_gdf)
