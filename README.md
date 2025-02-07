@@ -29,7 +29,7 @@ They are being developed in parallel, with somewhat different goals.
 | module | function | return | effect | project | description |
 |--------|----------|--------|--------|---------|-------------|
 | redline | redline_gdf | gdf | read | redline | Read redlining GeoDataFrame from Mapping Inequality |
-| redline | plot_gdf || plot | plot | Plot overlay of gdf with state boundaries |
+| redline | plot_gdf_state || plot | plot | Plot overlay of gdf with state boundaries |
 | process | process_image | da || process | Load, crop, and scale a raster image from earthaccess |
 | process | process_cloud_mask | array || process | Load an 8-bit Fmask file and create a boolean mask |
 | process | process_metadata | df || process | Create df of raster data URIs from earthaccess metadata |
