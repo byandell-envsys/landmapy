@@ -7,52 +7,51 @@ Fit a tree model and compare maps.
 """
 def redline_over_index(place_gdf, index_da, edgecolor='black', cmap='terrain'):
     """
-    Deprecated. Use gdf_over_da
+    Deprecated. Use gdf_da
     """
-    return gdf_over_da(place_gdf, index_da, edgecolor, cmap)
+    return plot_gdf_over_da(place_gdf, index_da, edgecolor, cmap)
 
-def plot_index(index_da, city):
+def gdf_over_da(place_gdf, index_da, edgecolor='black', cmap='terrain'):
+    """
+    Deprecated. Use plot_gdf_da
+    """
+    return plot_gdf_da(place_gdf, index_da, edgecolor, cmap)
+
+def plot_index(index_da, place, index='NDVI'):
     """
     Show plot of index.
 
-    Parameters
-    ----------
-    index_da: DataArray
-      DataArray containing NDVI index for city
-    city: character string
-      Name of selected city
+    Args:
+        index_da (da): index for place
+        place (char): Name of selected place
+        index (char, optional): index type
     """
     import matplotlib.pyplot as plt # Overlay raster and vector data
 
-    #Plot the ndvi_da to see CRS
+    #Plot the index_da to see CRS
     index_da.plot(
-        cbar_kwargs={"label": "NDVI"},
+        cbar_kwargs={"label": place},
         robust=True)
     plt.gca().set(
-        title = city + ' NDVI',
+        title = f'{place} {index}',
         xlabel='',
         ylabel='')
     plt.show()
 
-# plot_index(index_da, city)
+# plot_index(index_da, place)
 
-def gdf_over_da(place_gdf, index_da, edgecolor='black', cmap='terrain'):
+def plot_gdf_da(place_gdf, index_da, edgecolor='black', cmap='terrain'):
     """
-    Overlay GeoDataFrame on DataArray map.
+    Overlay gdf on da map.
     
     Default `cmap` is 'viridis`;
     See <https://matplotlib.org/stable/users/explain/colors/colormaps.html>.
 
-    Parameters
-    ----------
-    place_gdf: GeoDataFrame
-      GeoDataFrame for redlined city
-    index_da: DataArray
-      DataArray containing NDVI index for city
-    city: character string
-      Name of selected city
-    edgecolor: character string
-      Name of color for edges of `place_gdf`
+    Args:
+        place_gdf (gdf): gdf for place
+        index_da (da): index for place
+        edgecolor (char, optional): Name of color for edges of gdf
+        cmap (char, optional): color map
     """
     import cartopy.crs as ccrs # CRSs
     import matplotlib.pyplot as plt # Overlay raster and vector data
@@ -73,23 +72,17 @@ def gdf_over_da(place_gdf, index_da, edgecolor='black', cmap='terrain'):
         xlabel='', ylabel='', xticks=[], yticks=[])
     plt.show()
 
-# gdf_over_da(place_gdf, index_da)
+# plot_gdf_da(place_gdf, index_da)
 
 def redline_mask(place_gdf, index_da):
     """
-    Define new variable for denver redlining mask, using regionmask.
+    Create new gdf for redlining using regionmask.
     
-    Parameters
-    ----------
-    place_gdf: GeoDataFrame
-      GeoDataFrame for redlined city
-    index_da: DataArray
-      DataArray containing NDVI index for city
-    
-    Returns
-    -------
-    redlining_mask: GeoDataFrame
-      GeoDataFrame with `regionmask` applied.
+    Args:
+        place_gdf (gdf): gdf for redlined place
+        index_da (da): index for place
+    Returns:
+        redlining_mask (gdf): gdf with `regionmask` applied.
     """
     import regionmask # Convert shapefile to mask
 
@@ -107,138 +100,115 @@ def redline_mask(place_gdf, index_da):
 
 # redlining_mask = redline_mask(place_gdf, index_da)
 
-def redline_index_gdf(redlining_gdf, ndvi_stats):
+def redline_index_gdf(redlining_gdf, index_stats):
     """
-    Merge NDVI stats with redlining geometry into one GeoDataFrame and plot.
+    Merge index stats with redlining gdf into one gdf.
         
-    Parameters
-    ----------
-    redlining_gdf: GeoDataFrame
-      GeoDataFrame for redlined city
-    ndvi_stats: DataArray
-      DataArray with zonal stats
-    
-    Returns
-    -------
-    redlining_ndvi_gdf: GeoDataFrame
-      GeoDataFrame with zonal stats.
+    Args:
+        redlining_gdf (gdf): gdf for redlined place
+        index_stats (da): da with zonal stats
+    Returns:
+        redlining_index_gdf (gdf): gdf with zonal stats
     """
     import pandas as pd
 
-    redlining_ndvi_gdf = redlining_gdf.merge(
-        ndvi_stats.set_index('zone'),
+    redlining_index_gdf = redlining_gdf.merge(
+        index_stats.set_index('zone'),
         left_index=True, right_index=True)
     
     # Change grade to ordered Categorical for plotting
-    redlining_ndvi_gdf.grade = pd.Categorical(
-        redlining_ndvi_gdf.grade,
+    redlining_index_gdf.grade = pd.Categorical(
+        redlining_index_gdf.grade,
         ordered=True,
         categories=['A', 'B', 'C', 'D'])
 
     # Drop rows with NA grades
-    redlining_ndvi_gdf = redlining_ndvi_gdf.dropna()
+    redlining_index_gdf = redlining_index_gdf.dropna()
 
-    return redlining_ndvi_gdf
+    return redlining_index_gdf
 
-# redlining_ndvi_gdf = redline_index_gdf(redlining_gdf, ndvi_stats)
+# redlining_index_gdf = redline_index_gdf(redlining_gdf, index_stats)
     
-def index_grade_hv(redlining_ndvi_gdf, city):
+def index_grade_hv(redlining_index_gdf, place, index='NDVI'):
     """
     HV plots for index and grade.
             
-    Parameters
-    ----------
-    redlining_ndvi_gdf: GeoDataFrame
-      GeoDataFrame with zonal stats.
-    city: character string
-      Name of selected city
-    
-    Returns
-    -------
-    ndvi_hv, grade_hv: hvplot
-      HV plot objects for mean index and redline grade.
+    Args:
+        redlining_index_gdf (gdf): gdf with zonal stats
+        place (char): Name of selected place
+        index (char, optional): index name
+    Returns:
+        index_hv, grade_hv (hvplot): HV plot objects for mean index and redline grade
     """
     import hvplot.pandas # Interactive plots with pandas
     
-    ndvi_hv = redlining_ndvi_gdf.hvplot(
+    index_hv = redlining_index_gdf.hvplot(
         c='mean', geo=True,
         xaxis='Longitude', yaxis='Latitude',
-        title = city + ' Mean NDVI',
-        clabel='Mean NDVI', cmap='Greens')
+        title = f'{place} Mean {index}',
+        clabel=f'Mean {index}', cmap='Greens')
     
-    grade_hv = redlining_ndvi_gdf.hvplot(
+    grade_hv = redlining_index_gdf.hvplot(
         c='grade', geo=True,
         xaxis='Longitude', yaxis='Latitude',
-        title = city + ' Redlining Grades',
+        title = place + ' Redlining Grades',
         cmap='cet_diverging_bwr_20_95_c54')
 
-    return ndvi_hv, grade_hv
+    return index_hv, grade_hv
 
-# ndvi_hv, grade_hv = index_grade_hv(redlining_ndvi_gdf)
+# index_hv, grade_hv = index_grade_hv(redlining_index_gdf)
 
-def index_tree(redlining_ndvi_gdf):
+def index_tree(redlining_index_gdf):
     """
-    Convert categories to numbers
+    Convert categories to numbers.
             
-    Parameters
-    ----------
-    redlining_ndvi_gdf: GeoDataFrame
-      GeoDataFrame with zonal stats.
-    
-    Returns
-    -------
-    tree_classifier: decision_tree
-      Decision tree for classifier.
+    Args:
+        redlining_index_gdf (gdf): gdf with zonal stats
+    Returns:
+        tree_classifier (decision_tree): Decision tree for classifier
     """
     from sklearn.tree import DecisionTreeClassifier
 
-    redlining_ndvi_gdf['grade_codes'] = (
-        redlining_ndvi_gdf.grade.cat.codes)
+    redlining_index_gdf['grade_codes'] = (
+        redlining_index_gdf.grade.cat.codes)
 
     # Fit model
     tree_classifier = DecisionTreeClassifier(max_depth=2).fit(
-        redlining_ndvi_gdf[['mean']],
-        redlining_ndvi_gdf.grade_codes)
+        redlining_index_gdf[['mean']],
+        redlining_index_gdf.grade_codes)
     
     return tree_classifier
 
-# tree_classifier = index_tree(redlining_ndvi_gdf)
+# tree_classifier = index_tree(redlining_index_gdf)
 
-def plot_index_pred(redlining_ndvi_gdf, tree_classifier, city):
+def plot_index_pred(redlining_index_gdf, tree_classifier, place):
     """
     Plot the model results.
             
-    Parameters
-    ----------
-    redlining_ndvi_gdf: GeoDataFrame
-      GeoDataFrame with zonal stats.
-    tree_classifier: decision_tree
-      Decision tree for classifier.
-    city: character string
-      Name of selected city
-    
-    Returns
-    -------
-    pred_hv: hvplot
-      HV plot object for tree classifier.
+    Args:
+        redlining_index_gdf (gdf): gdf with zonal stats
+        tree_classifier (decision_tree): Decision tree for classifier
+        place (char): Name of selected place
+    Returns:
+        pred_hv (hvplot): HV plot object for tree classifier
     """
     import hvplot.pandas # Interactive plots with pandas
     
     # Predict grades for each region
-    redlining_ndvi_gdf ['predictions'] = (
-        tree_classifier.predict(redlining_ndvi_gdf[['mean']]))
+    redlining_index_gdf ['predictions'] = (
+        tree_classifier.predict(redlining_index_gdf[['mean']]))
 
     # Subtract actual grades from predicted grades
-    redlining_ndvi_gdf['error'] = (
-        redlining_ndvi_gdf ['predictions'] - redlining_ndvi_gdf ['grade_codes'])
+    redlining_index_gdf['error'] = (
+        redlining_index_gdf ['predictions'] - redlining_index_gdf ['grade_codes'])
 
     # Plot the calculated prediction errors as a chloropleth
-    pred_hv = redlining_ndvi_gdf.hvplot(
+    pred_hv = redlining_index_gdf.hvplot(
         c='error', geo=True,
         xaxis='Longitude', yaxis='Latitude',
         clabel='Predicted Grades Error',
-        title = city + ' Calculated Prediction Errors')
+        title = place + ' Calculated Prediction Errors')
 
     return pred_hv
 
-# pred_hv = plot_treepred(redlining_ndvi_gdf, tree_classifier, city)
+# pred_hv = plot_index_pred(redlining_index_gdf, tree_classifier, place)
