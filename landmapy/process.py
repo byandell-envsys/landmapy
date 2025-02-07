@@ -9,17 +9,11 @@ def process_image(uri, bounds_gdf):
     """
     Load, crop, and scale a raster image from earthaccess.
 
-    Parameters
-    ----------
-    uri: file-like or path-like
-      File accessor downloaded or obtained from earthaccess
-    bounds_gdf: gpd.GeoDataFrame
-      Area of interest to crop to
-
-    Returns
-    -------
-    cropped_da: rxr.DataArray
-      Processed raster
+    Args:
+        uri (file-like or path-like): File accessor downloaded or obtained from earthaccess
+        bounds_gdf (gdf): Area of interest to crop to
+    Returns:
+        cropped_da (da): Processed raster
     """
     import rioxarray as rxr # Work with raster data
 
@@ -42,21 +36,14 @@ def process_image(uri, bounds_gdf):
 
 def process_cloud_mask(cloud_uri, bounds_gdf, bits_to_mask):
     """
-    Load an 8-bit Fmask file and process to a boolean mask.
+    Load an 8-bit Fmask file and create a boolean mask.
 
-    Parameters
-    ----------
-    uri: file-like or path-like
-      Fmask file accessor downloaded or obtained from earthaccess
-    bounds_gdf: gpd.GeoDataFrame
-      Area of interest to crop to
-    bits_to_mask: list of int
-      The indices of the bits to mask if set
-
-    Returns
-    -------
-    cloud_mask: np.array
-      Cloud mask
+    Args:
+        uri (file-like or path-like): Fmask file accessor downloaded or obtained from earthaccess
+        bounds_gdf (gdf): Area of interest to crop to
+        bits_to_mask (list of int): The indices of the bits to mask if set
+    Returns:
+        cloud_mask (array of int): Cloud mask array of bits
     """
     import numpy as np # Process bit-wise cloud mask
 
@@ -99,17 +86,12 @@ def process_cloud_mask(cloud_uri, bounds_gdf, bits_to_mask):
 
 def process_metadata(city_files):
     """
-    Process raster data from earthaccess metadata.
+    Create df of raster data URIs from earthaccess metadata.
 
-    Parameters
-    ----------
-    city_files: file-like URI
-      File names from earthaccess
-
-    Returns
-    -------
-    raster_df: DataFrame
-      DataFrame with the metadata
+    Args:
+        city_files (file-like URI): File names from earthaccess
+    Returns:
+        raster_df (df): DataFrame with the metadata
     """
     import re # Use regular expressions to extract metadata
     import pandas as pd # Group and aggregate
@@ -138,19 +120,13 @@ def process_metadata(city_files):
 
 def process_bands(city_gdf, raster_df):
     """
-    Process bands from GeoDataFrame and metadata.
+    Process bands from gdf with df metadata.
 
-    Parameters
-    ----------
-    city_gdf: GeoDataFrame
-      GeoDataFrame for a city
-    raster_df: DataFrame
-      DataFrame of city metadata
-
-    Returns
-    -------
-    city_das: DataArray
-      DataArray with image data
+    Args:
+        city_gdf (gdf): GeoDataFrame for a city
+        raster_df (df): DataFrame of city metadata
+    Returns:
+        city_das (da): DataArray with image data
     """
     import re # Use regular expressions to extract metadata
     import pandas as pd # Group and aggregate
