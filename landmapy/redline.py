@@ -3,6 +3,12 @@ Redline functions.
 
 Read redlining data for US cities and plot a map.
 """
+def plot_redline(place_gdf):
+    """
+    Deprecated. plot_gdf
+    """
+    return plot_gdf(place_gdf)
+
 def redline_gdf(data_dir):
     """
     Read redlining GeoDataFrame from Mapping Inequality.
@@ -10,7 +16,7 @@ def redline_gdf(data_dir):
     Args:
         data_dir (char): Name of data directory
     Returns:
-        redlining_gdf (gdf): GeoDataFrame for place
+        place_gdf (gdf): GeoDataFrame for place
     """
     import os # Interoperable file paths
     import geopandas as gpd # Work with vector data
@@ -26,24 +32,24 @@ def redline_gdf(data_dir):
 
     # Only download once
     if not os.path.exists(redlining_path):
-      redlining_gdf = gpd.read_file(redlining_url)
-      redlining_gdf.to_file(redlining_path)
+      place_gdf = gpd.read_file(redlining_url)
+      place_gdf.to_file(redlining_path)
 
     # Load from file
-    redlining_gdf = gpd.read_file(redlining_path)
+    place_gdf = gpd.read_file(redlining_path)
     
-    return redlining_gdf
+    return place_gdf
 
-# redlining_gdf = redline_gdf(data_dir)
+# place_gdf = redline_gdf(data_dir)
 
 # redline_map(data_dir)
 
-def plot_redline(redlining_gdf):
+def plot_gdf(place_gdf):
     """
     Plot overlay of redlining GeoDataFrame with state boundaries.
 
     Args:
-        redlining_gdf (gdf): gdf with redlining cities
+        place_gdf (gdf): gdf with redlining cities
     Returns:
         cropped_da (da): Processed raster da
     """
@@ -55,12 +61,12 @@ def plot_redline(redlining_gdf):
     states_gdf = gpd.read_file(state_url)
 
     # Calculate the bounding box
-    bbox = redlining_gdf.total_bounds
+    bbox = place_gdf.total_bounds
     xmin, ymin, xmax, ymax = bbox
 
     fig, ax = plt.subplots(figsize=(10, 10))
     states_gdf.boundary.plot(ax=ax, color="black", linewidth=0.5)
-    redlining_gdf.plot(ax=ax)
+    place_gdf.plot(ax=ax)
 
     # Setting the bounds
     ax.set_xlim([xmin, xmax])
@@ -68,4 +74,4 @@ def plot_redline(redlining_gdf):
 
     return plt.show()
 
-# plot_redline(redlining_gdf)
+# plot_redline(place_gdf)
