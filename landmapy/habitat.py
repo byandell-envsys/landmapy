@@ -8,7 +8,7 @@ def soil_url_dict(place_gdf, soil_var="sand", soil_sum="mean", soil_depth="100_2
     """
     Deprecated: use landmapy.polaris.soil_url_dict()
     """
-    import landmapy
+    from landmapy import polaris.soil_url_dict
     return polaris.soil_url_dict(place_gdf, soil_var, soil_sum, soil_depth)
     
 def merge_soil(place_gdf, soil_var="sand", soil_sum="mean", soil_depth="100_200",
@@ -16,7 +16,7 @@ def merge_soil(place_gdf, soil_var="sand", soil_sum="mean", soil_depth="100_200"
     """
     Deprecated: use landmapy.polaris.merge_soil()
     """
-    import landmapy
+    from landmapy import polaris.merge_soil
     return polaris.merge_soil(place_gdf, soil_var, soil_sum, soil_depth, buffer)
 
 def process_maca(sites, scenarios=['pr'], climates=['rcp85', 'rcp45'], years = [2026],
@@ -24,14 +24,14 @@ def process_maca(sites, scenarios=['pr'], climates=['rcp85', 'rcp45'], years = [
     """
     Deprecated: use landmapy.thredds.process_maca()
     """
-    import landmapy
+    from landmapy import thredds.process_maca
     return thredds.process_maca(sites, scenarios, climates, years, buffer)
 
 def maca_year(maca_df, row=0, year=2027):
     """
     Deprecated: use landmapy.thredds.maca_year()
     """
-    import landmapy
+    from landmapy import thredds.maca_year
     return thredds.maca_year(maca_df, row, year)
 
 def create_data_dir(new_dir='habitat'):
