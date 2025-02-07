@@ -42,14 +42,14 @@ They are being developed in parallel, with somewhat different goals.
 | index | index_tree | decision_tree || redline | Convert categories to numbers |
 | index | plot_index_pred | hvplot | plot | redline | Plot the model results |
 | habitat | creata_data_dir | char | mkdir | habitat, bigdata, cluster | Create Data Directory if it does not exist |
-| habitat | soil_url_dict | dict | read | POLARIS | Set up soil URLs based on place |
-| habitat | merge_soil | da | read | POLARIS | Merge soil data |
 | habitat | gdf_da_bounds | da ||| Clip bounds from place_gdf on da extended by buffer |
-| habitat | process_maca | df | read | THREDDS | Process MACA Monthly Data |
-| habitat | maca_year | da || THREDDS | Extract and print year data |
-| habitat | srtm_download | da | download | SRTM | Download SRTM data and create da |
-| habitat | srtm_slope | da || SRTM | Calculate slope from SRTM data |
 | habitat | ramp_logic | da || process | Fuzzy ramp logic |
+| polaris | soil_url_dict | dict | read | POLARIS | Set up soil URLs based on place |
+| polaris | merge_soil | da | read | POLARIS | Merge soil data |
+| thredds | process_maca | df | read | THREDDS | Process MACA Monthly Data |
+| thredds | maca_year | da || THREDDS | Extract and print year data |
+| srtm | srtm_download | da | download | SRTM | Download SRTM data and create da |
+| srtm | srtm_slope | da || SRTM | Calculate slope from SRTM data |
 | redline | plot_redline |||| deprecated: use plot_gdf |
 | index | redline_over_index |||| deprecated: use plot_gdf_da |
 | index | gdf_over_da |||| deprecated: use plot_gdf_da |
