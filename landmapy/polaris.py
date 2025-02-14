@@ -1,3 +1,9 @@
+"""
+Polaris Functions.
+
+soil_url_dict: Set up soil URLs based on place
+merge_soil: Merge soil data
+"""
 def soil_url_dict(place_gdf, soil_var="sand", soil_sum="mean", soil_depth="100_200"):
     """
     Set up soil URLs based on place.

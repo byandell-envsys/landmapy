@@ -1,3 +1,9 @@
+"""
+THREDDS Functions.
+
+process_maca: Process MACA Monthly Data
+maca_year: Extract and print year data
+"""
 def process_maca(sites, scenarios=['pr'], climates=['rcp85', 'rcp45'], years = [2026],
                  buffer = 0.1):
     """
@@ -59,7 +65,7 @@ def process_maca(sites, scenarios=['pr'], climates=['rcp85', 'rcp45'], years = [
 
 def maca_year(maca_df, row=0, year=2027):
     """
-    Extract and print year data
+    Extract and print year data.
 
     Args:
         maca_df (df): DataFrame with MACA data by row

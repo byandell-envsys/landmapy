@@ -1,9 +1,13 @@
 """
-Index functions.
+Index Functions.
 
-Plot map for created index and overlay with redlining grades.
-Mask map by redline grades and create a `GeoDataFrame`.
-Fit a tree model and compare maps.
+plot_index: Plot index DataArray
+plot_gdf_da: Overlay gdf on da map
+redline_mask: Create new gdf for redlining using regionmask
+redline_index_gdf: Merge index stats with redlining gdf into one gdf
+index_grade_hv: HV plots for index and grade
+index_tree: Convert categories to numbers
+plot_index_pred: Plot the model results
 """
 def redline_over_index(place_gdf, index_da, edgecolor='black', cmap='terrain'):
     """
@@ -11,15 +15,9 @@ def redline_over_index(place_gdf, index_da, edgecolor='black', cmap='terrain'):
     """
     return plot_gdf_da(place_gdf, index_da, edgecolor, cmap)
 
-def gdf_over_da(place_gdf, index_da, edgecolor='black', cmap='terrain'):
-    """
-    Deprecated. Use plot_gdf_da
-    """
-    return plot_gdf_da(place_gdf, index_da, edgecolor, cmap)
-
 def plot_index(index_da, place, index='NDVI'):
     """
-    Show plot of index.
+    Plot index DataArray.
 
     Args:
         index_da (da): index for place

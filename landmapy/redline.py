@@ -1,7 +1,8 @@
 """
 Redline functions.
 
-Read redlining data for US cities and plot a map.
+redline_gdf: Read redlining GeoDataFrame from Mapping Inequality
+plot_gdf_state: Plot overlay of redlining GeoDataFrame with state boundaries
 """
 def plot_redline(place_gdf):
     """

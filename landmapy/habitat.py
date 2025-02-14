@@ -1,3 +1,24 @@
+"""
+Habitat Functions.
+
+robust_code: Make code robust to interruptions
+create_data_dir: Create Data Directory if it does not exist
+gdf_da_bounds: Clip bounds from place_gdf on da extended by buffer (internal)
+ramp_logic: Fuzzy ramp logic
+"""
+def robust_code():
+    """
+    Make code robust to interruptions.
+    """
+    import os
+    import warnings
+        
+    warnings.simplefilter('ignore')
+
+    # Prevent GDAL from quitting due to momentary disruptions
+    os.environ["GDAL_HTTP_MAX_RETRY"] = "5"
+    os.environ["GDAL_HTTP_RETRY_DELAY"] = "1"
+
 def create_data_dir(new_dir='habitat'):
     """
     Create Data Directory if it does not exist.

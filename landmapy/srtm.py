@@ -1,3 +1,9 @@
+"""
+SRTM Functions.
+
+srtm_download: Download SRTM data and create DataArray
+srtm_slope: Calculate slope from SRTM data
+"""
 def srtm_download(place_gdf, elevation_dir, buffer = 0.1):
     """
     Download SRTM data and create DataArray.
