@@ -2,7 +2,8 @@
 merge_ndvi_cdc: Merge NDVI and CDC data
 plot_ndvi_index: Plot NDVI and CDC data
 vartrans: Variable Selection and Transformation
-hvplot_matrix: HV plot of model matrixtrain_test: Model fit using train and test sets
+hvplot_matrix: HV plot of model matrix
+train_test: Model fit using train and test sets
 plot_train_test: Plot test fit
 """
 def merge_ndvi_cdc(tract_cdc_gdf, ndvi_index_df):
