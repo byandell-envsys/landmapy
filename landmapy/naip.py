@@ -2,7 +2,7 @@
 NAIP Functions.
 
 naip_path: Create NAIP tracts path
-download_naip_tracts: Download NAIP Tracts
+download_naip_scenes: Download NAIP Tracts
 ndvi_naip_df: Get stats for all NAIP tracts
 ndvi_naip_one: Get stats for one NAIP tract (internal)
 check_element_in_csv: Check value of element in CSV file (internal)
