@@ -1,69 +1,72 @@
 """
-merge_ndvi_cdc: Merge NDVI and CDC data
-plot_ndvi_index: Plot NDVI and CDC data
-vartrans: Variable Selection and Transformation
-hvplot_matrix: HV plot of model matrix
+Explore Functions using Sci-Kit Learn.
+
+index_tree: Convert categories to numbers
+ramp_logic: Fuzzy ramp logic
+var_trans: Variable Selection and Transformation
 train_test: Model fit using train and test sets
-plot_train_test: Plot test fit
 """
-def merge_ndvi_cdc(tract_cdc_gdf, ndvi_index_df):
+def index_tree(redlining_index_gdf):
     """
-    Merge NDVI and CDC data.
+    Convert categories to numbers.
+            
+    Args:
+        redlining_index_gdf (gdf): gdf with zonal stats
+    Returns:
+        tree_classifier (decision_tree): Decision tree for classifier
+    """
+    from sklearn.tree import DecisionTreeClassifier
+
+    redlining_index_gdf['grade_codes'] = (
+        redlining_index_gdf.grade.cat.codes)
+
+    # Fit model
+    tree_classifier = DecisionTreeClassifier(max_depth=2).fit(
+        redlining_index_gdf[['mean']],
+        redlining_index_gdf.grade_codes)
+    
+    return tree_classifier
+
+# tree_classifier = index_tree(redlining_index_gdf)
+
+def ramp_logic(data, up = (), down = ()):
+    """
+    Fuzzy ramp logic.
 
     Args:
-        tract_cdc_gdf (gdf): CDC tracts
-        ndvi_index_df (df): NDVI stats on tracts
+        data (da): da with land measurements
+        up, down (list of floats, optional): Either 1 (cliff) or 2 (ramp) values for fuzzy on-off
     Returns:
-        ndvi_cdc_gdf (gdf): merged data as gdf
+        fuzzy_data (da): Ramp with values between 0 and 1
     """
-    ndvi_cdc_gdf = (
-        tract_cdc_gdf
-        .merge(
-            ndvi_index_df,
-            left_on='tract2010', right_on='tract', how='inner')
-    )
-    return ndvi_cdc_gdf
+    import xarray as xr
 
-# ndvi_cdc_gdf = merge_ndvi_cdc(tract_cdc_gdf, ndvi_index_df)
+    # Apply fuzzy logic: data > ramps[0] but it could be < ramps[1] with a ramp
+    def ramp(data, fuzzy_data, up, sign=1.0):
+        if(isinstance(up, float) | isinstance(up, int)):
+            up = (up,)
+        if(len(up)):
+            fuzzy_data = fuzzy_data * (sign * data >= sign * max(up))
+            if(len(up) > 1):
+                up = sorted(up[:2])
+                diff = up[1] - up[0]
+                if(diff > 0):
+                    ramp_mask = (data > up[0]) & (data <= up[1])
+                    fuzzy_data = fuzzy_data + sign * ramp_mask * (data - up[0]) / diff
+        return fuzzy_data
 
-def plot_chloropleth(gdf, **opts):
-    """
-    Generate a chloropleth with the given color column.
-    
-    Args:
-        gdf (gdf): GeoDataFrame
-    Returns:
-        _ (gv_plot): plot
-    """
-    import geoviews as gv
-    from cartopy import crs as ccrs
-    
-    return gv.Polygons(
-        gdf.to_crs(ccrs.Mercator()),
-        crs=ccrs.Mercator()
-    ).opts(xaxis=None, yaxis=None, colorbar=True, **opts)
-    
-# plot_chloropleth(gdf)
-    
-def plot_ndvi_index(ndvi_cdc_gdf):
-    """
-    Plot NDVI and CDC data.
+    # Set `fuzzy_data` to 1.0.
+    fuzzy_data = xr.full_like(data, 1.0)
+    # Ramp up.
+    fuzzy_data = ramp(data, fuzzy_data, up, 1.0)
+    # Ramp down.
+    fuzzy_data = ramp(data, fuzzy_data, down, -1.0)
 
-    Args:
-        ndvi_cdc_gdf (gdf): merged data as gdf
-    Returns:
-        None
-    """
-    plot_ndvi = (
-        plot_chloropleth(ndvi_cdc_gdf, color='asthma', cmap='viridis', title='Asthma')
-        + 
-        plot_chloropleth(ndvi_cdc_gdf, color='edge_density', cmap='Greens', title='Edge Density')
-    )
-    
-    return plot_ndvi
-    
-# plot_ndvi_index(tract_cdc_gdf, ndvi_index_df)
- 
+    return fuzzy_data
+
+# data = x = xr.DataArray([float(i) for i in  range(21)])
+# ramp_logic(data, (5.0, 10.0), 15)
+
 def var_trans(ndvi_cdc_gdf):
     """
     Variable Selection and Transformation
@@ -88,33 +91,6 @@ def var_trans(ndvi_cdc_gdf):
     return model_df
 
 # model_df = var_trans(ndvi_cdc_gdf)
-
-def hvplot_matrix(model_df):
-    """
-    HV plot of model matrix
-
-    Args:
-        model_df (df): model DataFrame
-    Returns:
-        matrix_hv (hvplot): plot
-    """
-    import holoviews as hv
-    import hvplot.pandas
-    import hvplot.xarray
-
-    # Plot scatter matrix to identify variables that need transformation
-    matrix_hv = hvplot.scatter_matrix(
-        model_df
-        [[ 
-            'mean_patch_size',
-            'edge_density',
-            'log_asthma'
-        ]]
-        )
-    
-    return matrix_hv
-    
-# hvplot_matrix(ndvi_cdc_gdf)
 
 def train_test(model_df, test_size=0.33, random_state=42):
     """
@@ -150,59 +126,3 @@ def train_test(model_df, test_size=0.33, random_state=42):
     return y_test, reg
 
 # y_test, reg = trait_test(model_df)
-
-def plot_train_test(y_test):
-    """
-    Plot test fit.
-
-    Args:
-        y_text (nparray): test dataset
-    """
-    import holoviews as hv
-    import hvplot.pandas
-    import hvplot.xarray
-
-    # Plot measured vs. predicted asthma prevalence with a 1-to-1 line
-    y_max = y_test.asthma.max()
-    
-    hv_test = (
-        y_test
-        .hvplot.scatter(
-            x='asthma', y='pred_asthma',
-            xlabel='Measured Adult Asthma Prevalence', 
-            ylabel='Predicted Adult Asthma Prevalence',
-            title='Linear Regression Performance - Testing Data'
-        )
-        .opts(aspect='equal', xlim=(0, y_max), ylim=(0, y_max), height=600, width=600)
-    ) * hv.Slope(slope=1, y_intercept=0).opts(color='black')
-
-    return hv_test
-
-# plot_train_test(y_test)
-
-def plot_resid(model_df, reg, yvar='log_asthma', xvar=['edge_density', 'mean_patch_size']):
-    """
-    Plot model residual
-    
-    Args:
-        model_df (df): model object
-        reg (LinearRegression): LinearRegression object
-        yvar (str, optional): y variable name. Defaults to 'asthma'.
-    Returns:
-        resid_gv (gv_plot): plot
-    """
-    import numpy as np
-    
-    model_df[f'pred_{yvar}'] = np.exp(reg.predict(model_df[xvar]))
-    model_df['err_yvar'] = model_df[f'pred_{yvar}'] - model_df[yvar]
-
-    # Plot error geographically as a chloropleth
-    resid_gv = (
-        plot_chloropleth(model_df, color='err_yvar', cmap='RdBu', title="Residuals for Asthma")
-        .redim.range(err_yvar=(-.3, .3))
-        #.opts(frame_width=600, aspect='equal')
-    )
-    
-    return resid_gv
-
-# plot_resid(model_df, yvar='asthma')

@@ -2,14 +2,9 @@
 Redline functions.
 
 redline_gdf: Read redlining GeoDataFrame from Mapping Inequality
-plot_gdf_state: Plot overlay of redlining GeoDataFrame with state boundaries
+redline_mask: Create new gdf for redlining using regionmask
+redline_index_gdf: Merge index stats with redlining gdf into one gdf
 """
-def plot_redline(place_gdf):
-    """
-    Deprecated. plot_gdf
-    """
-    return plot_gdf_state(place_gdf)
-
 def redline_gdf(data_dir):
     """
     Read redlining GeoDataFrame from Mapping Inequality.
@@ -45,34 +40,58 @@ def redline_gdf(data_dir):
 
 # redline_map(data_dir)
 
-def plot_gdf_state(place_gdf):
+def redline_mask(place_gdf, index_da):
     """
-    Plot overlay of redlining GeoDataFrame with state boundaries.
-
-    Args:
-        place_gdf (gdf): gdf with redlining cities
-    Returns:
-        cropped_da (da): Processed raster da
-    """
-    import matplotlib.pyplot as plt
-    import geopandas as gpd # Work with vector data
+    Create new gdf for redlining using regionmask.
     
-    # Download state data using cenpy and read into GeoDataFrame
-    state_url = "https://www2.census.gov/geo/tiger/TIGER2022/STATE/tl_2022_us_state.zip"
-    states_gdf = gpd.read_file(state_url)
+    Args:
+        place_gdf (gdf): gdf for redlined place
+        index_da (da): index for place
+    Returns:
+        redlining_mask (gdf): gdf with `regionmask` applied.
+    """
+    import regionmask # Convert shapefile to mask
 
-    # Calculate the bounding box
-    bbox = place_gdf.total_bounds
-    xmin, ymin, xmax, ymax = bbox
+    redlining_mask = regionmask.mask_geopandas(
+        # Put gdf in same CRS as raster
+        place_gdf.to_crs(index_da.rio.crs),
+        # x and y coordinates from raster data x=504 y=447
+        index_da.x, index_da.y,
+        # The regions do not overlap
+        overlap=False,
+        # We're not using geographic coordinates
+        wrap_lon=False)
+    
+    return redlining_mask
 
-    fig, ax = plt.subplots(figsize=(10, 10))
-    states_gdf.boundary.plot(ax=ax, color="black", linewidth=0.5)
-    place_gdf.plot(ax=ax)
+# redlining_mask = redline_mask(place_gdf, index_da)
 
-    # Setting the bounds
-    ax.set_xlim([xmin, xmax])
-    ax.set_ylim([ymin, ymax])
+def redline_index_gdf(redlining_gdf, index_stats):
+    """
+    Merge index stats with redlining gdf into one gdf.
+        
+    Args:
+        redlining_gdf (gdf): gdf for redlined place
+        index_stats (da): da with zonal stats
+    Returns:
+        redlining_index_gdf (gdf): gdf with zonal stats
+    """
+    import pandas as pd
 
-    return plt.show()
+    redlining_index_gdf = redlining_gdf.merge(
+        index_stats.set_index('zone'),
+        left_index=True, right_index=True)
+    
+    # Change grade to ordered Categorical for plotting
+    redlining_index_gdf.grade = pd.Categorical(
+        redlining_index_gdf.grade,
+        ordered=True,
+        categories=['A', 'B', 'C', 'D'])
 
-# plot_gdf_state(place_gdf)
+    # Drop rows with NA grades
+    redlining_index_gdf = redlining_index_gdf.dropna()
+
+    return redlining_index_gdf
+
+# redlining_index_gdf = redline_index_gdf(redlining_gdf, index_stats)
+    

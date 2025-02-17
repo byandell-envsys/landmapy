@@ -5,6 +5,7 @@ process_image: Load, crop, and scale a raster image from earthaccess
 process_cloud_mask: Load an 8-bit Fmask file and create a boolean mask
 process_metadata: Create df of raster data URIs from earthaccess metadata
 process_bands: Process bands from gdf with df metadata
+gdf_da_bounds: Clip bounds from place_gdf on da extended by buffer (internal)
 """
 def process_image(uri, bounds_gdf):
     """
@@ -180,3 +181,24 @@ def process_bands(city_gdf, raster_df):
 
 # city_merged_das = process_bands(city_redlining_gdf, raster_df)
 # city_merged_das['green'].plot(cmap='Greens', robust=True)
+
+def gdf_da_bounds(place_gdf, da, buffer = 0.1):
+    """
+    Clip bounds from place_gdf on da extended by buffer.
+
+    The buffer value could be 0.025 instead of 0.1
+    
+    Args:
+        place_gdf (gdf): gdf of selected location
+        da (da): da from calling routine
+        buffer (float): Buffer around bounds of place_gdf
+    Results:
+        da (da): da with restricted to bounds of place_gdf 
+    """
+    bounds = place_gdf.to_crs(da.rio.crs).total_bounds
+    bounds = bounds + [x * buffer for x in [-1,-1,1,1]] # buffer around place_gdf
+    da = da.rio.clip_box(*bounds)
+
+    return da
+
+# da = gdf_da_bounds(place_gdf, da, 0.1)

@@ -22,7 +22,7 @@ def process_maca(sites, scenarios=['pr'], climates=['rcp85', 'rcp45'], years = [
     import xarray as xr
     import pandas as pd
     import geopandas as gpd
-    from landmapy.habitat import gdf_da_bounds
+    from landmapy.process import gdf_da_bounds
     
     def convert_lonlat(longitude):
         return ((longitude + 180) % 360) - 180
@@ -85,5 +85,5 @@ def maca_year(maca_df, row=0, year=2027):
     return maca_year
     
 # maca_2027 = maca_year(maca_df, 0, 2027)
-# from landmapy.index import redline_over_index
-# redline_over_index(buffalo_gdf, maca_2027, edgecolor="white")
+# from landmapy.plot import plot_gdf_da
+# plot_gdf_da(buffalo_gdf, maca_2027, edgecolor="white")

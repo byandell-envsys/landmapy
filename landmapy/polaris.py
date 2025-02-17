@@ -60,7 +60,7 @@ def merge_soil(place_gdf, soil_var="sand", soil_sum="mean", soil_depth="100_200"
     import geopandas as gpd
     import rioxarray as rxr
     from rioxarray.merge import merge_arrays # Merge rasters
-    from landmapy.habitit import gdf_da_bounds
+    from landmapy.process import gdf_da_bounds
     
     soil_urls = soil_url_dict(place_gdf, soil_var, soil_sum, soil_depth)
     

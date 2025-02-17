@@ -1,0 +1,124 @@
+```{python}
+pip install --quiet earthpy
+```
+
+```{python}
+pip install --quiet ~/Documents/GitHub/landmapy
+```
+
+```{python}
+import os
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
+import rasterio as rio
+import geopandas as gpd
+import os
+```
+
+```{python}
+import earthpy as et
+import earthpy.spatial as es
+import earthpy.plot as ep
+import earthpy.mask as em
+from earthpy.io import path_to_example
+```
+
+```{python}
+# View all available data keys
+et.data.get_data()
+# Download data subset to your `$HOME/earth-analytics/data` directory
+data = et.data.get_data('cold-springs-fire', verbose=False)
+```
+
+```{python}
+ep.hist(dem)
+```
+
+## Plot
+
+```{python}
+with rio.open(path_to_example('rmnp-dem.tif')) as src:
+    dem = src.read()
+    fig, ax = plt.subplots(figsize = (10, 5))
+im = ax.imshow(dem.squeeze())
+ep.colorbar(im)
+# <matplotlib.colorbar.Colorbar object at 0x...>
+ax.set(title="Rocky Mountain National Park DEM")
+# [Text(...'Rocky Mountain National Park DEM')]
+ax.set_axis_off()
+plt.show()
+```
+
+## Hillside
+
+- [Create A Hillshade From a Digital Elevation Model Using EarthPy](https://earthpy.readthedocs.io/en/latest/gallery_vignettes/plot_dem_hillshade.html)
+- [earthpy/examples/plot_dem_hillshade.py](https://github.com/earthlab/earthpy/blob/main/examples/plot_dem_hillshade.py)
+
+```{python}
+# Download the data needed for this vignette
+data = et.data.get_data("vignette-elevation")
+```
+
+```{python}
+# Set the home directory and get the data for the exercise
+os.chdir(os.path.join(et.io.HOME, "earth-analytics"))
+dtm = "data/vignette-elevation/pre_DTM.tif"
+
+# Open the DEM with Rasterio
+with rio.open(dtm) as src:
+    elevation = src.read(1)
+    # Set masked values to np.nan
+    elevation[elevation < 0] = np.nan
+
+# Plot the data
+ep.plot_bands(
+    elevation,
+    cmap="gist_earth",
+    title="DTM Without Hillshade",
+    figsize=(10, 6),
+)
+plt.show()
+```
+
+```{python}
+# Adjust the azimuth value
+hillshade_angle_10 = es.hillshade(elevation, altitude=10)
+
+# Plot the hillshade layer with the modified angle altitude
+ep.plot_bands(
+    hillshade_angle_10,
+    cbar=False,
+    title="Hillshade with Angle Altitude set to 10 Degrees",
+    figsize=(10, 6),
+)
+plt.show()
+```
+
+```{python}
+# Plot the DEM and hillshade at the same time
+# sphinx_gallery_thumbnail_number = 5
+fig, ax = plt.subplots(figsize=(10, 6))
+ep.plot_bands(
+    elevation,
+    ax=ax,
+    cmap="terrain",
+    title="Lidar Digital Elevation Model (DEM)\n overlayed on top of a hillshade",
+)
+ax.imshow(hillshade_angle_10, cmap="Greys", alpha=0.5)
+plt.show()
+```
+
+## NDVI
+
+```{python}
+os.chdir(os.path.join(et.io.HOME, "earth-analytics"))
+
+# Stack the Landsat 8 bands
+# This creates a numpy array with each "layer" representing a single band
+landsat_path = glob(
+    "data/vignette-landsat/LC08_L1TP_034032_20160621_20170221_01_T1_sr_band*_crop.tif"
+)
+landsat_path.sort()
+arr_st, meta = es.stack(landsat_path, nodata=-9999)
+```

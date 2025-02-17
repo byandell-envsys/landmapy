@@ -6,6 +6,7 @@ download_naip_scenes: Download NAIP Tracts
 ndvi_naip_df: Get stats for all NAIP tracts
 ndvi_naip_one: Get stats for one NAIP tract (internal)
 check_element_in_csv: Check value of element in CSV file (internal)
+merge_ndvi_cdc: Merge NDVI and CDC data
 """
 def naip_path(data_dir, place = 'chicago'):
     """
@@ -249,3 +250,23 @@ def check_element_in_csv(filename, column_name, target_value):
     
 
 # is_found = check_element_in_csv(naip_index_path, 'target', 123456789):
+
+def merge_ndvi_cdc(tract_cdc_gdf, ndvi_index_df):
+    """
+    Merge NDVI and CDC data.
+
+    Args:
+        tract_cdc_gdf (gdf): CDC tracts
+        ndvi_index_df (df): NDVI stats on tracts
+    Returns:
+        ndvi_cdc_gdf (gdf): merged data as gdf
+    """
+    ndvi_cdc_gdf = (
+        tract_cdc_gdf
+        .merge(
+            ndvi_index_df,
+            left_on='tract2010', right_on='tract', how='inner')
+    )
+    return ndvi_cdc_gdf
+
+# ndvi_cdc_gdf = merge_ndvi_cdc(tract_cdc_gdf, ndvi_index_df)
