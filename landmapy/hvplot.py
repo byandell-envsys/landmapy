@@ -62,26 +62,27 @@ def hvplot_matrix(model_df):
     
 # hvplot_matrix(ndvi_cdc_gdf)
 
-def hvplot_train_test(y_test):
+def hvplot_train_test(y_test, index='asthma'):
     """
     Plot test fit.
 
     Args:
         y_text (nparray): test dataset
+        index (str, optional): index column name
     """
     import holoviews as hv
     import hvplot.pandas
     import hvplot.xarray
 
-    # Plot measured vs. predicted asthma prevalence with a 1-to-1 line
-    y_max = y_test.asthma.max()
+    # Plot measured vs. predicted index prevalence with a 1-to-1 line
+    y_max = y_test[index].max()
     
     hv_test = (
         y_test
         .hvplot.scatter(
-            x='asthma', y='pred_asthma',
-            xlabel='Measured Adult Asthma Prevalence', 
-            ylabel='Predicted Adult Asthma Prevalence',
+            x=index, y=f'pred_{index}',
+            xlabel=f'Measured Adult {index.title()} Prevalence', 
+            ylabel='fPredicted Adult {index.title()} Prevalence',
             title='Linear Regression Performance - Testing Data'
         )
         .opts(aspect='equal', xlim=(0, y_max), ylim=(0, y_max), height=600, width=600)

@@ -1,17 +1,18 @@
 """
 Plot Functions with GeoViews.
 
-gvplot_gdf: Plot asthma data as chloropleth
+gvplot_gdf_esri: GV plot of asthma data as chloropleth over ESRI
 gvplot_chloropleth: Generate a chloropleth with the given color column
 gvplot_ndvi_index: Plot NDVI and CDC data
 gvplot_resid: Plot model residual
 """
-def gvplot_gdf(tract_cdc_gdf):
+def gvplot_gdf_esri(place_gdf, index='asthma'):
     """
-    Plot asthma data as chloropleth.
+    GV Plot of asthma data as chloropleth.
 
     Args:
-       tract_cdc_gdf (gdf): combined gdf 
+       place_gdf (gdf): combined gdf 
+       index (str, optional): index column name
     """
     import geoviews as gv
     from cartopy import crs as ccrs
@@ -20,15 +21,15 @@ def gvplot_gdf(tract_cdc_gdf):
         gv.tile_sources.EsriImagery
         * 
         gv.Polygons(
-            tract_cdc_gdf.to_crs(ccrs.Mercator()),
-            vdims=['asthma', 'tract2010'],
+            place_gdf.to_crs(ccrs.Mercator()),
+            vdims=[index, 'tract2010'],
             crs=ccrs.Mercator()
-        ).opts(color='asthma', colorbar=True, tools=['hover'])
+        ).opts(color=index, colorbar=True, tools=['hover'])
     ).opts(width=600, height=600, xaxis=None, yaxis=None)
 
     return tract_cdc_gv
 
-# tract_cdc_gv = gvplot_gdf(tract_cdc_gdf)
+# tract_cdc_gv = gvplot_gdf(place_gdf)
 
 def gvplot_chloropleth(gdf, **opts):
     """
@@ -49,24 +50,25 @@ def gvplot_chloropleth(gdf, **opts):
     
 # gvplot_chloropleth(gdf)
     
-def gvplot_ndvi_index(ndvi_cdc_gdf):
+def gvplot_ndvi_index(place_gdf, index='asthma'):
     """
     Plot NDVI and CDC data.
 
     Args:
-        ndvi_cdc_gdf (gdf): merged data as gdf
+        place_gdf (gdf): merged data as gdf
+        index (str, optional): index column name
     Returns:
-        None
+        gvplot
     """
-    plot_ndvi = (
-        gvplot_chloropleth(ndvi_cdc_gdf, color='asthma', cmap='viridis', title='Asthma')
+    gvplot_ndvi = (
+        gvplot_chloropleth(place_gdf, color=index, cmap='Blues', title=index.title())
         + 
-        gvplot_chloropleth(ndvi_cdc_gdf, color='edge_density', cmap='Greens', title='Edge Density')
+        gvplot_chloropleth(place_gdf, color='edge_density', cmap='Greens', title='Edge Density')
     )
     
-    return plot_ndvi
+    return gvplot_ndvi
     
-# gvplot_ndvi_index(tract_cdc_gdf, ndvi_index_df)
+# gvplot_ndvi_index(place_gdf, ndvi_index_df)
 
 def gvplot_resid(model_df, reg, yvar='log_asthma', xvar=['edge_density', 'mean_patch_size']):
     """

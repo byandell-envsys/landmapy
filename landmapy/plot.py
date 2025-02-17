@@ -93,3 +93,81 @@ def plot_gdf_state(place_gdf):
     return plt.show()
 
 # plot_gdf_state(place_gdf)
+
+def plot_gdf_esri(place_gdf, index='asthma'):
+    """
+    GV Plot of place index as chloropleth.
+
+    Args:
+       place_gdf (gdf): combined gdf 
+       index (str, optional): index column name
+    """
+    import contextily as ctx
+    import matplotlib.pyplot as plt
+
+    fig, ax = plt.subplots(figsize=(10, 10))
+
+    place_plot = place_gdf.plot(column=index, ax=ax, edgecolor="black", cmap='Blues')
+
+    # Add Esri Imagery basemap
+    ctx.add_basemap(ax, source=ctx.providers.Esri.WorldImagery, crs=place_gdf.crs.to_string())
+
+    # Add a color bar
+    cbar = plt.colorbar(place_plot.collections[0], ax=ax, orientation='vertical')
+    cbar.set_label(f'{index.title()} Intensity')  # Set the label for the color bar
+
+    # Show the plot
+    plt.show()
+    
+# plot_gdf_esri(place_gdf)
+
+def plot_matrix(model_df):
+    """
+    HV plot of model matrix
+
+    Args:
+        model_df (df): model DataFrame
+    """
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+
+    sns.pairplot(model_df.iloc[:, [1,2,3]])
+    plt.show()
+    
+# plot_matrix(model_df)
+
+def plot_train_test(y_test, index='asthma'):
+    """
+    Plot test fit.
+
+    Args:
+        y_text (nparray): test dataset
+    """
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+
+    # Plot measured vs. predicted asthma prevalence with a 1-to-1 line
+    # **note: has asthma 
+    y_max = y_test[index].max()
+    
+    x = y_test[index]
+    y = y_test[f'pred_{index}']
+    
+    plt.scatter(x, y, alpha=0.6, linewidth=0.5)
+
+    # Add labels and title
+    plt.xlabel(f'Measured Adult {index.title()} Prevalence')
+    plt.ylabel('Predicted Adult {index.title()} Prevalence')
+    plt.title('Linear Regression Performance - Testing Data')
+
+    # Set x and y limits
+    plt.xlim(0, y_max)
+    plt.ylim(0, y_max)
+
+    # Add an identity line
+    identity_line = np.linspace(0, y_max, 100)
+    plt.plot(identity_line, identity_line, color='blue', linestyle='--', linewidth=1)
+    plt.show()
+
+# plot_train_test(y_test)
