@@ -202,3 +202,37 @@ def gdf_da_bounds(place_gdf, da, buffer = 0.1):
     return da
 
 # da = gdf_da_bounds(place_gdf, da, 0.1)
+
+def da2gdf(data_array):
+    """
+    Convert a DataArray to a GeoDataFrame using rioxarray and geopandas.
+    
+    Args:
+        data_array (da): data array
+    Returns
+        gdf (gdf): GeoDataFrame
+    """
+    import geopandas as gpd
+    from rasterio.features import shapes
+    import numpy as np
+
+    # Ensure the DataArray has spatial information.
+    data_array = data_array.rio.write_crs("EPSG:4326")
+
+    # Vectorize DataArray.
+    # Mask the DataArray to get only the valid data
+    mask = data_array.notnull()
+
+    # Use shapes to convert the DataArray to GeoJSON-like features.
+    shapes_gen = shapes(data_array.values, mask=mask.values, transform=data_array.rio.transform())
+
+    # Convert shapes to a GeoDataFrame
+    geoms = list(shapes_gen)
+    gdf = gpd.GeoDataFrame.from_features([{'geometry': geom, 'properties': {'value': value}} for geom, value in geoms])
+    # Set the CRS for the GeoDataFrame:
+
+    gdf.set_crs(data_array.rio.crs, inplace=True)
+
+    return gdf
+
+# gdf = da2gdf(data_array)

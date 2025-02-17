@@ -41,6 +41,7 @@ Functions:
     process.process_metadata(city_files)
     process.process_bands(city_gdf, raster_df)
     process.gdf_da_bounds(place_gdf, da, buffer)
+    process.da2gdf(data_array)
     redline.redline_gdf(data_dir)
     redline.redline_mask(place_gdf, index_da)
     redline.redline_index_gdf(redlining_gdf, index_stats)
