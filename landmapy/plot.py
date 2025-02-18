@@ -4,6 +4,9 @@ Plot Functions with matplotlib.pyplot.
 plot_index: Plot index DataArray
 plot_gdf_da: Overlay gdf on da map
 plot_gdf_state: Plot overlay of redlining GeoDataFrame with state boundaries
+plot_gdfs_map: Create Row of Plots
+plot_matrix: Plot of model matrix
+plot_train_test: Plot test fit
 """ 
 def plot_index(index_da, place, index='NDVI'):
     """
@@ -94,36 +97,49 @@ def plot_gdf_state(place_gdf):
 
 # plot_gdf_state(place_gdf)
 
-def plot_gdf_esri(place_gdf, index='asthma'):
+def plot_gdfs_map(place_gdf, column=['asthma','edge_density'], color=['Blues','Greens'], map=True):
     """
-    GV Plot of place index as chloropleth.
-
-    Args:
-       place_gdf (gdf): combined gdf 
-       index (str, optional): index column name
+    Create Row of Plots.
     """
-    import contextily as ctx
     import matplotlib.pyplot as plt
+    import contextily as ctx
 
-    fig, ax = plt.subplots(figsize=(10, 10))
+    # Make sure `column` and `color` are lists, and `color` at least as long as `column`
+    if not isinstance(column, list):
+        column = [column]
+    n_column = len(column)
+    if not isinstance(color, list):
+        color = [color]
+    n_color = len(color)
+    if n_color == 1:
+        color = (color * n_column)
+    elif n_color < n_column:
+        color = (color * n_color)[:n_column]
 
-    place_plot = place_gdf.plot(column=index, ax=ax, edgecolor="black", cmap='Blues')
+    # Create a figure with two subplots side by side
+    figwidth = 12 / n_column
+    fig, ax = plt.subplots(1, n_column, figsize=(12, figwidth))
+    if n_column == 1:
+        ax = [ax]
+    cbar = []
 
-    # Add Esri Imagery basemap
-    ctx.add_basemap(ax, source=ctx.providers.Esri.WorldImagery, crs=place_gdf.crs.to_string())
+    for i in list(range(n_column)):
+        # Plot the first GeoDataFrame on the first subplot
+        place_plot = place_gdf.plot(column=column[i], ax=ax[i], edgecolor="black", cmap=color[i])
+        ax[i].set_title(f'{column[i].title()} Plot')
+        if map:
+            ctx.add_basemap(ax[i], source=ctx.providers.OpenStreetMap.Mapnik, crs=place_gdf.crs.to_string())
+        cbar.append(plt.colorbar(place_plot.collections[0], ax=ax[i], orientation='horizontal'))
+        cbar[i].set_label(f'{column[i].title()} Intensity')  # Set the label for the color bar
 
-    # Add a color bar
-    cbar = plt.colorbar(place_plot.collections[0], ax=ax, orientation='vertical')
-    cbar.set_label(f'{index.title()} Intensity')  # Set the label for the color bar
-
-    # Show the plot
+    # Show the plots
     plt.show()
     
-# plot_gdf_esri(place_gdf)
+# plot_gdfs_map(place_gdf)
 
 def plot_matrix(model_df):
     """
-    HV plot of model matrix
+    Plot of model matrix.
 
     Args:
         model_df (df): model DataFrame

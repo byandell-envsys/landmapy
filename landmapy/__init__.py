@@ -34,7 +34,7 @@ Functions:
     plot.plot_index(index_da, place)
     plot.plot_gdf_da(place_gdf, index_da)
     plot.plot_gdf_state(place_gdf)
-    plot.plot_gdf_esri(place_gdf)
+    plot.plot_gdfs_map(place_gdf)
     plot.plot_train_test(y_test)
     plot.plot_matrix(model_df)
     polaris.soil_url_dict(place_gdf, soil_var, soil_sum, soil_depth)

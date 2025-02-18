@@ -92,15 +92,20 @@ def var_trans(ndvi_cdc_gdf):
 
 # model_df = var_trans(ndvi_cdc_gdf)
 
-def train_test(model_df, test_size=0.33, random_state=42):
+def train_test(model_df, resp='asthma', trans='log', test_size=0.33, random_state=42):
     """
     Model fit using train and test sets.
 
     Args:
         model_df (df): model DataFrame
+        resp (str, optional): column name of response
+        trans (str, optional): transformation of response
+        test_size (float, optional): proportion test size
+        random_state (int, optional): random number state
     Returns:
         y_text (nparray): test dataset
         reg (LinearRegression): LinearRegression object
+        model_df (df): model DataFrame with added `pred` and `resid` columns
     """
     import numpy as np
     from sklearn.linear_model import LinearRegression
@@ -109,7 +114,7 @@ def train_test(model_df, test_size=0.33, random_state=42):
     # Select predictor and outcome variables
 
     X = model_df[['edge_density', 'mean_patch_size']]
-    y = model_df[['log_asthma']]
+    y = model_df[[f'{trans}_{resp}']]
 
     # Split into training and testing datasets
     X_train, X_test, y_train, y_test = train_test_split(
@@ -120,9 +125,14 @@ def train_test(model_df, test_size=0.33, random_state=42):
     reg.fit(X_train, y_train)
 
     # Predict asthma values for the test dataset
-    y_test['pred_asthma'] = np.exp(reg.predict(X_test))
-    y_test['asthma'] = np.exp(y_test.log_asthma)
+    y_test[f'pred_{resp}'] = np.exp(reg.predict(X_test))
+    y_test[resp] = np.exp(y_test[f'{trans}_{resp}'])
     
-    return y_test, reg
+    # Predict index values for all data to get `resid`
+    model_df['pred'] = np.exp(reg.predict(model_df[['edge_density', 'mean_patch_size']]))
+    model_df['resid'] = model_df['pred'] - model_df[f'{trans}_{resp}']
 
-# y_test, reg = trait_test(model_df)
+    
+    return y_test, reg, model_df
+
+# y_test, reg, model_df = trait_test(model_df)

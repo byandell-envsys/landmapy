@@ -70,26 +70,19 @@ def gvplot_ndvi_index(place_gdf, index='asthma'):
     
 # gvplot_ndvi_index(place_gdf, ndvi_index_df)
 
-def gvplot_resid(model_df, reg, yvar='log_asthma', xvar=['edge_density', 'mean_patch_size']):
+def gvplot_resid(model_df):
     """
     Plot model residual
     
     Args:
         model_df (df): model object
-        reg (LinearRegression): LinearRegression object
-        yvar (str, optional): y variable name. Defaults to 'asthma'.
     Returns:
         resid_gv (gv_plot): plot
     """
-    import numpy as np
-    
-    model_df[f'pred_{yvar}'] = np.exp(reg.predict(model_df[xvar]))
-    model_df['err_yvar'] = model_df[f'pred_{yvar}'] - model_df[yvar]
-
     # Plot error geographically as a chloropleth
     resid_gv = (
-        gvplot_chloropleth(model_df, color='err_yvar', cmap='RdBu', title="Residuals for Asthma")
-        .redim.range(err_yvar=(-.3, .3))
+        gvplot_chloropleth(model_df, color='resid', cmap='RdBu', title="Residuals for Asthma")
+        .redim.range(resid=(-.3, .3))
         #.opts(frame_width=600, aspect='equal')
     )
     
