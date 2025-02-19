@@ -96,6 +96,31 @@ commenting this line out briefly to enable commiting the png
 files (followed by uncommenting `*_files/`) is a handy way
 to incorporate figures into the `project.md` once committed and pushed to GitHub.
 
+### Example use with Habitat Project
+
+In a sense, this package enables me to off-load pages of code, replacing them by one-line commands. These basically look like `pseudocode`, but are actually functional. For instance, for the Habitat Suitability project last December (and now being revisited), here is the beginning.
+
+First I visited [USFS Geospatial Data Discovery: National Grassland Units (Feature Layer)](https://data-usfs.hub.arcgis.com/datasets/usfs::national-grassland-units-feature-layer/explore) and manually downloaded the GeoJSON file from DataSet into directory `~/earth-analytics/data/habitat`. Then I did the following steps, shown below in code:
+
+```
+# Install `landmapy` package.
+pip install --quiet git+https://github.com/byandell-envsys/landmapy.git
+
+# Import needed libraries.
+import geopandas as gpd # read geojson file into gdf
+from landmapy.initial import create_data_dir # create (or retrieve) data directory
+from landmapy.plot import plot_gdf_state # plot gdf with state overlay
+
+data_dir = create_data_dir('habitat')
+# Read all grasslands GeoJSON into `grassland_gdf`.
+grassland_url = f"{data_dir}/National_Grassland_Units_(Feature_Layer).geojson"
+grassland_gdf = gpd.read_file(grassland_url)
+# Subset to desired locations.
+buffalo_gdf = grassland_gdf.loc[grassland_gdf['GRASSLANDNAME'].isin(
+        ["Buffalo Gap National Grassland", "Oglala National Grassland"])]
+plot_gdf_state(buffalo_gdf)
+```
+
 ## Goals
 
 ### Goal of EDA project
