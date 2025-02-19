@@ -65,21 +65,27 @@ def plot_gdf_da(place_gdf, index_da, edgecolor='black', cmap='terrain'):
 
 # plot_gdf_da(place_gdf, index_da)
 
-def plot_gdf_state(place_gdf):
+def plot_gdf_state(place_gdf, aiannh=False):
     """
     Plot overlay of redlining GeoDataFrame with state boundaries.
 
     Args:
         place_gdf (gdf): gdf with redlining cities
+        aiannh (bool, optional): include AIANNH boundaries if True 
     Returns:
         cropped_da (da): Processed raster da
     """
     import matplotlib.pyplot as plt
     import geopandas as gpd # Work with vector data
+    import contextily as ctx
     
     # Download state data using cenpy and read into GeoDataFrame
     state_url = "https://www2.census.gov/geo/tiger/TIGER2022/STATE/tl_2022_us_state.zip"
     states_gdf = gpd.read_file(state_url)
+    
+    if aiannh:
+        aiannh_url = "https://www2.census.gov/geo/tiger/TIGER2022/AIANNH/tl_2022_us_aiannh.zip"
+        aiannh_gdf = gpd.read_file(aiannh_url)
 
     # Calculate the bounding box
     bbox = place_gdf.total_bounds
@@ -87,7 +93,10 @@ def plot_gdf_state(place_gdf):
 
     fig, ax = plt.subplots(figsize=(10, 10))
     states_gdf.boundary.plot(ax=ax, color="black", linewidth=0.5)
+    if aiannh:
+        aiannh_gdf.boundary.plot(ax=ax, color="red", linewidth=0.5)
     place_gdf.plot(ax=ax)
+    ctx.add_basemap(ax, source=ctx.providers.OpenStreetMap.Mapnik, crs=place_gdf.crs.to_string())
 
     # Setting the bounds
     ax.set_xlim([xmin, xmax])
