@@ -52,9 +52,16 @@ def read_delta_gdf(huc_level=12, watershed='080902030506'):
 
 # delta_gdf = read_delta_gdf(12)
 
-def hvplot_delta_gdf(delta_gdf):
+def hvplot_delta_gdf(delta_gdf, width=600, height=300):
     """
     HV Plot Delta GDF
+    
+    Args:
+        delta_gdf (gdf): area to overlay on topomap
+        width (int, optional): width
+        height (int, optional): height
+    Returns:
+        delta_hv (hvplot): HV Plot
     """
     import cartopy.crs as ccrs
     import hvplot.pandas
@@ -65,8 +72,28 @@ def hvplot_delta_gdf(delta_gdf):
         .hvplot(
             alpha=.2, fill_color='white', 
             tiles='EsriImagery', crs=ccrs.Mercator())
-        .opts(width=600, height=300)
+        .opts(width=width, height=height)
     )
     return delta_hv
 
 # hvplot_delta_gdf(delta_gdf)
+
+def plot_delta_gdf(delta_gdf):
+    """
+    Plot Delta GDF.
+    
+    Args:
+        delta_gdf (gdf): area to overlay on topomap
+    Returns:
+        delta_hv (hvplot): HV Plot
+    """
+    import matplotlib.pyplot as plt
+    import contextily as ctx
+
+    fig, ax = plt.subplots(1, 1, figsize=(12, 12))
+    place_plot = delta_gdf.plot(ax=ax, edgecolor="black", color="none")
+    ctx.add_basemap(ax, source=ctx.providers.OpenStreetMap.Mapnik, crs=delta_gdf.crs.to_string())
+    
+    plt.show()
+    
+# plot_delta_gdf(delta_gdf)
