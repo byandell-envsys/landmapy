@@ -105,9 +105,33 @@ These are cool functions and easy to manipulate or render interactively,
 but they generate massive image objects--Mb vs Kb for
 [matplotlib.pyplot](https://matplotlib.org/stable/tutorials/pyplot.html)
 similar image objects.
-In some cases, I have created the simpler objects, in order to generate
-simpler `qmd` and `md` pages.
+In some cases, I have created simpler plot functions to generate
+simpler `qmd` and `md` pages. For instance
 
+```
+#| label: fig-resid
+from landmapy.plot import plot_gdfs_map
+plot_gdfs_map(logndvi_cdc_gdf, column=['asthma','resid','edge_density'], color=['Blues','RdBu','Greens'])
+```
+
+generates a small (168Kb) named figure,
+[big-data_files/figure-markdown/fig-resid-output-1.png](https://github.com/earthlab-education/big-data-byandell/blob/main/big-data_files/figure-markdown/fig-resid-output-1.png)
+with optional accompanying figure caption (via a line `#| fig-cap: "Blah Blah"`).
+An alternative is the fancier GeoViews/HoloViews,
+which generates a larger (Mb) object that is embedded in the Markdown,
+making it too big to render on GitHub. Here is that code:
+
+```
+import holoviews as hv
+from landmapy.gvplot import gvplot_ndvi_index, gvplot_resid
+
+model_fit = gvplot_ndvi_index(ndvi_cdc_gdf)
+resid = gvplot_resid(logndvi_cdc_gdf, reg, yvar='asthma')
+models_gv = (model_fit[0] + resid + model_fit[1])
+hv.save(models_gv, 'bigdata_model.html')
+```
+
+Below are current plot functions:
 
 | module | function | return | effect | project | description |
 |--------|----------|--------|--------|---------|-------------|
