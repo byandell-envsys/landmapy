@@ -29,6 +29,33 @@ Right now, focus is on the python package to keep up with the
 [Earth Data Analytics](https://github.com/byandell-envsys/EarthDataAnalytics)
 course.
 
+### Install and Import
+
+From within python, you can install this package directly
+from GitHub:
+
+```
+pip install git+https://github.com/byandell-envsys/landmapy.git
+```
+
+Then you would use `import landmapy`,
+or more likely `from landmapy.<module> import <function>`
+to import desired functions.
+
+I for now use my local machine cloned copy of the package in
+`~/Documents/GitHub/landmapy` and the python command
+
+```
+pip install ~/Documents/GitHub/landmapy
+```
+
+### Collaboration
+
+I am happy to collaborate on development of this package.
+Please contact me and/or create issues.
+If you want to become more involved, contact me, fork the repo,
+modify (in a tame way, please) and submit pull requests.
+
 ## Use Cases
 
 This python package was begun in nov-dec 2024 as I found
