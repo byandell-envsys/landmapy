@@ -55,8 +55,19 @@ file `project.md` with accompanying `*.png` figures in
 using the shell command
 
 ```
-$ quarto render project.qmd --t markdown
+$ quarto render project.qmd -t markdown
 ```
+
+With care (see `Plot Data` section of
+[Package Modules and Functions](#package-modules-and-functions) below),
+the resulting markdown `project.md` and `*.png` figures
+are compact (Kb, not Mb) and can be pushed to GitHub for ready viewing and sharing.
+Note that I set up the
+[.gitignore](https://github.com/earthlab-education/big-data-byandell/blob/main/.gitignore)
+file to ignore `*_files/` folders;
+commenting this line out briefly to enable commiting the png
+files (followed by uncommenting `*_files/`) is a handy way
+to incorporate figures into the `project.md` once committed and pushed to GitHub.
 
 ## Goals
 
