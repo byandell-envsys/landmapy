@@ -140,7 +140,20 @@ plot_gdf_state(buffalo_gdf)
 - Share via self-documented training examples
 - Viz data patterns to improve insight
 - Explore AI tool environment
-- [Evole data as a verb](https://byandell.github.io/Data-Evolve/)
+- [Evolve data as a verb](https://byandell.github.io/Data-Evolve/)
+
+### Technical goal
+
+- Rationalize plots more
+  - Fewer routines that are more flexible
+  - plot, hvplot/gvplot analogs
+  - ggplot widgets to visualize relationships
+  - overlays, side-by-side, over time movies/sliders
+- Better grasp of moving between da, df, gdf, other
+  - Should lead to simpler plot options
+- Algebra on images
+  - visualize in lat/lon/elev space
+  - explore multiple measurements
 
 ## Package Modules and Functions
   
