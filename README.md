@@ -266,6 +266,17 @@ Below are current plot functions:
 <summary>Set up Data Mechanics</summary>
 <br>
 
+Initial module is useful for beginning of project.
+Process module has various mechanics that might belong elsewhere but seem broad in scope.
+Cached module is a
+[decorator](https://www.geeksforgeeks.org/decorators-in-python/)
+used in
+[delta.py](https://github.com/byandell-envsys/landmapy/blob/main/landmapy/delta.py)
+and
+[reflectance.py](https://github.com/byandell-envsys/landmapy/blob/main/landmapy/reflectance.py)
+to simplify caching of time-expensive objects.
+Check module is for checking parts of objects, at this point CSVs.
+
 | module | function | return | effect | project | description |
 |--------|----------|--------|--------|---------|-------------|
 | initial | creata_data_dir | char | mkdir || Create Data Directory if it does not exist |
