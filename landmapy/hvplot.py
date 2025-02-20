@@ -6,6 +6,8 @@ hvplot_tract_gdf: HV plot census tracts with satellite imagery background
 hvplot_train_test: Plot test fit
 hvplot_index_grade: HV plots for index and grade
 hvplot_index_pred: Plot the model results
+hvplot_delta_gdf: HV Plot Delta GDF
+hvplot_cluster: HV Plot of RGB and Clusters
 """
 def hvplot_tract_gdf(place_tract_gdf):
     """
@@ -152,3 +154,57 @@ def hvplot_index_pred(redlining_index_gdf, tree_classifier, place):
     return pred_hv
 
 # pred_hv = hvplot_index_pred(redlining_index_gdf, tree_classifier, place)
+
+def hvplot_delta_gdf(delta_gdf, width=600, height=300):
+    """
+    HV Plot Delta GDF
+    
+    Args:
+        delta_gdf (gdf): area to overlay on topomap
+        width (int, optional): width
+        height (int, optional): height
+    Returns:
+        delta_hv (hvplot): HV Plot
+    """
+    import cartopy.crs as ccrs
+    import hvplot.pandas
+    import hvplot.xarray
+
+    delta_hv = (
+        delta_gdf.to_crs(ccrs.Mercator())
+        .hvplot(
+            alpha=.2, fill_color='white', 
+            tiles='EsriImagery', crs=ccrs.Mercator())
+        .opts(width=width, height=height)
+    )
+    return delta_hv
+
+# hvplot_delta_gdf(delta_gdf)
+
+def hvplot_cluster(rgb_sat, model_df):
+    """
+    HV Plot of RGB and Clusters.
+    
+    Args:
+        rgb_sat (da): rescaled to 0-255 with saturation
+        model_df (df): data frame with band data and clusters
+    Returns:
+        cluster_hv (hvplot): pair of HV plots
+    """
+    import hvplot.xarray
+
+    # Plot model_df plus clusters
+    # `.sortby()` needed to align spatial relationships.
+    
+    cluster_hv = (
+        rgb_sat.hvplot.rgb( 
+            x='x', y='y', bands='band',
+            data_aspect=1, # balance aspect ratio
+            xaxis=None, yaxis=None)
+        + 
+        model_df.clusters.to_xarray().sortby(['x', 'y']).hvplot(
+            cmap="Colorblind", aspect='equal') 
+    )
+    return cluster_hv
+
+# hvplot_cluster(reflectance_da)

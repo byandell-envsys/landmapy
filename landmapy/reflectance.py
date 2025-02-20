@@ -1,9 +1,18 @@
+"""
+Reflectance Functions.
+
+compute_reflectance_da: Connect to files over VSI, crop, cloud mask, and wrangle
+merge_and_composite_arrays: Merge and Composite Arrays
+reflectance_kmeans: KMeans Clusters for Reflectance Bands
+reflectance_range: Check ranges of bands
+reflectance_rgb: RGB saturation of reflectance
+"""
 from landmapy.cached import cached
 
 @cached('delta_reflectance_da_df')
 def compute_reflectance_da(search_results, boundary_gdf):
     """
-    Connect to files over VSI, crop, cloud mask, and wrangle
+    Connect to files over VSI, crop, cloud mask, and wrangle.
     
     Returns a single reflectance DataFrame 
     with all bands as columns and
@@ -181,71 +190,3 @@ def reflectance_rgb(reflectance_da):
     return rgb_sat
 
 # rgb_sat = reflectance_rgb(reflectance_da)
-
-def hvplot_cluster(rgb_sat, model_df):
-    """
-    HV Plot of RGB and Clusters.
-    
-    Args:
-        rgb_sat (da): rescaled to 0-255 with saturation
-        model_df (df): data frame with band data and clusters
-    Returns:
-        cluster_hv (hvplot): pair of HV plots
-    """
-    import hvplot.xarray
-
-    # Plot model_df plus clusters
-    # `.sortby()` needed to align spatial relationships.
-    
-    cluster_hv = (
-        rgb_sat.hvplot.rgb( 
-            x='x', y='y', bands='band',
-            data_aspect=1, # balance aspect ratio
-            xaxis=None, yaxis=None)
-        + 
-        model_df.clusters.to_xarray().sortby(['x', 'y']).hvplot(
-            cmap="Colorblind", aspect='equal') 
-    )
-    return cluster_hv
-
-# hvplot_cluster(reflectance_da)
-
-def plot_cluster(rgb_sat, model_df):
-    """
-    Plot of RGB and Clusters.
-    
-    Args:
-        rgb_sat (da): rescaled to 0-255 with saturation
-        model_df (df): data frame with band data and clusters
-    Returns:
-        cluster_hv (hvplot): pair of HV plots
-    """
-    import xarray as xr
-    import matplotlib.pyplot as plt
-    
-    sh = rgb_sat.shape
-
-    da = xr.DataArray(rgb_sat, dims=["band", "y", "x"], coords={"band": ["R", "G", "B"]})
-
-    # Reshape the DataArray to a 2D array where each row is a pixel and columns are R, G, B values
-    df = da.stack(z=("y", "x")).transpose("z", "band").to_pandas()
-    df.columns = ["R", "G", "B"]
-    df = df / 255
-
-    # Reshape the DataFrame back to the original image shape for plotting
-    img = df.values.reshape((sh[1], sh[2], 3))
-
-    fig, ax = plt.subplots(1, 2, figsize=(12, 6))
-
-    ax[0].imshow(img)
-    ax[0].set_title('RGB Plot')
-    ax[0].axis('off')
-    model_df.clusters.to_xarray().sortby(['x', 'y']).plot(ax=ax[1])
-    ax[1].set_title('Clusters')
-    ax[1].axis('off')
-    ax[1].set_aspect('equal')
-    
-    # Show the plots
-    plt.show()
-
-# plot_cluster(reflectance_da)

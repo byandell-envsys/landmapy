@@ -7,6 +7,8 @@ plot_gdf_state: Plot overlay of redlining GeoDataFrame with state boundaries
 plot_gdfs_map: Create Row of Plots
 plot_matrix: Plot of model matrix
 plot_train_test: Plot test fit
+plot_delta_gdf: Plot Delta GDF
+plot_cluster: Plot of RGB and Clusters
 """ 
 def plot_index(index_da, place, index='NDVI'):
     """
@@ -196,3 +198,63 @@ def plot_train_test(y_test, index='asthma'):
     plt.show()
 
 # plot_train_test(y_test)
+
+def plot_delta_gdf(delta_gdf):
+    """
+    Plot Delta GDF.
+    
+    Args:
+        delta_gdf (gdf): area to overlay on topomap
+    Returns:
+        delta_hv (hvplot): HV Plot
+    """
+    import matplotlib.pyplot as plt
+    import contextily as ctx
+
+    fig, ax = plt.subplots(1, 1, figsize=(12, 12))
+    place_plot = delta_gdf.plot(ax=ax, edgecolor="black", color="none")
+    ctx.add_basemap(ax, source=ctx.providers.OpenStreetMap.Mapnik, crs=delta_gdf.crs.to_string())
+    
+    plt.show()
+    
+# plot_delta_gdf(delta_gdf)
+
+def plot_cluster(rgb_sat, model_df):
+    """
+    Plot of RGB and Clusters.
+    
+    Args:
+        rgb_sat (da): rescaled to 0-255 with saturation
+        model_df (df): data frame with band data and clusters
+    Returns:
+        cluster_hv (hvplot): pair of HV plots
+    """
+    import xarray as xr
+    import matplotlib.pyplot as plt
+    
+    sh = rgb_sat.shape
+
+    da = xr.DataArray(rgb_sat, dims=["band", "y", "x"], coords={"band": ["R", "G", "B"]})
+
+    # Reshape the DataArray to a 2D array where each row is a pixel and columns are R, G, B values
+    df = da.stack(z=("y", "x")).transpose("z", "band").to_pandas()
+    df.columns = ["R", "G", "B"]
+    df = df / 255
+
+    # Reshape the DataFrame back to the original image shape for plotting
+    img = df.values.reshape((sh[1], sh[2], 3))
+
+    fig, ax = plt.subplots(1, 2, figsize=(12, 6))
+
+    ax[0].imshow(img)
+    ax[0].set_title('RGB Plot')
+    ax[0].axis('off')
+    model_df.clusters.to_xarray().sortby(['x', 'y']).plot(ax=ax[1])
+    ax[1].set_title('Clusters')
+    ax[1].axis('off')
+    ax[1].set_aspect('equal')
+    
+    # Show the plots
+    plt.show()
+
+# plot_cluster(reflectance_da)

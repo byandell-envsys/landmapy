@@ -205,11 +205,15 @@ Below are current plot functions:
 | gvplot | gvplot_chloropleth | gvplot | plot | plot | Generate a chloropleth with the given color column |
 | gvplot | gvplot_ndvi_index | gvplot | plot | plot | Plot NDVI and CDC data |
 | gvplot | gvplot_resid | gvplot | plot | plot | Plot model residual |
+| hvplot | hvplot_cluster || hvplot | plot | Plot of RGB and Clusters |
+| hvplot | hvplot_delta_gdf | hvplot | plot | plot | HV Plot Delta GDF |
 | hvplot | hvplot_matrix | hvplot | plot | plot | Plot of model matrix |
 | hvplot | hvplot_tract_gdf | hvplot | plot | plot | Plot census tracts with satellite imagery background |
 | hvplot | hvplot_train_test | hvplot | plot | plot | Plot test fit |
 | hvplot | hvplot_index_grade | hvplot | plot | plot | Plots for index and grade |
 | hvplot | hvplot_index_pred | hvplot | plot | plot | Plot the model results |
+| plot | plot_cluster || plot | plot | Plot of RGB and Clusters |
+| plot | plot_delta_gdf | plot | plot | plot | HV Plot Delta GDF |
 | plot | plot_gdf_da || plot | plot | Overlay gdf on da map |
 | plot | plot_gdf_state || plot | plot | Plot overlay of gdf with state boundaries |
 | plot | plot_gdfs_map || plot | plot | Create Row of Plots |
@@ -228,11 +232,18 @@ Below are current plot functions:
 | cdcplaces | download_census_tract | gdf | download | CDC Places | Download the census tracts |
 | cdcplaces | join_tract_cdc | gdf | merge | CDC Places | Join Census Tract and CDC Disease Data |
 | cdcplaces | shp_tract_path | str || CDC Places | Set tract path |
+| delta | read_wbd_file | gdf | read | eelta |  Read WBD File using cache key |
+| delta | read_delta_gdf | gdf | read | delta | Read Delta WBD using cache decorator |
 | polaris | soil_url_dict | dict | read | POLARIS | Set up soil URLs based on place |
 | polaris | merge_soil | da | read | POLARIS | Merge soil data |
 | redline | redline_gdf | gdf | read | redline | Read redlining GeoDataFrame from Mapping Inequality |
 | redline | redline_mask | gdf || redline | Create new gdf for redlining using regionmask |
 | redline | redline_index_gdf | gdf || redline | Merge index stats with redlining gdf into one gdf |
+| reflectance | compute_reflectance_da | function || reflectance | Connect to files over VSI, crop, cloud mask, and wrangle |
+| reflectance | merge_and_composite_arrays | function || reflectance | Merge and Composite Arrays |
+| reflectance | reflectance_kmeans | df || reflectance | KMeans Clusters for Reflectance Bands |
+| reflectance | reflectance_range | df || reflectance | Check ranges of bands |
+| reflectance | reflectance_rgb | da || reflectance | RGB saturation of reflectance |
 | srtm | srtm_download | da | download | SRTM | Download SRTM data and create da |
 | srtm | srtm_slope | da || SRTM | Calculate slope from SRTM data |
 | thredds | process_maca | df | read | THREDDS | Process MACA Monthly Data |
@@ -257,13 +268,14 @@ Below are current plot functions:
 
 | module | function | return | effect | project | description |
 |--------|----------|--------|--------|---------|-------------|
-| initial | creata_data_dir | char | mkdir | habitat, bigdata, cluster | Create Data Directory if it does not exist |
-| initial | robust_code || setup | Make code robust to interruptions |
-| check | header_csv
-| check | get_last_row_csv
-| check | check_element_in_csv 
-| check | check_naip_tracts
-| process | da2gdf |
+| initial | creata_data_dir | char | mkdir || Create Data Directory if it does not exist |
+| initial | robust_code || setup || Make code robust to interruptions |
+| cached | cached | function | cache | delta, reflectance | A decorator to cache function results |
+| check | header_csv | str ||| Header of CSV file |
+| check | get_last_row_csv | str ||| Check Last Row of CSV File |
+| check | check_element_in_csv | bool ||| Check value of element in CSV file | 
+| check | check_naip_tracts | df || NAIP | Check if NAIP tracts stored |
+| process | da2gdf | gdf ||| Convert a DataArray to a GeoDataFrame using rioxarray and geopandas |
 | process | gdf_da_bounds | da ||| Clip bounds from place_gdf on da extended by buffer | 
 | process | process_bands | da || process | Process bands from gdf with df metadata |
 | process | process_cloud_mask | array || process | Load an 8-bit Fmask file and create a boolean mask |

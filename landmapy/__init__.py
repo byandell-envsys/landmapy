@@ -2,6 +2,7 @@
 Package landmapy.
 
 Functions:
+    cached.cached(func_key, override)
     cdcplaces.shp_tract_path(data_dir, place)
     cdcplaces.download_census_tract(tract_path, placename)
     cdcplaces.download_cdc_disease(data_dir)
@@ -10,6 +11,8 @@ Functions:
     check.get_last_row_csv(file_path)
     check.check_element_in_csv(filename, column_name, target_value)
     check.check_naip_tracts(naip_index_path, naip_scenes_df)
+    delta.read_wbd_file(wbd_filename, huc_level, cache_key)
+    delta.read_delta_gdf(huc_level, watershed)
     explore.index_tree(redlining_index_gdf)
     explore.ramp_logic(data, up, down)
     explore.var_trans(ndvi_cdc_gdf)
@@ -48,6 +51,11 @@ Functions:
     redline.redline_gdf(data_dir)
     redline.redline_mask(place_gdf, index_da)
     redline.redline_index_gdf(redlining_gdf, index_stats)
+    reflectance.compute_reflectance_da(search_results, boundary_gdf)
+    reflectance.merge_and_composite_arrays(granule_da_df)
+    reflectance.reflectance_kmeans(reflectance_da)
+    reflectance.reflectance_range(model_df)
+    reflectance.reflectance_rgb(reflectance_da)
     srtm.srtm_download(place_gdf, elevation_dir, buffer)
     srtm.srtm_slope(srtm_da)
     thredds.process_maca(sites, scenarios, climates, years, buffer)
