@@ -15,12 +15,12 @@ and
 Interestingly, Earth Lab members developed a Python package a few years ago,
 [earthpy](https://earthpy.readthedocs.io)
 ([GitHub repo](https://github.com/earthlab/earthpy)).
-It seems fairly self-contained, but seemed to stop development in 2021.
+It seems fairly self-contained, but may have some dated features.
 For instance, is uses
 [rasterio](https://github.com/rasterio/rasterio),
 which seems to now be superceded by
 [rioxarray](https://corteva.github.io/rioxarray).
-Still there are some interesting ideas here that are still being used.
+Still there are some interesting and subtle ideas here that are worth exploring.
 
 This is somewhat a companion to my R package
 [landmapr](https://github.com/byandell-envsys/landmapr).
