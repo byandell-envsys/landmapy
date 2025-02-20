@@ -274,7 +274,10 @@ used in
 [delta.py](https://github.com/byandell-envsys/landmapy/blob/main/landmapy/delta.py)
 and
 [reflectance.py](https://github.com/byandell-envsys/landmapy/blob/main/landmapy/reflectance.py)
-to simplify caching of time-expensive objects.
+to simplify caching of time-expensive objects
+(see
+[EDA Reference Python Coding: Decorators](https://github.com/byandell-envsys/EarthDataAnalytics/blob/main/references.md#decorators)
+for references).
 Check module is for checking parts of objects, at this point CSVs.
 
 | module | function | return | effect | project | description |
