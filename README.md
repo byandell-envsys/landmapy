@@ -239,11 +239,11 @@ Below are current plot functions:
 | redline | redline_gdf | gdf | read | redline | Read redlining GeoDataFrame from Mapping Inequality |
 | redline | redline_mask | gdf || redline | Create new gdf for redlining using regionmask |
 | redline | redline_index_gdf | gdf || redline | Merge index stats with redlining gdf into one gdf |
-| reflectance | compute_reflectance_da | function || reflectance | Connect to files over VSI, crop, cloud mask, and wrangle |
-| reflectance | merge_and_composite_arrays | function || reflectance | Merge and Composite Arrays |
-| reflectance | reflectance_kmeans | df || reflectance | KMeans Clusters for Reflectance Bands |
-| reflectance | reflectance_range | df || reflectance | Check ranges of bands |
-| reflectance | reflectance_rgb | da || reflectance | RGB saturation of reflectance |
+| reflect | compute_reflectance_da | function || reflect | Connect to files over VSI, crop, cloud mask, and wrangle |
+| reflect | merge_and_composite_arrays | function || reflect | Merge and Composite Arrays |
+| reflect | reflectance_kmeans | df || reflect | KMeans Clusters for Reflectance Bands |
+| reflect | reflectance_range | df || reflect | Check ranges of bands |
+| reflect | reflectance_rgb | da || reflect | RGB saturation of reflectance |
 | srtm | srtm_download | da | download | SRTM | Download SRTM data and create da |
 | srtm | srtm_slope | da || SRTM | Calculate slope from SRTM data |
 | thredds | process_maca | df | read | THREDDS | Process MACA Monthly Data |
@@ -273,7 +273,7 @@ Cached module is a
 used in
 [delta.py](https://github.com/byandell-envsys/landmapy/blob/main/landmapy/delta.py)
 and
-[reflectance.py](https://github.com/byandell-envsys/landmapy/blob/main/landmapy/reflectance.py)
+[reflect.py](https://github.com/byandell-envsys/landmapy/blob/main/landmapy/reflect.py)
 to simplify caching of time-expensive objects
 (see
 [EDA Reference Python Coding: Decorators](https://github.com/byandell-envsys/EarthDataAnalytics/blob/main/references.md#decorators)
@@ -284,7 +284,7 @@ Check module is for checking parts of objects, at this point CSVs.
 |--------|----------|--------|--------|---------|-------------|
 | initial | creata_data_dir | char | mkdir || Create Data Directory if it does not exist |
 | initial | robust_code || setup || Make code robust to interruptions |
-| cached | cached | function | cache | delta, reflectance | A decorator to cache function results |
+| cached | cached | function | decorator | delta, reflect | A decorator to cache function results |
 | check | header_csv | str ||| Header of CSV file |
 | check | get_last_row_csv | str ||| Check Last Row of CSV File |
 | check | check_element_in_csv | bool ||| Check value of element in CSV file | 
