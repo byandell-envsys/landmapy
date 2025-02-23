@@ -232,8 +232,6 @@ Below are current plot functions:
 | cdcplaces | download_census_tract | gdf | download | CDC Places | Download the census tracts |
 | cdcplaces | join_tract_cdc | gdf | merge | CDC Places | Join Census Tract and CDC Disease Data |
 | cdcplaces | shp_tract_path | str || CDC Places | Set tract path |
-| delta | read_wbd_file | gdf | read | eelta |  Read WBD File using cache key |
-| delta | read_delta_gdf | gdf | read | delta | Read Delta WBD using cache decorator |
 | polaris | soil_url_dict | dict | read | POLARIS | Set up soil URLs based on place |
 | polaris | merge_soil | da | read | POLARIS | Merge soil data |
 | redline | redline_gdf | gdf | read | redline | Read redlining GeoDataFrame from Mapping Inequality |
@@ -241,6 +239,8 @@ Below are current plot functions:
 | redline | redline_index_gdf | gdf || redline | Merge index stats with redlining gdf into one gdf |
 | reflect | compute_reflectance_da | function || reflect | Connect to files over VSI, crop, cloud mask, and wrangle |
 | reflect | merge_and_composite_arrays | function || reflect | Merge and Composite Arrays |
+| reflect | read_delta_gdf | gdf | read | delta | Read Delta WBD using cache decorator |
+| reflect | read_wbd_file | gdf | read | eelta |  Read WBD File using cache key |
 | reflect | reflectance_kmeans | df || reflect | KMeans Clusters for Reflectance Bands |
 | reflect | reflectance_range | df || reflect | Check ranges of bands |
 | reflect | reflectance_rgb | da || reflect | RGB saturation of reflectance |
@@ -271,8 +271,6 @@ Process module has various mechanics that might belong elsewhere but seem broad 
 Cached module is a
 [decorator](https://www.geeksforgeeks.org/decorators-in-python/)
 used in
-[delta.py](https://github.com/byandell-envsys/landmapy/blob/main/landmapy/delta.py)
-and
 [reflect.py](https://github.com/byandell-envsys/landmapy/blob/main/landmapy/reflect.py)
 to simplify caching of time-expensive objects
 (see
@@ -284,7 +282,7 @@ Check module is for checking parts of objects, at this point CSVs.
 |--------|----------|--------|--------|---------|-------------|
 | initial | creata_data_dir | char | mkdir || Create Data Directory if it does not exist |
 | initial | robust_code || setup || Make code robust to interruptions |
-| cached | cached | function | decorator | delta, reflect | A decorator to cache function results |
+| cached | cached | function | decorator | reflect | A decorator to cache function results |
 | check | header_csv | str ||| Header of CSV file |
 | check | get_last_row_csv | str ||| Check Last Row of CSV File |
 | check | check_element_in_csv | bool ||| Check value of element in CSV file | 
