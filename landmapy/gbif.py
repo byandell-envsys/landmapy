@@ -145,6 +145,7 @@ def load_gbif(gbif_path):
         gbif_df (df): GBIF DataFrame for selected species
     """
     import pandas as pd
+    import numpy as np
     
     gbif_df = pd.read_csv(
         gbif_path, 
@@ -153,6 +154,14 @@ def load_gbif(gbif_path):
         on_bad_lines='skip',
         usecols=['gbifID', 'month', 'year', 'countryCode', 'stateProvince', 'decimalLatitude', 'decimalLongitude']
     )
+    # Round year and convert to int. Need to before/after handle NaN.
+    gbif_df['year'] = (
+        gbif_df['year']
+        .replace([np.inf, -np.inf], np.nan)
+        .fillna(0)
+        .astype(int)
+        .replace(0, np.nan))
+    
     return gbif_df
 
 # gbif_df = load_gbif(gbif_path)
@@ -428,7 +437,6 @@ def hvplot_occurrence(occurrence_gdf, unit='month'):
             occurrence_gdf
             .index
             .get_level_values('year')
-            .round()
             .unique()
             .astype(int))
 #        {i: i for i in range(1970, 2024)}
