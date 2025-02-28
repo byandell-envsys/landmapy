@@ -2,7 +2,6 @@
 THREDDS Functions.
 
 process_maca: Process MACA Monthly Data
-process_maca_list: Process MACA Monthly Data into List
 maca_year: Extract and print year data
 """
 def process_maca(sites, scenarios=['pr'], climates=['rcp85', 'rcp45'], years = [2026],
@@ -19,29 +18,6 @@ def process_maca(sites, scenarios=['pr'], climates=['rcp85', 'rcp45'], years = [
     Returns:
         maca_df (df): df with parameters and values
     """
-    import pandas as pd
-    
-    maca_da_list = process_maca_list(sites, scenarios, climates, years, buffer)
-    maca_df = pd.DataFrame(maca_da_list)
-
-    return maca_df
-
-# maca_df = process_maca({'buffalo': buffalo_gdf}, ['pr'], ['rcp85', 'rcp45'], [2026], 0.1)
-    
-def process_maca_list(sites, scenarios=['pr'], climates=['rcp85', 'rcp45'], years = [2026],
-                 buffer = 0.1):
-    """
-    Process MACA Monthly Data into List.
-
-    Args:
-        sites (dict): dictionary with gdfs
-        scenarios (char, optional): 'pr' = precipitation
-        climates (char, optional): 'rcp' = relative concentration pathway
-        years (int, optional) : first year of 5-year period
-        buffer (float): Buffer around bounds of place_gdf
-    Returns:
-        maca_da_list (list): list of da with parameters and values
-    """
     import rioxarray as rxr
     import xarray as xr
     import pandas as pd
@@ -54,6 +30,8 @@ def process_maca_list(sites, scenarios=['pr'], climates=['rcp85', 'rcp45'], year
     
     year_min = floor((min(years) - 1) // 5) * 5 + 1
     year_max = ceil((max(years) - 1) // 5) * 5 + 5
+    print("Years:", year_min, year_max)
+    
     maca_da_list = []
     for site_name, site_gdf in sites.items():
         for scenario in scenarios:
@@ -68,7 +46,10 @@ def process_maca_list(sites, scenarios=['pr'], climates=['rcp85', 'rcp45'], year
                         f"_{year}_{year_end}_CONUS_monthly.nc")
                     # Read data and set up coordinates.
                     #maca_da = rxr.open_rasterio(maca_url, mask_and_scale=True).squeeze().precipitation
-                    maca_da = xr.open_dataset(maca_url, mask_and_scale=True).squeeze().precipitation
+                    maca_da = (
+                        xr.open_dataset(maca_url, mask_and_scale=True)
+                        .squeeze()
+                        .precipitation)
                     #maca_da = xr.DataArray(maca_da)
                     maca_da = maca_da.rio.write_crs("EPSG:4326")
                     maca_da = maca_da.assign_coords(
@@ -84,9 +65,11 @@ def process_maca_list(sites, scenarios=['pr'], climates=['rcp85', 'rcp45'], year
                         climate = climate,
                         da = maca_da))
                     
-    return maca_da_list
+    maca_df = pd.DataFrame(maca_da_list)
 
-# maca_da_list = process_maca_list({'buffalo': buffalo_gdf}, ['pr'], ['rcp85', 'rcp45'], [2026], 0.1)
+    return maca_df
+
+# maca_df = process_maca({'buffalo': buffalo_gdf}, ['pr'], ['rcp85', 'rcp45'], [2026], 0.1)
 
 def maca_year(maca_df, row=0, year=2027):
     """
