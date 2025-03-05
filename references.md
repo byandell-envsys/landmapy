@@ -117,6 +117,12 @@ Please offer suggestions to improve.
   - [Using Python to make an animated gif out of a collection of images](https://propolis.io/articles/make-animated-gif-using-python.html)
   - [How to make a gif map using Python, Geopandas and Matplotlib](https://towardsdatascience.com/how-to-make-a-gif-map-using-python-geopandas-and-matplotlib-cd8827cefbc8)
   - [How to create animated GIF with Pillow in Python](https://note.nkmk.me/en/python-pillow-gif/)
+- [HoloViews Overview](https://dash.plotly.com/holoviews)
+  - [HoloViews Gridded Dataset](https://holoviews.org/user_guide/Gridded_Datasets.html)
+  - [HV Gridded getting started](https://holoviews.org/getting_started/Gridded_Datasets.html)
+  - [slider](https://stackoverflow.com/questions/76318661/holoviews-interactive-plot-of-gridded-data-with-slider-on-top)
+  - [Interactive plots using hvplot](https://tutorial.xarray.dev/intermediate/hvplot.html)
+  - [Dimensioned Containers](https://holoviews.org/user_guide/Dimensioned_Containers.html)
   
 ## IPython Methods
 
