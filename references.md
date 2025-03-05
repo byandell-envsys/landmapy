@@ -5,20 +5,13 @@ See related in
 [EDA References](https://github.com/byandell-envsys/EarthDataAnalytics/blob/main/references.md)
 Please offer suggestions to improve.
 
-
-## Python Coding
+## Python Overview
 
 - [Python Tutorial](https://docs.python.org/3/tutorial/)
   - [Modules](https://docs.python.org/3/tutorial/modules.html)
 - [Pandas Library](https://pandas.pydata.org/docs/)
   - [Pandas Tutorial](https://pandas.pydata.org/docs/user_guide/10min.html)
   - [Pandas API Reference](https://pandas.pydata.org/docs/reference/)
-- [EDA Scientific Data Structures in Python](https://www.earthdatascience.org/courses/intro-to-earth-data-science/scientific-data-structures-python/)
-  -  [EDA 4. Set Up Your Conda Earth Analytics Python Environment Setup earth analytics environment](https://www.earthdatascience.org/workshops/setup-earth-analytics-python/setup-python-conda-earth-analytics-environment/)
-      - [Python venv: How To Create, Activate, Deactivate, And Delete](https://python.land/virtual-environments/virtualenv) 
-  - [EDA 6.15. Intro to Pandas Dataframes](https://www.earthdatascience.org/courses/intro-to-earth-data-science/scientific-data-structures-python/pandas-dataframes/)
-  - [Subtract One Raster from Another and Export a New GeoTIFF in Open Source Python](https://www.earthdatascience.org/courses/use-data-open-source-python/intro-raster-data-python/raster-data-processing/subtract-rasters-in-python/)
-  - [Earth Analytics Python Env](https://github.com/earthlab/earth-analytics-python-env)
 - [Packaging Python Projects](https://packaging.python.org/en/latest/tutorials/packaging-projects/)
 - [Try and Except code for NetCDF](https://www.earthdatascience.org/courses/use-data-open-source-python/hierarchical-data-formats-hdf/get-maca-2-climate-data-netcdf-python/);
 - [Documenting Python Code: A Complete Guide](https://realpython.com/documenting-python-code/)
@@ -29,7 +22,51 @@ Please offer suggestions to improve.
 - [Python Developer’s Guide](https://devguide.python.org/)
 - [Integrating Python Code With R](https://www.geeksforgeeks.org/integrating-python-code-with-r/)
 
-### IPython Methods
+## Earth Data Analytics (EDA) Workbook
+
+- [EDA Scientific Data Structures in Python](https://www.earthdatascience.org/courses/intro-to-earth-data-science/scientific-data-structures-python/)
+  -  [EDA 4. Set Up Your Conda Earth Analytics Python Environment Setup earth analytics environment](https://www.earthdatascience.org/workshops/setup-earth-analytics-python/setup-python-conda-earth-analytics-environment/)
+      - [Python venv: How To Create, Activate, Deactivate, And Delete](https://python.land/virtual-environments/virtualenv) 
+  - [EDA 6.15. Intro to Pandas Dataframes](https://www.earthdatascience.org/courses/intro-to-earth-data-science/scientific-data-structures-python/pandas-dataframes/)
+  - [Subtract One Raster from Another and Export a New GeoTIFF in Open Source Python](https://www.earthdatascience.org/courses/use-data-open-source-python/intro-raster-data-python/raster-data-processing/subtract-rasters-in-python/)
+  - [Earth Analytics Python Env](https://github.com/earthlab/earth-analytics-python-env)
+
+## Useful Python Libraries
+
+- [`pandas`](https://pandas.pydata.org/)
+- [`numpy`](https://numpy.org/)
+- [`geopandas`](https://geopandas.org/)
+- [`scipy`](https://www.scipy.org/)
+- [`rasterio`](https://rasterio.readthedocs.io/)
+- [`xarray`](http://xarray.pydata.org/en/)
+- [`scikit-fuzzy`](https://pythonhosted.org/scikit-fuzzy/)
+- [`scikit-learn`](https://scikit-learn.org/)
+- [`seaborn`](https://seaborn.pydata.org/)
+- [`statsmodels`](https://www.statsmodels.org/)
+
+### Lists of Python Libraries
+
+- [Awesome Python](https://awesome-python.com/)
+- [Python Libraries To Know (Geeks4Geeks)](https://www.geeksforgeeks.org/python-libraries-to-know/)
+- [Python Libraries](https://www.python.org/about/apps/)
+
+## Plot Libraries and Systems
+
+- [`matplotlib`](https://matplotlib.org/)
+- [`shapely`](https://shapely.readthedocs.io/en/stable/)
+- [HoloViews](https://holoviews.org/)
+- [GeoViews](https://geoviews.org/)
+
+### Animated GIFs
+
+- [Creating an Animated GIF with Python](https://www.blog.pythonlibrary.org/2021/06/23/creating-an-animated-gif-with-python/)
+  - [Create an Animated GIF Using Python Matplotlib](https://www.geeksforgeeks.org/create-an-animated-gif-using-python-matplotlib/)
+  - [Create a GIF with Python](https://www.codedex.io/projects/create-a-gif-with-python)
+  - [Using Python to make an animated gif out of a collection of images](https://propolis.io/articles/make-animated-gif-using-python.html)
+  - [How to make a gif map using Python, Geopandas and Matplotlib](https://towardsdatascience.com/how-to-make-a-gif-map-using-python-geopandas-and-matplotlib-cd8827cefbc8)
+  - [How to create animated GIF with Pillow in Python](https://note.nkmk.me/en/python-pillow-gif/)
+  
+## IPython Methods
 
 **AI overview:**
 IPython methods enhance interactive computing in Python, offering features beyond the standard interpreter. Some key methods include:
@@ -99,13 +136,3 @@ A class is defined using the class keyword, followed by the class name and a col
 - [Google's Python Class](https://developers.google.com/edu/python)
 - [earthpy](https://earthpy.readthedocs.io/en/latest/)
   - [apppeears.py](https://github.com/earthlab/earthpy/blob/apppears/earthpy/appeears.py) (class Elsa created in `earthpy` package)
-
-### Animated GIFs
-
-- [Creating an Animated GIF with Python](https://www.blog.pythonlibrary.org/2021/06/23/creating-an-animated-gif-with-python/)
-  - [Create an Animated GIF Using Python Matplotlib
-](https://www.geeksforgeeks.org/create-an-animated-gif-using-python-matplotlib/)
-  - [Create a GIF with Python](https://www.codedex.io/projects/create-a-gif-with-python)
-  - [Using Python to make an animated gif out of a collection of images](https://propolis.io/articles/make-animated-gif-using-python.html)
-  - [How to make a gif map using Python, Geopandas and Matplotlib](https://towardsdatascience.com/how-to-make-a-gif-map-using-python-geopandas-and-matplotlib-cd8827cefbc8)
-  - [How to create animated GIF with Pillow in Python](https://note.nkmk.me/en/python-pillow-gif/)
