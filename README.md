@@ -62,13 +62,14 @@ This python package was begun in nov-dec 2024 as I found
 the project tools growing.
 I got some initial advice from EDA staff, then learned by
 doing and looking at other tools.
-To date, this package has been used in the following projects:
+To date, this package has been used in the following EDA projects:
 
 - [Clustering: Classify land cover for Mississippi Delta](https://github.com/earthlab-education/clustering-byandell)
 (in progress)
 - [Big-Data: Urban Greenspace and Asthma Prevalence](https://github.com/earthlab-education/big-data-byandell/blob/main/big-data.md)
 - [Habitat: Buffalo Grasslands Habitat Suitability](https://github.com/byandell-envsys/habitatSuitability/blob/main/buffalo.md)
 - [Redlining: Predicting NDVI for Madison](https://github.com/earthlab-education/fundamentals-04-redlining-byandell/blob/main/notebooks/madison.ipynb)
+- [Species: Crane Migration Maps](https://github.com/earthlab-education/species-distribution-coding-challenge-byandell)
 
 These are all craft pieces, with increasing use of functions.
 More recent projects shifted from a
@@ -85,6 +86,12 @@ using the shell command
 $ quarto render project.qmd -t markdown
 ```
 
+Some of these were derived from Python notebooks using the convert command
+
+```
+$ quarto conver project.ipynb
+```
+
 With care (see `Plot Data` section of
 [Package Modules and Functions](#package-modules-and-functions) below),
 the resulting markdown `project.md` and `*.png` figures
@@ -95,6 +102,8 @@ file to ignore `*_files/` folders;
 commenting this line out briefly to enable commiting the png
 files (followed by uncommenting `*_files/`) is a handy way
 to incorporate figures into the `project.md` once committed and pushed to GitHub.
+See in addition further
+[References](https://github.com/byandell-envsys/landmapy/blob/main/references.md).
 
 ### Example use with Habitat Project
 
