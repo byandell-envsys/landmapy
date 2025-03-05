@@ -29,7 +29,7 @@ def process_maca(sites, scenarios=['pr'], climates=['rcp85', 'rcp45'], years = [
     import pandas as pd
     import geopandas as gpd
     from math import floor, ceil
-    from landmapy.process import gdf_da_bounds
+    from landmapy.process import clip_gdf_da_bounds
     
     def convert_lonlat(longitude):
         return ((longitude + 180) % 360) - 180
@@ -63,7 +63,7 @@ def process_maca(sites, scenarios=['pr'], climates=['rcp85', 'rcp45'], years = [
                         lat = ("lat", [convert_lonlat(l) for l in maca_da_year.lat.values]))
                     maca_da_year = maca_da_year.rio.set_spatial_dims(x_dim='lon', y_dim='lat')
                     # Clip bounds.
-                    maca_da_year = gdf_da_bounds(site_gdf, maca_da_year, buffer)
+                    maca_da_year = clip_gdf_da_bounds(site_gdf, maca_da_year, buffer)
                     periods.append(maca_da_year)
                 # Concatenate and resample over years.
                 maca_da = (

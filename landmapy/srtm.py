@@ -27,7 +27,7 @@ def srtm_download(place_gdf, elevation_dir, buffer = 0.1):
     import xrspatial
     import rioxarray as rxr
     import rioxarray.merge as rxrmerge
-    from landmapy.process import gdf_da_bounds
+    from landmapy.process import clip_gdf_da_bounds
 
     # Get bounds from gdf.
     bounds = place_gdf.total_bounds
@@ -52,7 +52,7 @@ def srtm_download(place_gdf, elevation_dir, buffer = 0.1):
 
     srtm_da = rxrmerge.merge_arrays(srtm_da_list)
     # Make sure we are bounding properly.
-    srtm_da = gdf_da_bounds(place_gdf, srtm_da, 0.1)
+    srtm_da = clip_gdf_da_bounds(place_gdf, srtm_da, 0.1)
 
     return srtm_da
 

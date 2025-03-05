@@ -297,7 +297,7 @@ Check module is for checking parts of objects, at this point CSVs.
 | check | check_element_in_csv | bool ||| Check value of element in CSV file | 
 | check | check_naip_tracts | df || NAIP | Check if NAIP tracts stored |
 | process | da2gdf | gdf ||| Convert a DataArray to a GeoDataFrame using rioxarray and geopandas |
-| process | gdf_da_bounds | da ||| Clip bounds from place_gdf on da extended by buffer | 
+| process | clip_gdf_da_bounds | da ||| Clip bounds from place_gdf on da extended by buffer | 
 | process | process_bands | da || process | Process bands from gdf with df metadata |
 | process | process_cloud_mask | array || process | Load an 8-bit Fmask file and create a boolean mask |
 | process | process_image | da || process | Load, crop, and scale a raster image from earthaccess |
