@@ -5,13 +5,17 @@ See related in
 [EDA References](https://github.com/byandell-envsys/EarthDataAnalytics/blob/main/references.md)
 Please offer suggestions to improve.
 
-- [Python Overview](#python-overview)
-- [Earth Data Analytics (EDA) Workbook](#earth-data-analytics-eda-workbook)
-- [Useful Python Libraries](#useful-python-libraries)
-- [Plot Libraries and Systems](#plot-libraries-and-systems)
-- [IPython Methods](#ipython-methods)
-  - [Decorators](#decorators)
-  - [Classes](#classes)
+- [Python References](#python-references)
+  - [Python Overview](#python-overview)
+  - [Earth Data Analytics (EDA) Workbook](#earth-data-analytics-eda-workbook)
+  - [Useful Python Libraries](#useful-python-libraries)
+    - [Lists of Python Libraries](#lists-of-python-libraries)
+  - [Plot Libraries and Systems](#plot-libraries-and-systems)
+    - [Spatial Libraries](#spatial-libraries)
+    - [Animated GIFs](#animated-gifs)
+  - [IPython Methods](#ipython-methods)
+    - [Decorators](#decorators)
+    - [Classes](#classes)
 
 ## Python Overview
 
@@ -41,16 +45,29 @@ Please offer suggestions to improve.
 
 ## Useful Python Libraries
 
-- [`pandas`](https://pandas.pydata.org/)
-- [`numpy`](https://numpy.org/)
-- [`geopandas`](https://geopandas.org/)
-- [`scipy`](https://www.scipy.org/)
-- [`rasterio`](https://rasterio.readthedocs.io/)
-- [`xarray`](http://xarray.pydata.org/en/)
-- [`scikit-fuzzy`](https://pythonhosted.org/scikit-fuzzy/)
-- [`scikit-learn`](https://scikit-learn.org/)
-- [`seaborn`](https://seaborn.pydata.org/)
-- [`statsmodels`](https://www.statsmodels.org/)
+- [pandas](https://pandas.pydata.org/)
+- [numpy](https://numpy.org/)
+- [math](https://docs.python.org/3/library/math.html)
+- [time](https://docs.python.org/3/library/time.html)
+- [glob](https://docs.python.org/3/library/glob.html)
+- [os](https://docs.python.org/3/library/os.html)
+- [re](https://docs.python.org/3/library/re.html)
+- [csv](https://docs.python.org/3/library/csv.html)
+- [pathlib](https://docs.python.org/3/library/pathlib.html)
+- [zipfile](https://docs.python.org/3/library/zipfile.html)
+- [warnings](https://docs.python.org/3/library/warnings.html)
+- [datetime](https://docs.python.org/3/library/datetime.html)
+- [scipy](https://www.scipy.org/)
+- [scikit-fuzzy](https://pythonhosted.org/scikit-fuzzy/)
+- [sklearn](https://scikit-learn.org/) (sklearn)
+  - [sklearn.model_selection](https://scikit-learn.org/stable/modules/classes.html#module-sklearn.model_selection)
+  - [sklearn.metrics](https://scikit-learn.org/stable/modules/classes.html#module-sklearn.metrics)
+  - [sklearn.cluster](https://scikit-learn.org/stable/modules/classes.html#module-sklearn.cluster)
+  - [sklearn.tree](https://scikit-learn.org/stable/modules/classes.html#module-sklearn.tree)
+- [seaborn](https://seaborn.pydata.org/)
+- [statsmodels](https://www.statsmodels.org/)
+- [pystac_client](https://pystac-client.readthedocs.io/en/latest/)
+- [pystac](https://pystac.readthedocs.io/en/latest/)
 
 ### Lists of Python Libraries
 
@@ -65,10 +82,32 @@ Please offer suggestions to improve.
 
 ## Plot Libraries and Systems
 
-- [`matplotlib`](https://matplotlib.org/)
-- [`shapely`](https://shapely.readthedocs.io/en/stable/)
+- [matplotlib](https://matplotlib.org/)
+- [shapely](https://shapely.readthedocs.io/en/stable/)
+  - [shapely.geometry](https://shapely.readthedocs.io/en/stable/manual.html#geometric-objects)
 - [HoloViews](https://holoviews.org/)
 - [GeoViews](https://geoviews.org/)
+- [contextily](https://contextily.readthedocs.io/en/latest/)
+- [panel](https://panel.holoviz.org/)
+- [hvplot](https://hvplot.holoviz.org/)
+  - [hvplot.pandas](https://hvplot.holoviz.org/user_guide/Plotting_with_Pandas.html)
+  - [hvplot.xarray](https://hvplot.holoviz.org/user_guide/Plotting_with_XArray.html)
+
+### Spatial Libraries
+
+- [geopandas](https://geopandas.org/)
+- [rasterio](https://rasterio.readthedocs.io/)
+- [xarray](http://xarray.pydata.org/en/)
+- [rioxarray](https://corteva.github.io/rioxarray/stable/)
+- [xrspatial](https://xarray-spatial.readthedocs.io/en/stable/)
+- [earthaccess](https://earthaccess.readthedocs.io/en/latest/)
+- [getpass](https://docs.python.org/3/library/getpass.html)
+- [earthpy](https://earthpy.readthedocs.io/en/latest/)
+- [tqdm](https://tqdm.github.io/)
+  - [tqdm.notebook](https://tqdm.github.io/docs/notebook/)
+- [regionmask](https://regionmask.readthedocs.io/en/stable/)
+- [cartopy](https://scitools.org.uk/cartopy/docs/latest/)
+  - [cartopy.crs](https://scitools.org.uk/cartopy/docs/latest/crs/index.html)
 
 ### Animated GIFs
 
