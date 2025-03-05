@@ -8,6 +8,7 @@ hvplot_index_grade: HV plots for index and grade
 hvplot_index_pred: Plot the model results
 hvplot_delta_gdf: HV Plot Delta GDF
 hvplot_cluster: HV Plot of RGB and Clusters
+hvplot_occurrence: Holoviews map of monthly occurrences
 """
 def hvplot_tract_gdf(place_tract_gdf):
     """
@@ -208,3 +209,59 @@ def hvplot_cluster(rgb_sat, model_df):
     return cluster_hv
 
 # hvplot_cluster(reflectance_da)
+
+def hvplot_occurrence(occurrence_gdf, unit='month'):
+    """
+    Holoviews map of monthly occurrences.
+
+    Args:
+        occurrence_gdf (gdf): monthly occurrences of species
+        unit (str, optional): 'month' or 'year'
+    Returns:
+        occurrence_hvplot (hvplot): Holoviews plot of occurrence over time with slider
+    """
+    import panel as pn
+    import calendar
+    import hvplot.pandas
+    # CCRS commented out due to bad behavior.
+    # import cartopy
+    # import cartopy.crs as ccrs
+
+    # Get the plot bounds so they don't change with the slider
+    xmin, ymin, xmax, ymax = occurrence_gdf.total_bounds
+    
+    pn.extension()
+
+    # Define the slider widget
+    if unit == 'month':
+        options={calendar.month_name[i]: i for i in range(1, 13)}
+    else: # 'year'
+        options=sorted(
+            occurrence_gdf
+            .index
+            .get_level_values('year')
+            .unique()
+            .astype(int))
+#        {i: i for i in range(1970, 2024)}
+    slider = pn.widgets.DiscreteSlider(name=unit, options=options)
+    
+    occurrence_hvplot = occurrence_gdf.hvplot(
+        c='norm_occurrences',
+        groupby=unit,
+        # Use background tiles
+        title='Antigone canadensis Sandhill Crane Migration',
+        # geo=True, 
+        # crs=ccrs.Mercator(), 
+        tiles='CartoLight',
+        xlim=(xmin, xmax), ylim=(ymin, ymax),
+        frame_height=600,
+        frame_width=1400,
+        colorbar=False,
+        widgets={unit: slider},
+        widget_location='bottom',
+        width=500,
+        height=500
+    )
+    return occurrence_hvplot
+
+# occurrence_hvplot = hvplot_occurrence(occurrence_gdf)

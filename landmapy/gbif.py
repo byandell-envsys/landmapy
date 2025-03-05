@@ -11,7 +11,7 @@ join_ecoregions_monthly: Join ecoregions with monthly gbif data for species
 count_monthly_ecoregions: Count the observations in each ecoregion each month
 count_yearly_ecoregions: Count the observations in each ecoregion each year
 simplify_ecoregions_gdf: Create a simplified GeoDataFrame for plot
-hvplot_occurrence: Holoviews map of monthly distribution
+join_occurrence: Join Ecoregions and Occurrence
 """
 def gbif_credentials(reset=False):
     """
@@ -407,58 +407,3 @@ def join_occurrence(ecoregions_gdf, occurrence_gdf):
     return occurrence_gdf
 
 # occurrence_gdf = join_occurrence(ecoregions_gdf, occurrence_gdf)
-
-def hvplot_occurrence(occurrence_gdf, unit='month'):
-    """
-    Holoviews map of monthly distribution.
-
-    Args:
-        occurrence_gdf (gdf): _description_
-    Returns:
-        occurrence_hvplot (hvplot): Holoviews plot of occurrence over time with slider
-    """
-    import panel as pn
-    import calendar
-    import hvplot.pandas
-    # CCRS commented out due to bad behavior.
-    # import cartopy
-    # import cartopy.crs as ccrs
-
-    # Get the plot bounds so they don't change with the slider
-    xmin, ymin, xmax, ymax = occurrence_gdf.total_bounds
-    
-    pn.extension()
-
-    # Define the slider widget
-    if unit == 'month':
-        options={calendar.month_name[i]: i for i in range(1, 13)}
-    else: # 'year'
-        options=sorted(
-            occurrence_gdf
-            .index
-            .get_level_values('year')
-            .unique()
-            .astype(int))
-#        {i: i for i in range(1970, 2024)}
-    slider = pn.widgets.DiscreteSlider(name=unit, options=options)
-    
-    occurrence_hvplot = occurrence_gdf.hvplot(
-        c='norm_occurrences',
-        groupby=unit,
-        # Use background tiles
-        title='Antigone canadensis Sandhill Crane Migration',
-        # geo=True, 
-        # crs=ccrs.Mercator(), 
-        tiles='CartoLight',
-        xlim=(xmin, xmax), ylim=(ymin, ymax),
-        frame_height=600,
-        frame_width=1400,
-        colorbar=False,
-        widgets={unit: slider},
-        widget_location='bottom',
-        width=500,
-        height=500
-    )
-    return occurrence_hvplot
-
-# occurrence_hvplot = hvplot_occurrence(occurrence_gdf)
