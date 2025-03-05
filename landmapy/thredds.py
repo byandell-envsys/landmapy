@@ -16,7 +16,8 @@ def process_maca(sites, scenarios=['pr'], climates=['rcp85', 'rcp45'], years = [
         years (int, optional) : first year of 5-year period
         buffer (float): Buffer around bounds of place_gdf
     Returns:
-        maca_df (df): df with parameters and values
+        info_df (df): info with parameters
+        maca_da_list (list): list of da with values across scenarios, climates, and years
     """
     import rioxarray as rxr
     import xarray as xr
@@ -33,10 +34,12 @@ def process_maca(sites, scenarios=['pr'], climates=['rcp85', 'rcp45'], years = [
     print("Years:", year_min, year_max)
     
     maca_da_list = []
+    info = []
     for site_name, site_gdf in sites.items():
         for scenario in scenarios:
-            for year in range(year_min, year_max, 5):
-                for climate in climates:
+            for climate in climates:
+                periods = []
+                for year in range(year_min, year_max, 5):
                     year_end = year + 4
                     maca_url = (
                         "http://thredds.northwestknowledge.net:8080/"
@@ -45,53 +48,56 @@ def process_maca(sites, scenarios=['pr'], climates=['rcp85', 'rcp45'], years = [
                         f"{scenario}_BNU-ESM_r1i1p1_{climate}"
                         f"_{year}_{year_end}_CONUS_monthly.nc")
                     # Read data and set up coordinates.
-                    #maca_da = rxr.open_rasterio(maca_url, mask_and_scale=True).squeeze().precipitation
-                    maca_da = (
+                    maca_da_year = (
                         xr.open_dataset(maca_url, mask_and_scale=True)
                         .squeeze()
                         .precipitation)
-                    #maca_da = xr.DataArray(maca_da)
-                    maca_da = maca_da.rio.write_crs("EPSG:4326")
-                    maca_da = maca_da.assign_coords(
-                        lon = ("lon", [convert_lonlat(l) for l in maca_da.lon.values]),
-                        lat = ("lat", [convert_lonlat(l) for l in maca_da.lat.values]))
-                    maca_da = maca_da.rio.set_spatial_dims(x_dim='lon', y_dim='lat')
+                    maca_da_year = maca_da_year.rio.write_crs("EPSG:4326")
+                    maca_da_year = maca_da_year.assign_coords(
+                        lon = ("lon", [convert_lonlat(l) for l in maca_da_year.lon.values]),
+                        lat = ("lat", [convert_lonlat(l) for l in maca_da_year.lat.values]))
+                    maca_da_year = maca_da_year.rio.set_spatial_dims(x_dim='lon', y_dim='lat')
                     # Clip bounds.
-                    maca_da = gdf_da_bounds(site_gdf, maca_da, buffer)
-                    maca_da_list.append(dict(
-                        site_name = site_name,
-                        scenario = scenario,
-                        year = year,
-                        climate = climate,
-                        da = maca_da))
-                    
-    maca_df = pd.DataFrame(maca_da_list)
+                    maca_da_year = gdf_da_bounds(site_gdf, maca_da_year, buffer)
+                    periods.append(maca_da_year)
+                # Concatenate and resample over years.
+                maca_da = (
+                    xr.concat(periods, dim='time')
+                    .sortby('time')
+                    .resample({'time': 'YE'})
+                    .sum()
+                    .rio.write_crs(4326))
+                # Append info and DataArray.
+                info.append(dict(
+                    site_name = site_name,
+                    scenario = scenario,
+                    climate = climate))
+                maca_da_list.append(maca_da)
 
-    return maca_df
+    # Create invo DataFrame and MACA values DataArray from lists.
+    info_df = pd.DataFrame(info)
 
-# maca_df = process_maca({'buffalo': buffalo_gdf}, ['pr'], ['rcp85', 'rcp45'], [2026], 0.1)
+    return info_df, maca_da_list
 
-def maca_year(maca_df, row=0, year=2027):
+# info_df, maca_da_list = process_maca({'buffalo': buffalo_gdf}, ['pr'], ['rcp85', 'rcp45'], [2026], 0.1)
+
+def maca_year(maca_da, year=2027):
     """
     Extract and print year data.
 
     Args:
-        maca_df (df): DataFrame with MACA data by row
+        maca_da (da): DataArray with MACA data by row
     Returns:
         maca_year (da): da for year and row selected.
     """
-    maca_da = maca_df.loc[row, 'da']
-    # Find the total precipitation for each pixel across all months for each individual year?
-    maca_yearly_da= maca_da.groupby('time.year').sum()
-    
     # Calculate the total annual precipitation for each year?
     # maca_annual = maca_yearly_da.groupby('year').sum(["lat", "lon"])
 
-    maca_year = maca_yearly_da['year' == year]
+    maca_year = maca_da.sel(time=f'{year}-12-31')
     maca_year = maca_year.rio.write_crs("EPSG:4326")
 
     return maca_year
     
-# maca_2027 = maca_year(maca_df, 0, 2027)
+# maca_2010 = maca_year(maca_da[0], 2010)
 # from landmapy.plot import plot_gdf_da
-# plot_gdf_da(buffalo_gdf, maca_2027, edgecolor="white")
+# plot_gdf_da(buffalo_gdf, maca_2010, edgecolor="white")
