@@ -59,7 +59,7 @@ Please offer suggestions to improve.
 - [datetime](https://docs.python.org/3/library/datetime.html)
 - [scipy](https://www.scipy.org/)
 - [scikit-fuzzy](https://pythonhosted.org/scikit-fuzzy/)
-- [sklearn](https://scikit-learn.org/) (sklearn)
+- [sklearn](https://scikit-learn.org/) (scikit-learn)
   - [sklearn.model_selection](https://scikit-learn.org/stable/modules/classes.html#module-sklearn.model_selection)
   - [sklearn.metrics](https://scikit-learn.org/stable/modules/classes.html#module-sklearn.metrics)
   - [sklearn.cluster](https://scikit-learn.org/stable/modules/classes.html#module-sklearn.cluster)
