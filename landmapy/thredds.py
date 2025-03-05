@@ -8,6 +8,11 @@ def process_maca(sites, scenarios=['pr'], climates=['rcp85', 'rcp45'], years = [
                  buffer = 0.1):
     """
     Process MACA Monthly Data.
+    
+    For each site, scenario, climate, append an information `dict()` and a `maca_da` DataArray
+    to their own lists `info` and `maca_da_list`. The `maca_da` DataArray involves appending to
+    `periods` across the year periods and concatenating this list. Return is `info_df` (list
+    converted to df) and `maca_da_list` (list of da across sites, scenarios, climates).
 
     Args:
         sites (dict): dictionary with gdfs
