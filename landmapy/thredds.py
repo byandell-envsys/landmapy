@@ -65,7 +65,7 @@ def process_maca(sites, scenarios=['pr'], climates=['rcp85', 'rcp45'], years = [
                     xr.concat(periods, dim='time')
                     .sortby('time')
                     .resample({'time': 'YE'})
-                    .sum()
+                    .mean()
                     .rio.write_crs(4326))
                 # Append info and DataArray.
                 info.append(dict(
