@@ -72,6 +72,9 @@ def process_maca(sites, scenarios=['pr'], climates=['rcp85', 'rcp45'], years = [
                     .resample({'time': 'YE'})
                     .mean()
                     .rio.write_crs(4326))
+                # Convert `cftime.DatetimeNoLeap` values to years.
+                years = [date.year for date in maca_da['time'].values]
+                maca_da = maca_da.assign_coords(time=years)
                 # Append info and DataArray.
                 info.append(dict(
                     site_name = site_name,
@@ -98,7 +101,7 @@ def maca_year(maca_da, year=2027):
     # Calculate the total annual precipitation for each year?
     # maca_annual = maca_yearly_da.groupby('year').sum(["lat", "lon"])
 
-    maca_year = maca_da.sel(time=f'{year}-12-31')
+    maca_year = maca_da.sel(time=year)
     maca_year = maca_year.rio.write_crs("EPSG:4326")
 
     return maca_year
