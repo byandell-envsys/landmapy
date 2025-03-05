@@ -5,6 +5,14 @@ See related in
 [EDA References](https://github.com/byandell-envsys/EarthDataAnalytics/blob/main/references.md)
 Please offer suggestions to improve.
 
+- [Python Overview](#python-overview)
+- [Earth Data Analytics (EDA) Workbook](#earth-data-analytics-eda-workbook)
+- [Useful Python Libraries](#useful-python-libraries)
+- [Plot Libraries and Systems](#plot-libraries-and-systems)
+- [IPython Methods](#ipython-methods)
+  - [Decorators](#decorators)
+  - [Classes](#classes)
+
 ## Python Overview
 
 - [Python Tutorial](https://docs.python.org/3/tutorial/)
@@ -46,9 +54,14 @@ Please offer suggestions to improve.
 
 ### Lists of Python Libraries
 
-- [Awesome Python](https://awesome-python.com/)
-- [Python Libraries To Know (Geeks4Geeks)](https://www.geeksforgeeks.org/python-libraries-to-know/)
+- [The Python Standard Library](https://docs.python.org/3/library/)
 - [Python Libraries](https://www.python.org/about/apps/)
+- [Awesome Python](https://awesome-python.com/)
+- Fan Lists
+  - [Geeks4Geeks](https://www.geeksforgeeks.org/python-libraries-to-know/)
+  - [dev.to/taipy](https://dev.to/taipy/top-42-python-libraries-you-need-to-know-1omo)
+  - [hackr.io](https://hackr.io/blog/best-python-libraries)
+  - [Great Learning](https://www.mygreatlearning.com/blog/open-source-python-libraries/)
 
 ## Plot Libraries and Systems
 
