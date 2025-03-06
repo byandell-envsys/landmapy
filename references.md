@@ -84,6 +84,9 @@ Please offer suggestions to improve.
 ## Plot Libraries and Systems
 
 - [matplotlib](https://matplotlib.org/)
+  - [matplotlib.pyplot](https://matplotlib.org/stable/api/pyplot_api.html)
+  - [matplotlib.colors](https://matplotlib.org/stable/api/colors_api.html)
+  - [matplotlib.widgets](https://matplotlib.org/stable/api/widgets_api.html) (`%matplotlib widget`)
 - [shapely](https://shapely.readthedocs.io/en/stable/)
   - [shapely.geometry](https://shapely.readthedocs.io/en/stable/manual.html#geometric-objects)
 - [HoloViews](https://holoviews.org/)
