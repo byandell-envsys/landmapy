@@ -21,6 +21,8 @@ Please offer suggestions to improve.
 
 - [Python Tutorial](https://docs.python.org/3/tutorial/)
   - [Modules](https://docs.python.org/3/tutorial/modules.html)
+  - [Importing Modules](https://docs.python.org/3/reference/import.html)
+  - [Packages](https://docs.python.org/3/tutorial/modules.html#packages)
 - [Pandas Library](https://pandas.pydata.org/docs/)
   - [Pandas Tutorial](https://pandas.pydata.org/docs/user_guide/10min.html)
   - [Pandas API Reference](https://pandas.pydata.org/docs/reference/)
@@ -151,6 +153,7 @@ References:
 
 - [IPython Reference](https://ipython.org/ipython-doc/3/interactive/reference.html)
   - [Built-in magic commands](https://ipython.readthedocs.io/en/stable/interactive/magics.html)
+  - [Interactive Computing](https://ipython.org/ipython-doc/3/interactive/tutorial.html)
 
 ### Decorators
 

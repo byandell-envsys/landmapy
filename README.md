@@ -1,5 +1,22 @@
 # landmapy
 
+- [landmapy](#landmapy)
+  - [Land Mapping Python Package](#land-mapping-python-package)
+    - [Install and Import](#install-and-import)
+    - [Collaboration](#collaboration)
+  - [Use Cases](#use-cases)
+    - [Example use with Habitat Project](#example-use-with-habitat-project)
+  - [Goals](#goals)
+    - [Goal of EDA project](#goal-of-eda-project)
+    - [Broader goal](#broader-goal)
+    - [Technical goal](#technical-goal)
+  - [Package Modules and Functions](#package-modules-and-functions)
+
+Additional links:
+
+- [References](references.md)
+- [Coding Strategy](strategy.md)
+  
 ## Land Mapping Python Package
 
 The `landmapy` package is being built as a complement to the 2024-25
@@ -241,11 +258,22 @@ Below are current plot functions:
 | cdcplaces | download_census_tract | gdf | download | CDC Places | Download the census tracts |
 | cdcplaces | join_tract_cdc | gdf | merge | CDC Places | Join Census Tract and CDC Disease Data |
 | cdcplaces | shp_tract_path | str || CDC Places | Set tract path |
-| polaris | soil_url_dict | dict | read | POLARIS | Set up soil URLs based on place |
+| gbif | count_monthly_ecoregions | gdf || GBIF | Count the observations in each ecoregion each month |
+| gbif | count_yearly_ecoregions | gdf || GBIF | Count the observations in each ecoregion each year |
+| gbif | download_gbif | str | download | GBIF | Download GBIF Entries as CSV file (only once) |
+| gbif | ecoregions | gdf || GBIF | Get ecoregion boundary as gdf |
+| gbif | gbif_credentials || environ | GBIF | Set up GBIF Credentials |
+| gbif | gbif_monthly | gdf || GBIF | Extract monthly data as gdf |
+| gbif | gbif_species_key | str || GBIF | Get GBIF Species Key |
+| gbif | join_ecoregions_monthly | gdf || GBIF | Join ecoregions with monthly gbif data for species |
+| gbif | join_occurrence | gdf || GBIF | Join Ecoregions and Occurrence |
+| gbif | load_gbif | df || GBIF | Load the GBIF data |
+| gbif | simplify_ecoregions_gdf | gdf || GBIF | Create a simplified GeoDataFrame for plot |
 | polaris | merge_soil | da | read | POLARIS | Merge soil data |
+| polaris | soil_url_dict | dict | read | POLARIS | Set up soil URLs based on place |
 | redline | redline_gdf | gdf | read | redline | Read redlining GeoDataFrame from Mapping Inequality |
-| redline | redline_mask | gdf || redline | Create new gdf for redlining using regionmask |
 | redline | redline_index_gdf | gdf || redline | Merge index stats with redlining gdf into one gdf |
+| redline | redline_mask | gdf || redline | Create new gdf for redlining using regionmask |
 | reflect | compute_reflectance_da | function || reflect | Connect to files over VSI, crop, cloud mask, and wrangle |
 | reflect | merge_and_composite_arrays | function || reflect | Merge and Composite Arrays |
 | reflect | read_delta_gdf | gdf | read | delta | Read Delta WBD using cache decorator |
@@ -255,8 +283,8 @@ Below are current plot functions:
 | reflect | reflectance_rgb | da || reflect | RGB saturation of reflectance |
 | srtm | srtm_download | da | download | SRTM | Download SRTM data and create da |
 | srtm | srtm_slope | da || SRTM | Calculate slope from SRTM data |
-| thredds | process_maca | df | read | THREDDS | Process MACA Monthly Data |
 | thredds | maca_year | da || THREDDS | Extract and print year data |
+| thredds | process_maca | df | read | THREDDS | Process MACA Monthly Data |
   
 </details>
 <details>
