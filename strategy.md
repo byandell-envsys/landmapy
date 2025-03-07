@@ -8,7 +8,7 @@ The goal of my code is to reveal patterns in data
 and to make them accessible to others.
 
 [Data evolve](https://byandell.github.io/Data-Evolve/)
-over time, and so does code as my understanding of the project,
+over time, and so does code, as my understanding of a project,
 and of the patterns in data, grows.
 I typically start with something simple.
 For instance, when working with envionmental data,
@@ -32,7 +32,8 @@ os.makedirs(data_dir, exist_ok=True)
 
 Once I realized I would reuse this many times (at least twice),
 I created a function to do this for me.
-Not the generalization with `new_dir` to allow for different directory names.
+Note the generalization with a parameter `new_dir`
+to allow user to specify a different directory name.
 
 ```python
 def create_data_dir(new_dir='habitat'):
@@ -101,7 +102,7 @@ It is also possible to import the function as follows:
 from create_data_dir import create_data_dir
 ```
 
-## Modules and Packages
+## Modules
 
 The
 [references](references.md)
@@ -135,6 +136,8 @@ so I could import the function as follows:
 ```python
 %run ~/Documents/GitHub/landmapy/landmapy/initial.py
 ```
+
+## Packages
 
 It is possible to `import` the function from a file in a different directory,
 but it is complicated and not probably recommended.
