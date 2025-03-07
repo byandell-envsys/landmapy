@@ -301,7 +301,8 @@ My documentation process has evolved to the following approach:
 - Add one-line module and function information in the `README.md` file
 
 The `landmapy` package is now large enough that I find it helpful to organize
-modules and function in the
+[Package Modules and Functions](README.md#package-modules-and-functions)
+in the
 [README.md](README.md)
 into (drop-down) blocks around topics:
 
