@@ -1,0 +1,174 @@
+---
+title: Sorghastrum nutans characteristics
+jupyter: python3
+---
+
+Created by
+[Elsa Culler](https://github.com/eculler)
+for 27 Feb 2025
+[video on Fuzzy Logic](https://cuboulder.zoom.us/rec/play/EnTi2FyvDddFKN86INR7iypERZ59IHE5xxZXSS3R9vQAjJ4RczjpwYqFa63JhF9Hdq1Dv9U1iVZX65Vw.qfKwpud-sV9GAqKp).
+Slightly adapted after
+`quarto convert habitat_example.ipynb` to Quarto.
+
+Sorghastrum nutans is found in the entire U.S. east of the rocky mountains, but seems to be concentrated in the southeast and moving northward over time. Generally found in tallgrass prairies.
+
+
+| Value | Min | Max |
+| --- | --- | --- |
+| Annual precipitation | 11 | 45 |
+| pH | 4.8 | 8.0 |
+
+USDA Natural Resources Conservations Service. Plant Guide: Indiangrass. Accessed February 26, 2025 from https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.NationalGrassland.zip 
+
+For soil data: rooting depth averages around 70 cm.
+
+ Brown, R. N., Percivalle, C., Narkiewicz, S., & DeCuollo, S. (2010). Relative Rooting Depths of Native Grasses and Amenity Grasses with Potential for Use on Roadsides in New England. HortScience horts, 45(3), 393-400. Retrieved Feb 26, 2025, from https://doi.org/10.21273/HORTSCI.45.3.393
+
+
+```{python}
+#%conda install skfuzzy
+```
+
+```{python}
+from math import floor, ceil
+
+import cartopy.crs as ccrs
+import geopandas as gpd
+import hvplot.pandas
+import hvplot.xarray
+import numpy as np
+import rioxarray as rxr
+import rioxarray.merge as rxrmerge
+import skfuzzy
+import xarray as xr
+```
+
+```{python}
+grassland_url = (
+    "https://data.fs.usda.gov/geodata/edw/edw_resources/shp"
+    "/S_USA.NationalGrassland.zip")
+grassland_gdf = gpd.read_file(grassland_url)
+grassland_gdf.info()
+```
+
+## Site description
+
+I picked the Oglala grassland for this example because it is a mixed-grass prairie closer to the edge of sorghastrum nutans' domain. This makes it marginal habitat for this grass species, and more likely we'll see climate-related changes.
+
+```{python}
+oglala_gdf = grassland_gdf[grassland_gdf.GRASSLANDN.str.contains('Oglala')]
+(
+    oglala_gdf
+    .to_crs(ccrs.Mercator())
+    .hvplot(tiles='EsriNatGeo', line_width=3, fill_color=None)
+)
+```
+
+```{python}
+xmin, ymin, xmax, ymax = oglala_gdf.total_bounds
+tiles = []
+for lat_min in range(floor(ymin), ceil(ymax)):
+    for lon_min in range(floor(xmin), ceil(xmax)):
+        lat_max, lon_max = lat_min + 1, lon_min + 1
+        ph_url = (
+            "http://hydrology.cee.duke.edu/POLARIS/PROPERTIES/v1.0"
+            "/ph/mean/60_100"
+            f"/lat{lat_min}{lat_max}_lon{lon_min}{lon_max}.tif")
+        tiles.append(rxr.open_rasterio(ph_url))
+
+ph_da = rxrmerge.merge_arrays(tiles).rio.clip_box(*oglala_gdf.total_bounds)
+ph_da.plot()
+```
+
+```{python}
+year_min, year_max = 2011, 2040
+model = "BNU-ESM"
+emissions = 'rcp45'
+variable = 'pr'
+periods = []
+buffer_bounds = None
+for start_year in range(year_min, year_max, 5):
+    end_year = start_year + 4
+    climate_url = (
+        "http://thredds.northwestknowledge.net:8080/thredds/dodsC/MACAV2"
+        f"/{model}/macav2metdata_{variable}_{model}_r1i1p1_{emissions}"
+        f"_{start_year}_{end_year}_CONUS_monthly.nc")
+    period_da = (
+        xr.open_dataset(climate_url, mask_and_scale=True)
+        .squeeze()
+        .precipitation)
+    period_da = period_da.assign_coords(lon=(period_da.lon + 180) % 360 - 180)
+    period_da = period_da.rio.set_spatial_dims(x_dim='lon', y_dim='lat')
+    if buffer_bounds is None:
+        oglala_gdf_reproj = oglala_gdf.to_crs(period_da.rio.crs)
+        xmin, ymin, xmax, ymax = oglala_gdf_reproj.total_bounds
+        b = .1
+        buffer_bounds = [xmin - b, ymin - b, xmax + b, ymax + b]
+    periods.append(period_da.rio.clip_box(*buffer_bounds))
+```
+
+```{python}
+precip_da = (
+    xr.concat(periods, dim='time')
+    .resample({'time': 'Y'})
+    .sum()
+    .rio.write_crs(4326)
+    .rio.reproject_match(ph_da))
+
+precip_min_da = precip_da.min('time')
+precip_max_da = precip_da.max('time')
+precip_mean_da = precip_da.mean('time')
+precip_mean_da.plot()
+```
+
+```{python}
+precip_min_da.plot.hist()
+```
+
+```{python}
+# precip 11-45 (in) 279-1143
+# ph 4.8-8
+precip_suit = ((precip_min_da > 310) & (precip_max_da < 825))
+ph_suit = ((precip_min_da > 4.8) & (precip_min_da < 8))
+```
+
+```{python}
+precip_suit.plot()
+```
+
+```{python}
+(precip_suit * ph_suit).plot()
+```
+
+```{python}
+ph_da.values
+```
+
+```{python}
+shape = ph_da.values.shape
+ph_fuzz = ph_da.copy()
+ph_fuzz.values = (
+    np.reshape(
+        skfuzzy.trimf(ph_da.values.flatten(), [4.8, (4.8 + 8)/2, 8]),
+        shape)
+)
+ph_fuzz.plot()
+```
+
+```{python}
+shape = precip_min_da.values.shape
+precip_min_fuzz = precip_min_da.copy()
+precip_min_fuzz.values = (
+    np.reshape(
+        skfuzzy.trimf(precip_min_da.values.flatten(), 
+                      [310, (310 + 825)/2, 825]),
+        shape)
+)
+precip_min_fuzz.plot()
+```
+
+```{python}
+((ph_fuzz * precip_min_fuzz) > .05).plot()
+```
+
+

@@ -1,0 +1,671 @@
+---
+title: "EDA Notes for Habitat Suitability"
+execute:
+  eval: false
+---
+
+# EDA Notes for Habitat Suitability
+
+These are notes on python techniques accompanying the 2024-25
+[Earth Data Analytics](https://github.com/byandell-envsys/EarthDataAnalytics).
+
+- [Notes 6 Mar 2025](#notes-6-mar-2025)
+- [Notes 4 Mar 2025](#notes-4-mar-2025)
+- [Fuzzy Logic Model 27 Feb 2025](#fuzzy-logic-model-27-feb-2025)
+- [GBIF review 25 Feb 2025](#gbif-review-25-feb-2025)
+- [Classes 20 Feb 2025](#classes-20-feb-2025)
+
+## Notes 6 Mar 2025
+
+Multiple subplots across a page.
+
+Change plot labels. Do outside loop.
+
+```python
+plt.xlabel("axis name 1")
+plt.ylabel("axis name 2")
+```
+
+Change titles of plots
+
+```python
+soil_title = [,,,]
+# in for loop:
+axes[i].set_title(soil_title[i])
+```
+
+Line up several soil images across a page.
+
+```python
+# Combine the lists
+soil_urls = p_soil_url_list + c_soil_url_list
+
+# Set up subplots (adjust rows and columns for layout)
+fig, axes = plt.subplots(nrows=1, ncols=len(soil_urls), figsize=(20, 5), constrained_layout=True)
+
+# Loop through each raster, open it, and plot in a subplot
+cbar_mappable = None  # To store the QuadMesh object for the colorbar
+for i, soil_url in enumerate(soil_urls):
+    soil_da = rxr.open_rasterio(soil_url, mask_and_scale=True).squeeze()
+
+    # Plot the raster on the corresponding subplot
+    quadmesh = soil_da.plot(ax=axes[i], add_colorbar=False)
+    axes[i].set_title(f"Raster {i + 1}")  # Add a title to each subplot
+
+    # Store the QuadMesh object for the colorbar
+    if cbar_mappable is None:
+        cbar_mappable = quadmesh
+
+# Add a global colorbar
+fig.colorbar(cbar_mappable, ax=axes, orientation="horizontal", fraction=0.02, pad=0.1).set_label("Value")
+
+plt.show()
+```
+
+## Notes 4 Mar 2025
+
+Data sources
+
+- soil: POLARIS (see cited paper)
+
+```
+soil_da = rxr.open_rasterio(
+	soil_url,
+	mask_and_scale=True
+)
+```
+
+
+## Fuzzy Logic Model 27 Feb 2025
+
+You can find it under the "Modules" section on Canvas. Elsa has also provided a link to a conversation with ChatGPTLinks to an external site. that she had on how to implement fuzzy models using scikit-fuzzy in Python, as another resource for you. 
+
+- Elsa demo
+  - [Elsa Video on Fuzzy Logic](https://canvas.colorado.edu/courses/115453/modules/items/6282073)
+  - [Elsa ChatGPT](https://chatgpt.com/share/67c094af-9724-8000-9004-6f25d266cd85)
+  - [notes_fuzzy.qmd](https://github.com/earthlab-education/habitat-suitability-byandell/blob/main/notes_fuzzy.qmd)
+- [Fall 2024 habitatSuitability/4_build](https://github.com/byandell-envsys/habitatSuitability/blob/main/4_build.ipynb)
+- [SciKit Fuzzy](https://pypi.org/project/scikit-fuzzy/)
+  - [SciKit Fuzzy readthedocs](https://scikit-fuzzy.readthedocs.io/en/latest/)
+- [Daniel Kahneman (2011) Thinking Fast and Slow](https://www.middlewaysociety.org/books/psychology-books/thinking-fast-and-slow-by-daniel-kahneman/)
+
+A fuzzy logic model is one that is built on expert knowledge rather than
+training data. You may wish to use the
+[`scikit-fuzzy`](https://pythonhosted.org/scikit-fuzzy/)
+library, which includes many utilities for building this sort of model.
+In particular, it contains a number of **membership functions** that
+can convert your data into values from 0 to 1 using information such as,
+for example, the maximum, minimum, and optimal values for soil pH.
+
+To train a fuzzy logic habitat suitability model:
+
+1. Research S. nutans, and find out what optimal values are for each variable
+you are using (e.g. soil pH, slope, and current climatological annual precipitation). 
+1. For each **digital number** in each raster, assign a **continuous** value
+from 0 to 1 for how close that grid square is to the optimum range
+(1=optimal, 0=incompatible). 
+1. Combine your layers by multiplying them together.
+This will give you a single suitability number for each square.
+1. Optionally, you may apply a suitability threshold to make
+the most suitable areas pop on your map.
+
+> **Tip**
+>
+> If you use mathematical operators on a raster in Python, it will
+> automatically perform the operation for every number in the raster.
+> This type of operation is known as a **vectorized** function. **DO NOT
+> DO THIS WITH A LOOP!**. A vectorized function that operates on the
+> whole array at once will be much easier and faster.
+
+-   use hill functions to transform harmonized DataArrays into 0-1 DataArrays
+-   multiply them together
+  
+Resources:
+
+- [USDA Natural Resources Convervations Service: Plant Guide: Indiangrass](https://www.nrcs.usda.gov/plantmaterials/etpmcpg13196.pdf)
+
+```{python}
+#conda install skfuzzy
+```
+
+Libraries
+
+```{python}
+#pip install --quiet git+https://github.com/byandell-envsys/landmapy.git
+```
+
+Libraries
+
+```{python}
+from math import floor, ceil
+import cartopy.crs as ccrs
+import geopandas as gpd
+import hvplot.pandas
+import hvplot.xarray
+import numpy as np
+import rioxarray as rxr
+import rioxarray.merge as rxrmerge
+import skfuzzy
+import xarray as xr
+```
+
+My version:
+
+```python
+from landmapy.initial import create_data_dir # create (or retrieve) data directory
+from landmapy.plot import plot_gdf_state # plot gdf with state overlay
+
+%store -r buffalo_gdf
+try:
+    buffalo_gdf
+except NameError:
+    data_dir = create_data_dir('habitat')
+    # Read all grasslands GeoJSON into `grassland_gdf`.
+    grassland_url = f"{data_dir}/National_Grassland_Units_(Feature_Layer).geojson"
+    grassland_gdf = gpd.read_file(grassland_url)
+    # Subset to desired locations.
+    buffalo_gdf = grassland_gdf.loc[grassland_gdf['GRASSLANDNAME'].isin(
+        ["Buffalo Gap National Grassland", "Oglala National Grassland"])]
+    %store buffalo_gdf
+    print("buffalo_gdf created and stored")
+else:
+    print("buffalo_gdf retrieved from StoreMagic")
+
+```
+
+Elsa's version
+
+```{python}
+grassland_url = (
+    "https://data.fs.usda.gov/geodata/edw/edw_resources/shp/S_USA.NationalGrassland.zip")
+grassland_gdf = gpd.read_file(grassland_url)
+grassland_gdf.info
+```
+
+```{python}
+oglala_gdf = grassland_gdf[grassland_gdf.GRASSLANDN.str.contains('Oglala')]
+(
+    oglala_gdf
+    .to_crs(ccrs.Mercator())
+    .hvplot(tiles='EsriNatGeo', line_width=3, fill_color=None)
+)
+```
+
+```{python}
+oglala_gdf
+```
+
+```{python}
+from landmapy.polaris import merge_soil
+
+ph_da = merge_soil(oglala_gdf, "ph", "mean", "60_100", 0.1)
+ph_da.plot()
+```
+
+```{python}
+from landmapy.thredds import process_maca
+
+maca_df = process_maca({'oglala': oglala_gdf}, ['pr'], ['rcp45'], (2011, 2040))
+```
+
+This part differs from Elsa's demo.
+She ended her loop with (ignoring buffer) `periods.append(period_da)`,
+so there is just the DataArray `periods`.
+
+For the Fall project, I constructed (in `process_maca()`)
+I did `maca_da_list.append(dict(..., da = maca_da))`
+so that the DataArray ended up as part of the `dict()`.
+Then I converted to a DataFrame `maca_df = pd.DataFrame(maca_da_list)`.
+To pull out the DataFrame `da` requires the following step:
+
+```{python}
+maca0_da = maca_df.loc[1, 'da']
+```
+
+```{python}
+maca_da = (
+    xr.concat(maca_df['da'].tolist(), dim='five_year')
+    .isel(five_year=0)
+)
+```
+
+I checked with the following code that the dimension 'five_year'
+appears to be redundant.
+Hoping this is true.
+
+```python
+maca_da = xr.concat(maca_df['da'].tolist(), dim='five_year')
+m0 = maca_da.isel(five_year=0)
+m1 = maca_da.isel(five_year=2)
+(m0-m1).sum()
+```
+
+```{python}
+print(maca0_da.dims)
+print(maca0_da.shape)
+print(maca_da.dims)
+print(maca_da.shape)
+```
+
+Sum over time within each year over the 30 years ('time'),
+reprojecting to shape of `ph_da`.
+
+```{python}
+precip_da = (
+    xr.concat(maca_da, dim='time')
+    .resample({'time': 'YE'})
+    .sum()
+    .rio.write_crs(4236) 
+    .rio.reproject_match(ph_da)
+)
+```
+
+```{python}
+print(precip_da.shape)
+print(precip_da.dims)
+```
+
+```{python}
+precip_min_da = precip_da.min('time')
+precip_max_da = precip_da.max('time')
+precip_mean_da = precip_da.mean('time')
+```
+
+```{python}
+precip_mean_da.plot()
+```
+
+```{python}
+precip_min_da.plot()
+```
+
+```{python}
+precip_max_da.plot()
+```
+
+Precipitation in mm. (11-45in = 279-1143mm)
+
+### Non-fuzzy logic model
+
+```{python}
+((precip_mean_da > 95) & (precip_max_da < 800)).plot()
+```
+
+```{python}
+precip_min_da.plot.hist()
+```
+ 
+### Fuzzy logic
+
+[trimf](https://scikit-fuzzy.readthedocs.io/en/latest/api/skfuzzy.html?highlight=trimf#skfuzzy.trimf)
+is triangle.
+It takes a 1-D array, but we have 2-D array
+
+```{python}
+ph = [4.8, 8]
+tri = [ph[0], (ph[0] + ph[1])/2, ph[1]]
+shape = ph_da.values.shape
+ph_fuzz = ph_da.copy()
+ph_fuzz.values = (
+    np.reshape(
+        skfuzzy.trimf(ph_da.values.flatten(), tri),
+    shape)
+)
+ph_fuzz.plot()
+```
+
+```{python}
+trap = [ph[0], (2 * ph[0] + ph[1])/3, (ph[0] + 2 * ph[1]) /3, ph[1]]
+shape = ph_da.values.shape
+ph_fuzz = ph_da.copy()
+ph_fuzz.values = (
+    np.reshape(
+        skfuzzy.trapmf(ph_da.values.flatten(), trap),
+    shape)
+)
+ph_fuzz.plot()
+```
+
+```{python}
+pr = [310, 700]
+trap = [pr[0], (2 * pr[0] + pr[1])/3, (pr[0] + 2 * pr[1]) /3, pr[1]]
+shape = precip_min_da.values.shape
+precip_fuzz = precip_min_da.copy()
+precip_fuzz.values = (
+    np.reshape(
+        skfuzzy.trapmf(precip_min_da.values.flatten(), trap),
+    shape)
+)
+precip_fuzz.plot()
+```
+
+[dsw_mult](https://scikit-fuzzy.readthedocs.io/en/latest/api/skfuzzy.html?highlight=dsw_mult#skfuzzy.dsw_mult)
+
+but could use regular mult
+
+```{python}
+(ph_fuzz * precip_fuzz).plot(robust=True)
+```
+
+```{python}
+((ph_fuzz * precip_fuzz) > 0.05).plot()
+```
+
+## GBIF review 25 Feb 2025
+
+- Katherine Siegel Demo
+  - [Katherine Siegel Video](https://canvas.colorado.edu/courses/115453/modules/items/6278820)
+  - [notes_gbif.qmd](https://github.com/earthlab-education/habitat-suitability-byandell/blob/main/notes_gbif.qmd)
+- https://pygbif.readthedocs.io/en/latest/
+- https://github.com/earthlab-education/species-distribution-coding-challenge-byandell/blob/main/notebooks/siberian-crane-species-download.ipynb 
+- earthlab-education and look at repos
+- [Fall 2024 Species](https://github.com/earthlab-education/species-distribution-coding-challenge-byandell)
+  - [gbif.py](https://github.com/byandell-envsys/landmapy/blob/main/landmapy/gbif.py)
+  - [sandhill_crane.qmd](https://github.com/earthlab-education/species-distribution-coding-challenge-byandell/blob/main/sandhill_crane.qmd)
+  - [siberian_crane.qmd](https://github.com/earthlab-education/species-distribution-coding-challenge-byandell/blob/main/siberian_crane.qmd)
+
+```{python}
+#pip install pygbif
+```
+
+```{python}
+## reproducible file paths
+import os
+from glob import glob
+import pathlib
+
+## GBIF packages
+import pygbif.occurrences as occ
+import pygbif.species as species
+from getpass import getpass
+
+## unzip and handle gbif data
+import zipfile
+import time
+
+## spatial data
+import geopandas as gpd
+import xrspatial as xr
+
+## other data
+import numpy as np
+import pandas as pd
+import rioxarray as rxr
+import rioxarray.merge as rxrm
+
+## invalid geometries
+from shapely.geometry import MultiPolygon, Polygon
+
+## viz data
+import holoviews as hv
+import hvplot.pandas
+import hvplot.xarray
+```
+
+```{python}
+# make repro file paths
+data_dir = os.path.join(
+    # home directory
+	pathlib.Path.home(),
+	
+	### eda directory
+	'earth-analytics',
+    'data',
+    'hab_suit'
+)
+os.makedirs(data_dir, exist_ok = True)
+```
+
+Sutdy species: Lupinus argenteus (silvery lupine)
+
+```{python}
+gbif_dir = os.path.join(data_dir, 'gbif_lupine')
+```
+
+```{python}
+reset_credentials = False
+
+credentials = dict(
+    GBIF_USER=(input, 'GBIF username:'),
+    GBIF_PWD=(getpass, 'GBIF password:'),
+    GBIF_EMAIL=(input, 'GBIF email:')
+)
+for env_variable, (prompt_func, prompt_text) in credentials.items():
+    if reset_credentials and (env_variable in os.environ):
+        os.environ.pop(env_variable)
+    if not env_variable in os.environ:
+        os.environ[env_variable] = prompt_func(prompt_text)
+```
+
+Now in GBIF. Supply species code.
+
+```{python}
+species_name = 'Lupinus argenteus'
+species_info = species.name_lookup(species_name, rank='SPECIES')
+# grab first
+first_result = species_info['results'][0]
+species_key = first_result['nubKey']
+first_result['species'], species_key
+```
+
+```{python}
+## assign species code
+species_key = 2964374
+```
+
+Do this once.
+Had trouble withing loop below so tried outside.
+
+```python
+gbif_query = occ.download([
+        f"speciesKey = {species_key}",
+        "hasCoordinate = True"
+    ])
+gbif_query
+```
+
+```{python}
+gbif_pattern = os.path.join(gbif_dir, '*.csv')
+## download once
+if not glob(gbif_pattern):
+    #***with error status code 503check your number of active downloads***
+    gbif_query = occ.download([
+        f"speciesKey = {species_key}",
+        "hasCoordinate = True"
+    ])
+
+    if not 'GBIF_DOWNLOAD_KEY' in os.environ:
+        os.environ['GBIF_DOWNLOAD_KEY'] = gbif_query[0]
+        download_key = os.environ['GBIF_DOWNLOAD_KEY']
+        # wait for download to build
+        wait = occ.download_meta(download_key)
+        while not wait == 'SUCCEEDED':
+            wait = occ.download_meta(download_key)['status']
+            time.sleep(5)
+
+    # download data
+    # ***'function' object has no attribute 'get'***
+    download_info = occ.download_get(
+        os.environ['GBIF_DOWNLOAD_KEY'],
+        path = data_dir
+    )
+    # unzip
+    with zipfile.ZipFile(download_info['path']) as download_zip:
+        download_zip.extractall(path = gbif_dir)
+
+## find csv file path
+gbif_path = glob(gbif_pattern)[0]
+```
+
+## Classes 20 Feb 2025
+
+- [Katherine Siegel Video on Classes](https://canvas.colorado.edu/courses/115453/modules/items/6273791)
+- [notes_class.qmd](https://github.com/earthlab-education/habitat-suitability-byandell/blob/main/notes_class.qmd)
+- [EDA Reference for Python Coding: Classes](https://github.com/byandell-envsys/EarthDataAnalytics/blob/main/references.md#classes)
+for references and discussion of classes.
+
+A 
+[class](https://docs.python.org/3/tutorial/classes.html)
+is a function with output of an object that has new methods, which are in turn functions
+defined in the class.
+In addition, the `@property` decorator defines attributes for the object.
+The main use of classes are to:
+
+- add functionality to class
+- streamline different functions with same parameters to keep track of metadata
+
+### Examples
+
+Simple example with representer `__repr__`.
+
+```{python}
+import pandas as pd
+import xarray as xr
+
+class ArrayDataFrame(pd.DataFrame): # inherits pd.DataFrame class
+
+    def set_array_column(self, arrays):
+        self['arrays'] = arrays
+        return self
+
+    def __repr__(self):
+        for_printing = self.copy()
+        for_printing.arrays = [arr.min() for arr in self.arrays]
+        return for_printing.__repr__()
+```       
+
+```{python}
+ArrayDataFrame({'url': ['https://...']}).set_array_column([xr.DataArray()])
+```
+
+Show example where class would help.
+
+```{python}
+import random
+import numpy as np
+import xarray as xr
+
+def gen_data_array(size=10):
+    data = (
+        np.array([random.gauss(0,1) for _ in range(size**2)]).reshape(size, size))
+    data = xr.DataArray(
+        data = data,
+        coords = {
+            'x': [i * random.uniform(0,1) for i in range(size)],
+            'y': [i * random.uniform(0,1) for i in range(size)]
+        },
+        dims=['x','y']
+    )
+    return data
+```
+
+```{python}
+gen_data_array(10)
+```
+
+```{python}
+df_len = 10
+my_df = pd.DataFrame({
+    'id': list(range(df_len)),
+    'array': [gen_data_array(10) for _ in range(df_len)]
+})
+print(my_df)
+```
+
+```{python}
+class FunDataFrame(pd.DataFrame):
+    # represent
+    def __repr__(self):
+        return 'stuff!'
+```
+
+```{python}
+my_df
+```
+
+Add ipython method (under the hood concept)
+
+```{python}
+class FunDataFrame(pd.DataFrame):
+    # represent
+    def __repr__(self):
+        return 'stuff!'
+    # ipython method
+    def _repr_html_(self):
+        return 'more stuff!!!'
+```
+
+```{python}
+my_df
+```
+
+
+```{python}
+class FunDataFrame(pd.DataFrame):
+
+    # attribute to make a dataframe
+    @property
+    def _df_for_repr_(self):
+        df = self.drop(columns = ['array']).copy()
+        return df
+    # represent
+    def __repr__(self):
+        return self._df_for_repr_.__repr__()
+    # ipython method
+    def _repr_html_(self):
+        return self._df_for_repr_._repr_html_()
+```
+
+```{python}
+my_df
+```
+
+Set up my dataframe class to show what I want
+
+```{python}
+class FunDataFrame(pd.DataFrame):
+
+    # define array_types (does not appear to be used yet) 
+    array_types = [xr.DataArray]
+
+    # attribute to return `array_cols`
+    @property
+    def array_cols(self):
+        array_cols = []
+        for col in self:
+            if type(self[col][0]) == xr.DataArray:
+                array_cols.append(col)
+                return array_cols
+
+    # more complicated attribute
+    @property
+    def _df_for_repr_(self):
+        df = self.drop(columns = self.array_cols).copy()
+        for array_col in self.array_cols:
+            arr_str_list = []
+            for arr in self[array_col]:
+                arr_min = round(float(arr.x.min()), 2)
+                arr_max = round(float(arr.x.max()), 2)
+                arr_str_list.append(
+                    f'DataArray(x ({arr_min}, {arr_max}))'
+                )
+            df[array_col] = arr_str_list
+            #df[array_col] = ['DataArray' for _ in range(len(df))]
+        return df
+    
+    # represent
+    def __repr__(self):
+        return self._df_for_repr_.__repr__()
+    # ipython method
+    def _repr_html_(self):
+        return self._df_for_repr_._repr_html_()
+```
+
+```{python}
+my_df = FunDataFrame({
+    'id': list(range(df_len)),
+    'array': [gen_data_array(10) for _ in range(df_len)],
+    'array2': [gen_data_array(10) for _ in range(df_len)]})
+my_df
+```
+
