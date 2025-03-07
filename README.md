@@ -110,7 +110,7 @@ $ quarto render project.qmd -t markdown
 Some of these were derived from Python notebooks using the convert command
 
 ```
-$ quarto conver project.ipynb
+$ quarto convert project.ipynb
 ```
 
 With care (see `Plot Data` section of
