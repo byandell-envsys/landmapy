@@ -286,7 +286,7 @@ Of course, I can add more functions to the package,
 but I am mindful that as the package grows,
 the need for coherent documentation expands.
 I add one-line function calls in
-[landmapy/__init__.py](landmapy/__init__.py)
+[landmapy/\_\_init\_\_.py](landmapy/__init__.py)
 and adapt the 
 [README.md](README.md)
 to describe how to access and use the package,
