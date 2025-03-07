@@ -241,7 +241,7 @@ data_dir = create_data_dir('habitat')
 This adds more machinery, but it enables me to import a variety of functions
 that I maintain on GitHub in a single location, the package
 [landmapy](https://github.com/byandell-envsys/landmapy).
-I maintain this package on GitHub as a rep, just as I do with other projects.
+I maintain this package on GitHub as a repo, just as I do with other projects.
 
 From GitHub, I (and anyone else) can install the package with 
 [pip](https://pypi.org/project/pip/):
