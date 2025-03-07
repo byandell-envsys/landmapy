@@ -186,7 +186,7 @@ which is a directory containing multiple modules.
 
 I chose to call my repo
 [landmapy](https://github.com/byandell-envsys/landmapy)
-because I plan populate it with python functions for land cover mapping.
+because it has python functions for land cover mapping.
 (I earlier created a repo called
 [landmapr](https://github.com/byandell-envsys/landmapr)
 with R code for land cover mapping.)
@@ -206,8 +206,9 @@ landmapy/
         initial.py
 ```
 
-The `__init__.py` file is required to tell python that this is a package,
-which can be empty.
+The `__init__.py` is a special file,
+which can be empty,
+required by python to identify this directory is a package.
 
 ```
 landmapy/
@@ -239,10 +240,11 @@ data_dir = create_data_dir('habitat')
 
 ## Import Functions from GitHub
 
-This adds more machinery, but it enables me to import a variety of functions
+Building a package adds more machinery,
+but it enables me to import a variety of functions
 that I maintain on GitHub in a single location, the package
 [landmapy](https://github.com/byandell-envsys/landmapy).
-I maintain this package on GitHub as a repo, just as I do with other projects.
+This package is a repo, just like repos for other projects.
 
 From GitHub, I (and anyone else) can install the package with 
 [pip](https://pypi.org/project/pip/):
@@ -252,7 +254,7 @@ From GitHub, I (and anyone else) can install the package with
 pip install git+https://github.com/byandell-envsys/landmapy.git
 ```
 
-(Again, comment line `#| eval: False` suppress markdown evaluation.)
+(Again, comment line `#| eval: False` suppresses markdown evaluation.)
 As before, I can import the function as follows:
 
 
@@ -274,26 +276,33 @@ This
 [Coding Strategy](strategy.md)
 page is another form of documentation.
 In addition, each project that uses the package can have
-its own (compact) documentation of how and why package tools are employed.
+its own (compact) documentation referring to the
+[landmapy](https://github.com/byandell-envsys/landmapy)
+and explaining how and why package tools are employed.
 
 ### Document Functions in Modules in a Package
 
 Of course, I can add more functions to the package,
 but I am mindful that as the package grows,
-the need for documentation grows.
-I can expand the `README.md` file to include a list of functions
-and a description of how to access the package.
+the need for coherent documentation expands.
+I add one-line function calls in
+[landmapy/__init__.py](landmapy/__init__.py)
+and adapt the 
+[README.md](README.md)
+to describe how to access and use the package, example uses,
+and an organized list with function information.
 There is a balance of adding documentation and keeping it simple.
 I have chosen to adopt the following approach to function documentation:
 
-- Add a docstring to each function in a module `initial.py`
-- Add a one-line descrition of each function in the docstring of the module `initial.py`
-- Add a one-line description of each function in the `README.md` file
+- Add a docstring to each function in a module `*.py`
+- Add one-line function descriptions in the top docstring of the module `*.py`
+- Add one-line function calls in the `landmapy/__init__.py` file
+- Add one-line module and function information in the `README.md` file
 
-I now have enough modules in the package that I find it helpful to organize
-them in the
+The `landmapy` package is now large enough that I find it helpful to organize
+modules and function in the
 [README.md](README.md)
-into (drop-down) blocks to
+into (drop-down) blocks around topics:
 
 - Plot Data
 - Access Data with APIs
