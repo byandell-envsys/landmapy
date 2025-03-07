@@ -26,8 +26,11 @@ course taught through the
 Special thanks to [Elsa Culler](https://eculler.github.io/) as well as
 [Nate Quarderer](https://github.com/nquarder),
 [Lilly Jones-Sanovia](https://github.com/yawapi),
+[Alison Post](https://akpost21.github.io/),
 and
-[Alison Post](https://akpost21.github.io/).
+[Katherine Siegel](https://katherinesiegel.github.io/).
+I am
+[Brian Yandell](https://byandell.github.io/).
 
 Interestingly, Earth Lab members developed a Python package a few years ago,
 [earthpy](https://earthpy.readthedocs.io)
