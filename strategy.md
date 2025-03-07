@@ -63,7 +63,7 @@ def create_data_dir(new_dir='habitat'):
 
     return data_dir
 
-create_data_dir('habitat')
+data_dir = create_data_dir('habitat')
 ```
 
 ## Add Documentation
@@ -100,7 +100,7 @@ def create_data_dir(new_dir='habitat'):
 As before, I can use this function once it is defined by calling it:
 
 ```python
-create_data_dir('habitat')
+data_dir = create_data_dir('habitat')
 ```
 
 ## Put a Function in a File
@@ -114,7 +114,7 @@ which I could import into my notebook or script.
 ```
 
 ```python
-create_data_dir('habitat')
+data_dir = create_data_dir('habitat')
 ```
 
 The file is re-read from disk with the `%run` magic command,
@@ -127,7 +127,7 @@ I can instead import the function as follows:
 
 ```python
 from create_data_dir import create_data_dir
-create_data_dir('habitat')
+data_dir = create_data_dir('habitat')
 ```
 
 However, to use `import` most effectively requires a few more steps.
@@ -170,7 +170,7 @@ I `%run` the function in this file
 and use it as before,
 
 ```python
-create_data_dir('habitat')
+data_dir = create_data_dir('habitat')
 ```
 
 ## Build a Package from Modules in a Directory
@@ -233,7 +233,7 @@ to not evaluate the following code block.)
 
 ```python
 from landmapy.initial import create_data_dir
-create_data_dir('habitat')
+data_dir = create_data_dir('habitat')
 ```
 
 ## Import Functions from GitHub
@@ -251,12 +251,13 @@ From GitHub, I (and anyone else) can install the package with
 pip install git+https://github.com/byandell-envsys/landmapy.git
 ```
 
+(Again, comment line `#| eval: False` suppress markdown evaluation.)
 As before, I can import the function as follows:
 
 
 ```python
 from landmapy.initial import create_data_dir
-create_data_dir('habitat')
+data_dir = create_data_dir('habitat')
 ```
 
 ## Add Further Documentation
