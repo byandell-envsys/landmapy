@@ -17,6 +17,12 @@ Please offer suggestions to improve.
     - [Decorators](#decorators)
     - [Classes](#classes)
 
+Additional references beyond Python:
+
+- [EDA References](https://github.com/byandell-envsys/EarthDataAnalytics/blob/main/references.md)
+- [ShinyApps](https://github.com/AttieLab-Systems-Genetics/Documentation/blob/main/ShinyApps.md)
+- [R for Data Sciences](https://github.com/UW-Madison-DataScience/R_for_data_sciences)
+
 ## Python Overview
 
 - [Python Tutorial](https://docs.python.org/3/tutorial/)
