@@ -43,8 +43,8 @@ os.makedirs(data_dir, exist_ok=True)
 
 ## Build a Function
 
-Once I realized I would reuse this many times (at least twice),
-I created a function to do this for me and then used it.
+Once I repeatedly use code many times (at least twice),
+it is time to create a function that I can reuse.
 Note the generalization with a parameter `new_dir`
 to allow user to specify a different directory name.
 
