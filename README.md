@@ -85,8 +85,8 @@ I got some initial advice from EDA staff, then learned by
 doing and looking at other tools.
 To date, this package has been used in the following EDA projects:
 
+- [Habitat2: Buffalo Grasslands Habitat Suitability](https://github.com/earthlab-education/habitat-suitability-byandell/blob/main/climate.md)
 - [Clustering: Classify land cover for Mississippi Delta](https://github.com/earthlab-education/clustering-byandell)
-(in progress)
 - [Big-Data: Urban Greenspace and Asthma Prevalence](https://github.com/earthlab-education/big-data-byandell/blob/main/big-data.md)
 - [Habitat: Buffalo Grasslands Habitat Suitability](https://github.com/byandell-envsys/habitatSuitability/blob/main/buffalo.md)
 - [Redlining: Predicting NDVI for Madison](https://github.com/earthlab-education/fundamentals-04-redlining-byandell/blob/main/notebooks/madison.ipynb)
