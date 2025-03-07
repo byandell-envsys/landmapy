@@ -262,8 +262,11 @@ data_dir = create_data_dir('habitat')
 
 ## Add Further Documentation
 
-Documentation evolves, just as do data, code, and the project itself.
-Functions and their modules benefit from documentation.
+Documentation evolves, just as do data, code, and each data-rich project.
+My future self, and other users of my code, benefit from documentation
+of how functions work, why they are organized in modules,
+and what might still be needed to improve a package or project.
+The
 [References](references.md)
 draw on documentation created by the broader community.
 This
@@ -287,7 +290,13 @@ I have chosen to adopt the following approach to function documentation:
 - Add a one-line description of each function in the `README.md` file
 
 I now have enough modules in the package that I find it helpful to organize
-them into blocks, which are hidden in the
+them in the
 [README.md](README.md)
-file.
+into (drop-down) blocks to
+
+- Plot Data
+- Access Data with APIs
+- Explore Data
+- Set up Data Mechanics
+
 Readers can then expand the block for a particular module to see the functions contained therein.
