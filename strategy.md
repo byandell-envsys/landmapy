@@ -68,7 +68,7 @@ data_dir = create_data_dir('habitat')
 
 ## Add Documentation
 
-To remind me of the purpose of the function, I added a documentation using
+To remind me of the purpose of the function, I added documentation using
 [docstring](https://peps.python.org/pep-0257/).
 
 ```python
@@ -94,10 +94,11 @@ def create_data_dir(new_dir='habitat'):
 
     return data_dir
 
-# create_data_dir('habitat')
+# data = create_data_dir('habitat')
 ```
 
-As before, I can use this function once it is defined by calling it:
+The last comment line is a reminder how to use this function.
+Once defined, I follow this suggestion:
 
 ```python
 data_dir = create_data_dir('habitat')

@@ -39,5 +39,5 @@ def create_data_dir(new_dir='habitat'):
 
     return data_dir
 
-# create_data_dir('habitat')
+# data = create_data_dir('habitat')
 
