@@ -293,7 +293,7 @@ to describe how to access and use the package,
 provide examples of use,
 and organize modules and functions by topic.
 There is a balance of adding documentation and keeping it simple.
-I have chosen to adopt the following approach to function documentation:
+My documentation process has evolved to the following approach:
 
 - Add a docstring to each function in a module `*.py`
 - Add one-line function descriptions in the top docstring of the module `*.py`
