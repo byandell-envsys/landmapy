@@ -98,13 +98,15 @@ Please offer suggestions to improve.
 - [hvplot](https://hvplot.holoviz.org/)
   - [hvplot.pandas](https://hvplot.holoviz.org/user_guide/Plotting_with_Pandas.html)
   - [hvplot.xarray](https://hvplot.holoviz.org/user_guide/Plotting_with_XArray.html)
+- [plotnine](https://plotnine.readthedocs.io/en/stable/)
 
 ### Spatial Libraries
 
 - [geopandas](https://geopandas.org/)
 - [rasterio](https://rasterio.readthedocs.io/)
+  - [rasterstats](https://pythonhosted.org/rasterstats/)
 - [xarray](http://xarray.pydata.org/en/)
-- [rioxarray](https://corteva.github.io/rioxarray/stable/)
+  - [rioxarray](https://corteva.github.io/rioxarray/stable/)
 - [xrspatial](https://xarray-spatial.readthedocs.io/en/stable/)
 - [earthaccess](https://earthaccess.readthedocs.io/en/latest/)
 - [getpass](https://docs.python.org/3/library/getpass.html)
@@ -114,6 +116,10 @@ Please offer suggestions to improve.
 - [regionmask](https://regionmask.readthedocs.io/en/stable/)
 - [cartopy](https://scitools.org.uk/cartopy/docs/latest/)
   - [cartopy.crs](https://scitools.org.uk/cartopy/docs/latest/crs/index.html)
+  - [geoplot](https://residentmario.github.io/geoplot/index.html)
+- [folium](https://python-visualization.github.io/folium/)
+- [geopy](https://geopy.readthedocs.io/en/stable/)
+- [pyproj](https://pyproj4.github.io/pyproj/stable/)
 
 ### Animated GIFs
 
