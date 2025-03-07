@@ -289,8 +289,9 @@ I add one-line function calls in
 [landmapy/__init__.py](landmapy/__init__.py)
 and adapt the 
 [README.md](README.md)
-to describe how to access and use the package, example uses,
-and an organized list with function information.
+to describe how to access and use the package,
+provide examples of use,
+and organize modules and functions by topic.
 There is a balance of adding documentation and keeping it simple.
 I have chosen to adopt the following approach to function documentation:
 
