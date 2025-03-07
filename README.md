@@ -16,6 +16,7 @@ Additional links:
 
 - [References](references.md)
 - [Coding Strategy](strategy.md)
+- [EDA Notes](notes.md)
   
 ## Land Mapping Python Package
 
