@@ -81,8 +81,11 @@ modify (in a tame way, please) and submit pull requests.
 
 This python package was begun in nov-dec 2024 as I found
 the project tools growing.
-I got some initial advice from EDA staff, then learned by
-doing and looking at other tools.
+EDA staff offered draft code for tools to the class,
+which I adapted and expanded, based on their advice.
+I learned by doing and looking at other tools,
+developing my own
+[Coding Strategy](strategy.md).
 To date, this package has been used in the following 
 [EDA projects](https://github.com/byandell-envsys/EarthDataAnalytics/blob/main/README.md#projects)
 (with modules other than
