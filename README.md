@@ -108,8 +108,7 @@ and plot modules):
 [process](https://github.com/byandell-envsys/landmapy/blob/main/landmapy/process.py),
 [explore](https://github.com/byandell-envsys/landmapy/blob/main/landmapy/explore.py)
 - [Species: Crane Migration Maps](https://github.com/earthlab-education/species-distribution-coding-challenge-byandell)
-  - [gbif](https://github.com/byandell-envsys/landmapy/blob/main/landmapy/gbif.py),
-[process](https://github.com/byandell-envsys/landmapy/blob/main/landmapy/process.py)
+  - [gbif](https://github.com/byandell-envsys/landmapy/blob/main/landmapy/gbif.py)
 
 These are all craft pieces, with increasing use of functions.
 More recent projects shifted from a
