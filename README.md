@@ -83,7 +83,8 @@ This python package was begun in nov-dec 2024 as I found
 the project tools growing.
 I got some initial advice from EDA staff, then learned by
 doing and looking at other tools.
-To date, this package has been used in the following EDA projects
+To date, this package has been used in the following 
+[EDA projects](https://github.com/byandell-envsys/EarthDataAnalytics/blob/main/README.md#projects)
 (with modules other than
 [initial](https://github.com/byandell-envsys/landmapy/blob/main/landmapy/initial.py)
 and plot modules):

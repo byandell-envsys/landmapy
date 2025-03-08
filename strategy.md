@@ -290,7 +290,7 @@ I add one-line function calls in
 and adapt the 
 [README.md](README.md)
 to describe how to access and use the package,
-provide examples of use,
+provide use cases,
 and organize modules and functions by topic.
 There is a balance of adding documentation and keeping it simple.
 My documentation process has evolved to the following approach:
