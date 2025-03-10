@@ -161,8 +161,9 @@ def plot_das(das, titles = None, nrows=1, axes=['latitude', 'longitude'], onebar
 
     Args:
         das (list of da): List of DataArrays to plot.
-        titles (list of str, optional): List of plot titles. Defaults to None.
         nrows (int, optional): _description_. Defaults to 1.
+        titles (list of str, optional): List of plot titles. Defaults to None.
+        onebar (bool, optional): One bar if True (default).
     """
     import numpy as np
     import matplotlib.pyplot as plt
