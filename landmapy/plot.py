@@ -111,6 +111,12 @@ def plot_gdf_state(place_gdf, aiannh=False):
 def plot_gdfs_map(place_gdf, column=['asthma','edge_density'], color=['Blues','Greens'], map=True):
     """
     Create Row of Plots.
+    
+    Args:
+        place_gdf (gdf): gdf for place
+        column (list, optional): list of columns to plot
+        color (list, optional): list of color maps
+        map (bool, optional): include map if True
     """
     import matplotlib.pyplot as plt
     import contextily as ctx
@@ -157,6 +163,9 @@ def plot_das(das, titles = None, nrows=1, axes=['latitude', 'longitude']):
         titles (list of str, optional): List of plot titles. Defaults to None.
         nrows (int, optional): _description_. Defaults to 1.
     """
+    import numpy as np
+    import matplotlib.pyplot as plt
+    
     # Combine the lists
     if titles is None:
         titles = [f"Raster {i + 1}" for i in range(len(das))]
