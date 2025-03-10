@@ -180,6 +180,7 @@ def plot_das(das, titles = None, nrows=1, axes=['latitude', 'longitude'], onebar
     plt.ylabel(axes[1])
 
     # Loop through each raster, open it, and plot in a subplot
+    cbar = []
     cbar_mappable = None  # To store the QuadMesh object for the colorbar
     for i in range(len(das)):
         da = das[i]
@@ -187,13 +188,14 @@ def plot_das(das, titles = None, nrows=1, axes=['latitude', 'longitude'], onebar
         # Plot the raster on the corresponding subplot
         quadmesh = da.plot(ax=axes[i], add_colorbar=False)
         axes[i].set_title(titles[i]) # Add a title to each subplot
-        if not onebar:
-            cbar.append(plt.colorbar(place_plot.collections[0], ax=ax[i], orientation='horizontal'))
-            cbar[i].set_label(f'{titles[i]} Intensity')  # Set the label for the color bar
 
-        # Store the QuadMesh object for the colorbar
-        if cbar_mappable is None:
-            cbar_mappable = quadmesh
+        # Color Bar
+        if not onebar:
+            cbar.append(plt.colorbar(quadmesh, ax=axes[i], orientation='horizontal'))
+            cbar[i].set_label(f'{titles[i]} Intensity')  # Set the label for the color bar
+        else:
+            if cbar_mappable is None:
+                cbar_mappable = quadmesh
 
     # Add a global colorbar
     if onebar:
