@@ -231,6 +231,7 @@ See [Plot Functions](plots.md) for more information.
 | hvplot | hvplot_index_grade | hvplot | plot | plot | Plots for index and grade |
 | hvplot | hvplot_index_pred | hvplot | plot | plot | Plot the model results |
 | plot | plot_cluster || plot | plot | Plot of RGB and Clusters |
+| plot | plot_da || plot | plot | Plot rows of DataArrays |
 | plot | plot_delta_gdf | plot | plot | plot | HV Plot Delta GDF |
 | plot | plot_gdf_da || plot | plot | Overlay gdf on da map |
 | plot | plot_gdf_state || plot | plot | Plot overlay of gdf with state boundaries |

@@ -5,6 +5,7 @@ plot_index: Plot index DataArray
 plot_gdf_da: Overlay gdf on da map
 plot_gdf_state: Plot overlay of redlining GeoDataFrame with state boundaries
 plot_gdfs_map: Create Row of Plots
+plot_das: Create rows of plots for a list of DataArrays
 plot_matrix: Plot of model matrix
 plot_train_test: Plot test fit
 plot_delta_gdf: Plot Delta GDF

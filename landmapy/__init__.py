@@ -44,6 +44,8 @@ Functions:
     naip.naip_path(data_dir, place):
     naip.ndvi_naip_one(tract_cdc_gdf, tract, tract_date_gdf)
     naip.ndvi_naip_df(naip_index_path, tract_cdc_gdf, naip_scenes_df)
+    plot.plot_cluster(rgb_sat, model_df)
+    plot.plot_das(das)
     plot.plot_index(index_da, place)
     plot.plot_gdf_da(place_gdf, index_da)
     plot.plot_gdf_state(place_gdf)
