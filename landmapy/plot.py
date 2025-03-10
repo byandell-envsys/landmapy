@@ -148,6 +148,46 @@ def plot_gdfs_map(place_gdf, column=['asthma','edge_density'], color=['Blues','G
     
 # plot_gdfs_map(place_gdf)
 
+def plot_das(das, titles = None, nrows=1, axes=['latitude', 'longitude']):
+    """
+    Create rows of plots for a list of DataArrays.
+
+    Args:
+        das (list of da): List of DataArrays to plot.
+        titles (list of str, optional): List of plot titles. Defaults to None.
+        nrows (int, optional): _description_. Defaults to 1.
+    """
+    # Combine the lists
+    if titles is None:
+        titles = [f"Raster {i + 1}" for i in range(len(das))]
+
+    # Set up subplots (adjust rows and columns for layout)
+    ncols = np.ceil(len(das) / nrows).astype(int)
+    fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(20, 5), constrained_layout=True)
+
+    plt.xlabel(axes[0])
+    plt.ylabel(axes[1])
+
+    # Loop through each raster, open it, and plot in a subplot
+    cbar_mappable = None  # To store the QuadMesh object for the colorbar
+    for i in range(len(das)):
+        da = das[i]
+
+        # Plot the raster on the corresponding subplot
+        quadmesh = da.plot(ax=axes[i], add_colorbar=False)
+        axes[i].set_title(titles[i]) # Add a title to each subplot
+
+        # Store the QuadMesh object for the colorbar
+        if cbar_mappable is None:
+            cbar_mappable = quadmesh
+
+    # Add a global colorbar
+    fig.colorbar(cbar_mappable, ax=axes, orientation="horizontal", fraction=0.02, pad=0.1).set_label("Value")
+
+    plt.show()
+    
+# plot_das(das)
+
 def plot_matrix(model_df):
     """
     Plot of model matrix.
@@ -205,8 +245,6 @@ def plot_delta_gdf(delta_gdf):
     
     Args:
         delta_gdf (gdf): area to overlay on topomap
-    Returns:
-        delta_hv (hvplot): HV Plot
     """
     import matplotlib.pyplot as plt
     import contextily as ctx

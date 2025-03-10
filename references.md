@@ -12,7 +12,7 @@ Please offer suggestions to improve.
     - [Lists of Python Libraries](#lists-of-python-libraries)
   - [Plot Libraries and Systems](#plot-libraries-and-systems)
     - [Spatial Libraries](#spatial-libraries)
-    - [Animated GIFs](#animated-gifs)
+    - [Interactive Plots](#interactive-plots)
   - [IPython Methods](#ipython-methods)
     - [Decorators](#decorators)
     - [Classes](#classes)
@@ -91,6 +91,8 @@ Additional references beyond Python:
 
 ## Plot Libraries and Systems
 
+See `landmapy` [Plot Functions](plots.md).
+
 - [matplotlib](https://matplotlib.org/)
   - [matplotlib.pyplot](https://matplotlib.org/stable/api/pyplot_api.html)
   - [matplotlib.colors](https://matplotlib.org/stable/api/colors_api.html)
@@ -126,7 +128,7 @@ Additional references beyond Python:
 - [geopy](https://geopy.readthedocs.io/en/stable/)
 - [pyproj](https://pyproj4.github.io/pyproj/stable/)
 
-### Animated GIFs
+### Interactive Plots
 
 - [Creating an Animated GIF with Python](https://www.blog.pythonlibrary.org/2021/06/23/creating-an-animated-gif-with-python/)
   - [Create an Animated GIF Using Python Matplotlib](https://www.geeksforgeeks.org/create-an-animated-gif-using-python-matplotlib/)
@@ -143,6 +145,7 @@ Additional references beyond Python:
 - [matplotlib](https://matplotlib.org/)
   - [matplotlib.widgets](https://matplotlib.org/stable/api/widgets_api.html) (`%matplotlib widget`)
   - [ipympl](https://matplotlib.org/ipympl/)
+  - [Using %matplotlib widget](https://github.com/microsoft/vscode-jupyter/wiki/Using-%25matplotlib-widget-instead-of-%25matplotlib-notebook,tk,etc)
 
   
 ## IPython Methods
