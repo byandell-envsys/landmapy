@@ -155,7 +155,7 @@ def plot_gdfs_map(place_gdf, column=['asthma','edge_density'], color=['Blues','G
     
 # plot_gdfs_map(place_gdf)
 
-def plot_das(das, titles = None, nrows=1, axes=['latitude', 'longitude']):
+def plot_das(das, titles = None, nrows=1, axes=['latitude', 'longitude'], onebar=True):
     """
     Create rows of plots for a list of DataArrays.
 
@@ -167,10 +167,10 @@ def plot_das(das, titles = None, nrows=1, axes=['latitude', 'longitude']):
     import numpy as np
     import matplotlib.pyplot as plt
     
-    # Combine the lists
+    # If no titles are provided, use the coordinates of the first DataArray.
     if titles is None:
-        titles = [f"Raster {i + 1}" for i in range(len(das))]
-
+        titles = das.coords[das.dims[0]].values
+        
     # Set up subplots (adjust rows and columns for layout)
     ncols = np.ceil(len(das) / nrows).astype(int)
     fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(20, 5), constrained_layout=True)
@@ -186,13 +186,17 @@ def plot_das(das, titles = None, nrows=1, axes=['latitude', 'longitude']):
         # Plot the raster on the corresponding subplot
         quadmesh = da.plot(ax=axes[i], add_colorbar=False)
         axes[i].set_title(titles[i]) # Add a title to each subplot
+        if not onebar:
+            cbar.append(plt.colorbar(place_plot.collections[0], ax=ax[i], orientation='horizontal'))
+            cbar[i].set_label(f'{titles[i]} Intensity')  # Set the label for the color bar
 
         # Store the QuadMesh object for the colorbar
         if cbar_mappable is None:
             cbar_mappable = quadmesh
 
     # Add a global colorbar
-    fig.colorbar(cbar_mappable, ax=axes, orientation="horizontal", fraction=0.02, pad=0.1).set_label("Value")
+    if onebar:
+        fig.colorbar(cbar_mappable, ax=axes, orientation="horizontal", fraction=0.02, pad=0.1).set_label("Value")
 
     plt.show()
     
