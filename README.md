@@ -1,7 +1,7 @@
-# landmapy
+# landmapy: Land Mapping Python Package
 
-- [landmapy](#landmapy)
-  - [Land Mapping Python Package](#land-mapping-python-package)
+- [landmapy: Land Mapping Python Package](#landmapy-land-mapping-python-package)
+  - [Introduction](#introduction)
     - [Install and Import](#install-and-import)
     - [Collaboration](#collaboration)
   - [Use Cases](#use-cases)
@@ -17,8 +17,8 @@ Additional links:
 - [References](references.md)
 - [Coding Strategy](strategy.md)
 - [EDA Notes](notes.md)
-  
-## Land Mapping Python Package
+
+## Introduction
 
 The `landmapy` package is being built as a complement to the 2024-25
 [Earth Data Analytics](https://github.com/byandell-envsys/EarthDataAnalytics)
@@ -72,7 +72,8 @@ pip install ~/Documents/GitHub/landmapy
 
 ### Collaboration
 
-I am happy to collaborate on development of this package.
+My collaborations with EDA course staff propelled this project forward.
+I am happy to collaborate on development of this package with staff, students and others.
 Please contact me and/or create issues.
 If you want to become more involved, contact me, fork the repo,
 modify (in a tame way, please) and submit pull requests.

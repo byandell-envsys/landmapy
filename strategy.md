@@ -1,6 +1,6 @@
-# Coding Strategy
+# Python Coding Strategy
 
-- [Coding Strategy](#coding-strategy)
+- [Python Coding Strategy](#python-coding-strategy)
   - [Introduction](#introduction)
   - [Build a Function](#build-a-function)
   - [Add Documentation](#add-documentation)
