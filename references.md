@@ -94,7 +94,6 @@ Additional references beyond Python:
 - [matplotlib](https://matplotlib.org/)
   - [matplotlib.pyplot](https://matplotlib.org/stable/api/pyplot_api.html)
   - [matplotlib.colors](https://matplotlib.org/stable/api/colors_api.html)
-  - [matplotlib.widgets](https://matplotlib.org/stable/api/widgets_api.html) (`%matplotlib widget`)
 - [shapely](https://shapely.readthedocs.io/en/stable/)
   - [shapely.geometry](https://shapely.readthedocs.io/en/stable/manual.html#geometric-objects)
 - [HoloViews](https://holoviews.org/)
@@ -141,6 +140,10 @@ Additional references beyond Python:
   - [slider](https://stackoverflow.com/questions/76318661/holoviews-interactive-plot-of-gridded-data-with-slider-on-top)
   - [Interactive plots using hvplot](https://tutorial.xarray.dev/intermediate/hvplot.html)
   - [Dimensioned Containers](https://holoviews.org/user_guide/Dimensioned_Containers.html)
+- [matplotlib](https://matplotlib.org/)
+  - [matplotlib.widgets](https://matplotlib.org/stable/api/widgets_api.html) (`%matplotlib widget`)
+  - [ipympl](https://matplotlib.org/ipympl/)
+
   
 ## IPython Methods
 
