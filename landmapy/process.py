@@ -239,9 +239,9 @@ def da2gdf(data_array):
 
 # gdf = da2gdf(data_array)
 
-def da_combine(da1, da2, titles = ["RCP45","RCP85"], contrast=True):
+def da_combine(da1, da2, titles = ["RCP45","RCP85"], new_dim='rcp', contrast=True):
     """
-    Create 3-D DA combining two 2-D DAs, with optional contrast.
+    Create new DA combining two DAs, with optional contrast.
     
     Args:
         da1, da2 (da): DataArrays to contrast
@@ -252,11 +252,48 @@ def da_combine(da1, da2, titles = ["RCP45","RCP85"], contrast=True):
     import xarray as xr
     
     if contrast:
-        da = xr.concat([da1, (da1 - da2), da2], dim = 'rcp')
+        da = xr.concat([da1, (da1 - da2), da2], dim = new_dim)
         da = da.assign_coords(rcp=[titles[0],'diff',titles[1]])
     else:
-        da = xr.concat([da1, da2], dim = 'rcp')
+        da = xr.concat([da1, da2], dim = new_dim)
         da = da.assign_coords(rcp=titles)
     return da
 
 # da = da_combine(da1, da2)
+
+def merge_da_df(das, value = 'precip', new_dim = 'era'):
+    """
+    Merge DataArrays into a DataFrame.
+
+    Args:
+        das (dict): Dictionary of DataArrays
+        value (str, optional): Column name for DataArray values. Defaults to 'precip'.
+        new_dim (str, optional): Column name for levels of `das`. Defaults to 'era'.
+
+    Returns:
+        df (df): DataFrame with DataArray values and new dimensions.
+    """
+    import pandas as pd
+
+    titles = list(das.keys())
+    df = []
+    for i in titles:
+        print(i)
+        # Convert DataArray to DataFrame.
+        blah = das[i].to_dataframe(name = i).reset_index()
+        # Drop NaN values.
+        blah = blah.dropna()
+        # Only select x (lat), y (lon) and value columns.
+        cols = list(blah.columns[[0,1]])
+        cols.append(i)
+        blah = blah[cols]
+        df.append(blah)
+        
+    # Merge all DataFrames on 'x' and 'y' columns
+    merged_df = df[0]
+    for dfi in df[1:]:
+        merged_df = pd.merge(merged_df, dfi, on=cols[:2])
+
+    return merged_df
+
+# df = merge_da_df(das)
