@@ -247,7 +247,7 @@ def da_combine(da1, da2, titles = ["RCP45","RCP85"], contrast=True):
         da1, da2 (da): DataArrays to contrast
         titles (list of str): Titles to use as new dimension values.
     Returns:
-        da (da): New DataArray with added dimesion.
+        da (da): New DataArray with added dimension.
     """
     if contrast:
         da = xr.concat([da1, (da1 - da2), da2], dim = 'rcp')
