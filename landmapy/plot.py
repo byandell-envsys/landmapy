@@ -155,16 +155,16 @@ def plot_gdfs_map(place_gdf, column=['asthma','edge_density'], color=['Blues','G
     
 # plot_gdfs_map(place_gdf)
 
-def plot_das(das, titles = None, nrows=1, axes=['latitude', 'longitude'], gdf=None, onebar=True):
+def plot_das(das, titles = None, axes=['latitude', 'longitude'], gdf=None, onebar=True, cmap='terrain'):
     """
     Create rows of plots for a list of DataArrays.
 
     Args:
         das (list of da): List of DataArrays to plot.
-        nrows (int, optional): _description_. Defaults to 1.
         titles (list of str, optional): List of plot titles. Defaults to None.
         gdf (gdf, optional): GeoDataFrame to overlay on the plot. Defaults to None.
         onebar (bool, optional): One bar if True (default).
+        cmap (str, optional): Color map. Defaults to 'terrain'.
     """
     import numpy as np
     import matplotlib.pyplot as plt
@@ -174,8 +174,7 @@ def plot_das(das, titles = None, nrows=1, axes=['latitude', 'longitude'], gdf=No
         titles = das.coords[das.dims[0]].values
         
     # Set up subplots (adjust rows and columns for layout)
-    ncols = np.ceil(len(das) / nrows).astype(int)
-    fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(20, 5), constrained_layout=True)
+    fig, axes = plt.subplots(nrows=1, ncols=len(das), figsize=(20, 5), constrained_layout=True)
 
     plt.xlabel(axes[0])
     plt.ylabel(axes[1])
@@ -190,7 +189,7 @@ def plot_das(das, titles = None, nrows=1, axes=['latitude', 'longitude'], gdf=No
         da = das[i]
 
         # Plot the raster on the corresponding subplot
-        quadmesh = da.plot(ax=axes[i], add_colorbar=False)
+        quadmesh = da.plot(ax=axes[i], add_colorbar=False, cmap=cmap)
         axes[i].set_title(titles[i]) # Add a title to each subplot
         
         # Overlay gdf on da map if provided.
@@ -202,7 +201,7 @@ def plot_das(das, titles = None, nrows=1, axes=['latitude', 'longitude'], gdf=No
                 # Use color column from gdf if provided
                 if 'color' in idx_gdf.columns:
                     edgecolor = idx_gdf['color'].values[0]
-                idx_gdf.boundary.plot(ax=plt.gca(), color=edgecolor)
+                idx_gdf.boundary.plot(ax=axes[i], color=edgecolor)
 
         # Individual Color Bar
         if not onebar:

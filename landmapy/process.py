@@ -6,6 +6,8 @@ process_cloud_mask: Load an 8-bit Fmask file and create a boolean mask
 process_metadata: Create df of raster data URIs from earthaccess metadata
 process_bands: Process bands from gdf with df metadata
 clip_gdf_da_bounds: Clip bounds from place_gdf on da extended by buffer (internal)
+da2gdf: Convert a DataArray to a GeoDataFrame using rioxarray and geopandas
+da_combine: Create 3-D DA combining two 2-D DAs, with optional contrast
 """
 def process_image(uri, bounds_gdf):
     """
@@ -236,3 +238,23 @@ def da2gdf(data_array):
     return gdf
 
 # gdf = da2gdf(data_array)
+
+def da_combine(da1, da2, titles = ["RCP45","RCP85"], contrast=True):
+    """
+    Create 3-D DA combining two 2-D DAs, with optional contrast.
+    
+    Args:
+        da1, da2 (da): DataArrays to contrast
+        titles (list of str): Titles to use as new dimension values.
+    Returns:
+        da (da): New DataArray with added dimesion.
+    """
+    if contrast:
+        da = xr.concat([da1, (da1 - da2), da2], dim = 'rcp')
+        da = da.assign_coords(rcp=[titles[0],'diff',titles[1]])
+    else:
+        da = xr.concat([da1, da2], dim = 'rcp')
+        da = da.assign_coords(rcp=titles)
+    return da
+
+# da = da_combine(da1, da2)

@@ -231,7 +231,7 @@ See [Plot Functions](plots.md) for more information.
 | hvplot | hvplot_index_grade | hvplot | plot | plot | Plots for index and grade |
 | hvplot | hvplot_index_pred | hvplot | plot | plot | Plot the model results |
 | plot | plot_cluster || plot | plot | Plot of RGB and Clusters |
-| plot | plot_da || plot | plot | Plot rows of DataArrays |
+| plot | plot_das || plot | plot | Plot rows of DataArrays |
 | plot | plot_delta_gdf | plot | plot | plot | HV Plot Delta GDF |
 | plot | plot_gdf_da || plot | plot | Overlay gdf on da map |
 | plot | plot_gdf_state || plot | plot | Plot overlay of gdf with state boundaries |
@@ -317,6 +317,7 @@ Check module is for checking parts of objects, at this point CSVs.
 | check | get_last_row_csv | str ||| Check Last Row of CSV File |
 | check | check_element_in_csv | bool ||| Check value of element in CSV file | 
 | check | check_naip_tracts | df || NAIP | Check if NAIP tracts stored |
+| process | da_combine | da ||| Create 3-D DA combining two 2-D DAs, with optional contrast |
 | process | da2gdf | gdf ||| Convert a DataArray to a GeoDataFrame using rioxarray and geopandas |
 | process | clip_gdf_da_bounds | da ||| Clip bounds from place_gdf on da extended by buffer | 
 | process | process_bands | da || process | Process bands from gdf with df metadata |
