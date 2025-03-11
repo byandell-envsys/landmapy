@@ -249,6 +249,8 @@ def da_combine(da1, da2, titles = ["RCP45","RCP85"], contrast=True):
     Returns:
         da (da): New DataArray with added dimension.
     """
+    import xarray as xr
+    
     if contrast:
         da = xr.concat([da1, (da1 - da2), da2], dim = 'rcp')
         da = da.assign_coords(rcp=[titles[0],'diff',titles[1]])
