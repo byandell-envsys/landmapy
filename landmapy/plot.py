@@ -197,11 +197,11 @@ def plot_das(das, titles = None, nrows=1, axes=['latitude', 'longitude'], gdf=No
             gdf.boundary.plot(ax=axes[i], color="black", linewidth=0.5)
             # Plot place outline
             for idx in range(0, len(gdf)):
-            idx_gdf = gdf.iloc[[idx]].to_crs(da.rio.crs)
-            # Use color column from gdf if provided
-            if 'color' in idx_gdf.columns:
-                edgecolor = idx_gdf['color'].values[0]
-            idx_gdf.boundary.plot(ax=plt.gca(), color=edgecolor)
+                idx_gdf = gdf.iloc[[idx]].to_crs(da.rio.crs)
+                # Use color column from gdf if provided
+                if 'color' in idx_gdf.columns:
+                    edgecolor = idx_gdf['color'].values[0]
+                idx_gdf.boundary.plot(ax=plt.gca(), color=edgecolor)
 
         # Individual Color Bar
         if not onebar:
