@@ -155,7 +155,7 @@ def plot_gdfs_map(place_gdf, column=['asthma','edge_density'], color=['Blues','G
     
 # plot_gdfs_map(place_gdf)
 
-def plot_das(das, titles = None, nrows=1, axes=['latitude', 'longitude'], onebar=True):
+def plot_das(das, titles = None, nrows=1, axes=['latitude', 'longitude'], gdf=None, onebar=True):
     """
     Create rows of plots for a list of DataArrays.
 
@@ -179,17 +179,31 @@ def plot_das(das, titles = None, nrows=1, axes=['latitude', 'longitude'], onebar
     plt.xlabel(axes[0])
     plt.ylabel(axes[1])
 
-    # Loop through each raster, open it, and plot in a subplot
+    # Loop through each da and plot in a subplot
+    if not gdf is None:
+        edgecolor = 'black'
     cbar = []
-    cbar_mappable = None  # To store the QuadMesh object for the colorbar
+    if onebar:
+        cbar_mappable = None  # To store the QuadMesh object for the colorbar
     for i in range(len(das)):
         da = das[i]
 
         # Plot the raster on the corresponding subplot
         quadmesh = da.plot(ax=axes[i], add_colorbar=False)
         axes[i].set_title(titles[i]) # Add a title to each subplot
+        
+        # Overlay gdf on da map if provided.
+        if not gdf is None:
+            gdf.boundary.plot(ax=axes[i], color="black", linewidth=0.5)
+            # Plot place outline
+            for idx in range(0, len(gdf)):
+            idx_gdf = gdf.iloc[[idx]].to_crs(da.rio.crs)
+            # Use color column from gdf if provided
+            if 'color' in idx_gdf.columns:
+                edgecolor = idx_gdf['color'].values[0]
+            idx_gdf.boundary.plot(ax=plt.gca(), color=edgecolor)
 
-        # Color Bar
+        # Individual Color Bar
         if not onebar:
             cbar.append(plt.colorbar(quadmesh, ax=axes[i], orientation='horizontal'))
             cbar[i].set_label(f'{titles[i]} Intensity')  # Set the label for the color bar
@@ -197,7 +211,7 @@ def plot_das(das, titles = None, nrows=1, axes=['latitude', 'longitude'], onebar
             if cbar_mappable is None:
                 cbar_mappable = quadmesh
 
-    # Add a global colorbar
+    # Global colorbar
     if onebar:
         fig.colorbar(cbar_mappable, ax=axes, orientation="horizontal", fraction=0.02, pad=0.1).set_label("Value")
 
