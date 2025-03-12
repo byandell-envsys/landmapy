@@ -452,7 +452,8 @@ Readers can then expand the block for a particular module to see the functions c
 ## Migrate from Jupyter Notebooks to Quarto Documents
 
 We code in a computing environment,
-which includes languages (Python or R and/or julia),
+which includes languages (Python or R and/or
+[Julia](https://julialang.org/),
 document tools (say Quarto or Jupyter)
 and an Integrated Development Environment
 ([IDE](https://www.codecademy.com/article/what-is-an-ide)),
@@ -461,11 +462,9 @@ often
 or
 [Rstudio](https://posit.co/download/rstudio-desktop/).
 Most platform tools and many high-level coding documents,
-such as Quarto Documents, Jupyter Notebooks, and
-[Rmarkdown](https://rmarkdown.rstudio.com/) Documents,
-have methods to incorporate code from multiple languages,
-including Python, R and
-[Julia](https://julialang.org/).
+such as Quarto documents, Jupyter notebooks, and
+[Rmarkdown](https://rmarkdown.rstudio.com/) documents,
+have methods to incorporate code from common languages.
 
 [Quarto](https://quarto.org/) documents are easy to read and use.
 To run a Quarto document `*.qmd`, you will need to install
