@@ -451,6 +451,22 @@ Readers can then expand the block for a particular module to see the functions c
 
 ## Migrate from Jupyter Notebooks to Quarto Documents
 
+We code in a computing environment,
+which includes languages (Python or R and/or julia),
+document tools (say Quarto or Jupyter)
+and an Integrated Development Environment
+([IDE](https://www.codecademy.com/article/what-is-an-ide)),
+often
+[VS Code](https://code.visualstudio.com/)
+or
+[Rstudio](https://posit.co/download/rstudio-desktop/).
+Most platform tools and many high-level coding documents,
+such as Quarto Documents, Jupyter Notebooks, and
+[Rmarkdown](https://rmarkdown.rstudio.com/) Documents,
+have methods to incorporate code from multiple languages,
+including Python, R and
+[Julia](https://julialang.org/).
+
 [Quarto](https://quarto.org/) documents are easy to read and use.
 To run a Quarto document `*.qmd`, you will need to install
 Quarto and some tools (see
@@ -471,20 +487,13 @@ from the shell command line
 
 ```bash
 quarto convert project.ipynb # convert Jupyter to Quarto
-quarto convert project.qmd # convert Quarto to Jupyter
+quarto convert project.qmd   # convert Quarto to Jupyter
 ```
 
 Quarto offers a range of features and project organization tools
 that make it easier to read, maintain, edit and share than
 Jupyter. This gives the user subsantial flexibility and agency
-over the way they present their material.
-It is easy to blend code, text, images and math formula.
+in how to present material.
+It is easy to blend code, text, images and math expressions.
 Interactive documents (hosted on a laptop or external server)
 can be in a variety of formats, including slide decks.
-
-Most platform tools and many high-level coding documents,
-such as Quarto Documents, Jupyter Notebooks, and
-[Rmarkdown](https://rmarkdown.rstudio.com/) Documents,
-have methods to incorporate code from multiple languages,
-including Python, R and
-[Julia](https://julialang.org/).
