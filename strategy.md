@@ -458,7 +458,7 @@ Quarto and some tools (see
 Perhaps, see notes in
 [my quarto repo](https://github.com/byandell/quarto).
 
-Quarto documents (`*.qmd`) files are "flat" markdown files,
+Quarto documents (`*.qmd`) are "flat" markdown files,
 an extension of
 [Markdown](https://www.markdownguide.org/).
 This makes the files small and offers options to render
