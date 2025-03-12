@@ -1,7 +1,7 @@
 # Python Coding Strategy
 
 - [Python Coding Strategy](#python-coding-strategy)
-  - [Introduction](#introduction)
+  - [Make Coding Fun](#make-coding-fun)
   - [Build a Function](#build-a-function)
   - [Add Documentation](#add-documentation)
   - [Put a Function in a File](#put-a-function-in-a-file)
@@ -13,9 +13,14 @@
   - [Import Functions from GitHub](#import-functions-from-github)
   - [Add Further Documentation](#add-further-documentation)
     - [Document Functions in Modules in a Package](#document-functions-in-modules-in-a-package)
-  - [Switch from Jupyter Notebooks to Quarto Documents](#switch-from-jupyter-notebooks-to-quarto-documents)
+  - [Migrate from Jupyter Notebooks to Quarto Documents](#migrate-from-jupyter-notebooks-to-quarto-documents)
 
-## Introduction
+## Make Coding Fun
+
+This document has sections entitled with declarative verbs,
+in a sense urging me (and you) to follow these directions.
+Please take this with a light tone, as I offer suggestions
+that have been helpful for me, learned from many teachers over the years.
 
 My approach to coding is organic, intuitive and iterative.
 I like to start with a simple, working solution and then build on it.
@@ -444,15 +449,42 @@ into (drop-down) blocks around topics:
 
 Readers can then expand the block for a particular module to see the functions contained therein.
 
-## Switch from Jupyter Notebooks to Quarto Documents
+## Migrate from Jupyter Notebooks to Quarto Documents
 
-- see (easily found) documentation on Quarto
-- Quarto `*.qmd` files are "flat" markdown files
-  - while Jupyter `*.ipynb` files are "nested" json files
-- easy to convert between `*.ipynb` and `*.qmd` files
-- Quarto Documents vs Jupyter Notebooks
-  - flexibility and power
-  - easier to read, maintain, edit and share
-  - features
-  - organization
-- render to Quarto to md, html, pdf, docx, etc.
+[Quarto](https://quarto.org/) documents are easy to read and use.
+To run a Quarto document `*.qmd`, you will need to install
+Quarto and some tools (see
+[Get Started](https://quarto.org/docs/get-started/)).
+Perhaps, see notes in
+[my quarto repo](https://github.com/byandell/quarto).
+
+Quarto documents (`*.qmd`) files are "flat" markdown files,
+an extension of
+[Markdown](https://www.markdownguide.org/).
+This makes the files small and offers options to render
+into common formats including md, html, pdf, and docx.
+[Jupyter](https://jupyter.org/) notebooks
+(`*.ipynb`) are "nested" json files
+that are typically rendered rather than read in raw form.
+It is easy to convert between `*.ipynb` and `*.qmd` files
+from the shell command line
+
+```bash
+quarto convert project.ipynb # convert Jupyter to Quarto
+quarto convert project.qmd # convert Quarto to Jupyter
+```
+
+Quarto offers a range of features and project organization tools
+that make it easier to read, maintain, edit and share than
+Jupyter. This gives the user subsantial flexibility and agency
+over the way they present their material.
+It is easy to blend code, text, images and math formula.
+Interactive documents (hosted on a laptop or external server)
+can be in a variety of formats, including slide decks.
+
+Most platform tools and many high-level coding documents,
+such as Quarto Documents, Jupyter Notebooks, and
+[Rmarkdown](https://rmarkdown.rstudio.com/) Documents,
+have methods to incorporate code from multiple languages,
+including Python, R and
+[Julia](https://julialang.org/).

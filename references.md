@@ -172,6 +172,7 @@ References:
 - [IPython Reference](https://ipython.org/ipython-doc/3/interactive/reference.html)
   - [Built-in magic commands](https://ipython.readthedocs.io/en/stable/interactive/magics.html)
   - [Interactive Computing](https://ipython.org/ipython-doc/3/interactive/tutorial.html)
+- [Store Magic](https://ipython.readthedocs.io/en/stable/config/extensions/storemagic.html)
 
 ### Decorators
 
