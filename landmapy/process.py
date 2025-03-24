@@ -261,7 +261,7 @@ def da_combine(da1, da2, titles = ["RCP45","RCP85"], new_dim='rcp', contrast=Tru
 
 # da = da_combine(da1, da2)
 
-def merge_da_df(das, value = 'precip', new_dim = 'era'):
+def merge_da_df(das, value = 'precip', new_dim = 'era', quiet=False):
     """
     Merge DataArrays into a DataFrame.
 
@@ -269,6 +269,7 @@ def merge_da_df(das, value = 'precip', new_dim = 'era'):
         das (dict): Dictionary of DataArrays
         value (str, optional): Column name for DataArray values. Defaults to 'precip'.
         new_dim (str, optional): Column name for levels of `das`. Defaults to 'era'.
+        quiet (bool, optional): Suppress print statements. Defaults to False.
 
     Returns:
         df (df): DataFrame with DataArray values and new dimensions.
@@ -278,7 +279,8 @@ def merge_da_df(das, value = 'precip', new_dim = 'era'):
     titles = list(das.keys())
     df = []
     for i in titles:
-        print(i)
+        if not quiet:
+            print(i)
         # Convert DataArray to DataFrame.
         blah = das[i].to_dataframe(name = i).reset_index()
         # Drop NaN values.

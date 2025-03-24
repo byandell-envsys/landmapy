@@ -10,6 +10,7 @@ These are notes on python techniques accompanying the 2024-25
 [Earth Data Analytics](https://github.com/byandell-envsys/EarthDataAnalytics)
 course.
 
+- [Project Notes 20 Mar 2025](notes_project.md)
 - [Notes 6 Mar 2025](#notes-6-mar-2025)
 - [Notes 4 Mar 2025](#notes-4-mar-2025)
 - [Fuzzy Logic Model 27 Feb 2025](#fuzzy-logic-model-27-feb-2025)
