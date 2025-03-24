@@ -8,8 +8,7 @@ load_gbif: Load the GBIF data
 gbif_monthly: Extract monthly data as gdf
 ecoregions: Get ecoregion boundary as gdf
 join_ecoregions_monthly: Join ecoregions with monthly gbif data for species
-count_monthly_ecoregions: Count the observations in each ecoregion each month
-count_yearly_ecoregions: Count the observations in each ecoregion each year
+count_by_ecoregions: Count the observations in each ecoregion each period
 simplify_ecoregions_gdf: Create a simplified GeoDataFrame for plot
 join_occurrence: Join Ecoregions and Occurrence
 """
@@ -266,22 +265,27 @@ def join_ecoregions_monthly(ecoregions_gdf, monthly_gdf):
 
 # gbif_ecoregion_gdf = gbif_ecoregion(ecoregions_gdf, monthly_gdf)
 
-def count_monthly_ecoregions(gbif_ecoregions_gdf, region_type = 'ecoregion', occurrence_name = 'name'):
+def count_by_ecoregions(gbif_ecoregions_gdf, region_type,
+                        occurrence_name='name', period='month'):
     """
-    Count the observations in each ecoregion each month.
+    Count the observations in each ecoregion each `period`.
     
     Args:
         gbif_ecoregions_gdf (gdf): GeoDataFrame with raw occurrences
         region_type (str, optional): Region type. Default 'ecoregion'.
         occurrence_name (str, optional): Occurrence name. Default 'name'.
+        period (str, optional): Period of time to count occurrences. Default 'month'.
     Returns:
         occurrence_gdf (gdf): GeoDataFrame with occurrences by region.
     """
 
+    if not period in ['month', 'year']:
+        period = 'month'
+        print("Parameter 'period' must be 'month' or 'year'. Using 'month'.")
     occurrence_gdf = (
         gbif_ecoregions_gdf
         # For each region, for each month...
-        .groupby([region_type, 'month'])
+        .groupby([region_type, period])
         # count the number of occurrences
         .agg(occurrences=(occurrence_name, 'count'))
     )
@@ -296,74 +300,26 @@ def count_monthly_ecoregions(gbif_ecoregions_gdf, region_type = 'ecoregion', occ
         .mean()
     )
 
-    # Take the mean by month
-    mean_occurrences_by_month = (
+    # Take the mean by period
+    mean_occurrences_by_period = (
         occurrence_gdf
-        .groupby(['month'])
+        .groupby([period])
         .mean()
     )
 
-    # Normalize by space and time for sampling effort
-    # This accounts for the number of active observers in each location and time of year
+    # Normalize by space and perod for sampling effort.
+    # This accounts for the number of active observers in each location and period.
     occurrence_gdf['norm_occurrences'] = (
         occurrence_gdf
         / mean_occurrences_by_region
-        / mean_occurrences_by_month
+        / mean_occurrences_by_period
     )
 
     return occurrence_gdf
 
-# occurrence_gdf = count_monthly_ecoregions(gbif_ecoregions_gdf, 'ecoregion', 'name')
+# occurrence_year_gdf = count_by_ecoregions(gbif_ecoregion_gdf, 'ecoregion', 'name', 'year')
+# occurrence_gdf = count_by_ecoregions(gbif_ecoregion_gdf, 'ecoregion', 'name', 'month')
 # occurrence_gdf.reset_index().plot.scatter(x='month', y='norm_occurrences', c='ecoregion', logy=True)
-
-def count_yearly_ecoregions(gbif_ecoregions_gdf, region_type, occurrence_name):
-    """
-    Count the observations in each ecoregion each year.
-    
-    Args:
-        gbif_ecoregions_gdf (gdf): GeoDataFrame with raw occurrences
-        region_type (str, optional): Region type. Default 'ecoregion'.
-        occurrence_name (str, optional): Occurrence name. Default 'name'.
-    Returns:
-        occurrence_gdf (gdf): GeoDataFrame with occurrences by region.
-    """
-
-    occurrence_gdf = (
-        gbif_ecoregions_gdf
-        # For each region, for each month...
-        .groupby([region_type, 'year'])
-        # count the number of occurrences
-        .agg(occurrences=(occurrence_name, 'count'))
-    )
-
-    # Get rid of rare observations (possible misidentification)
-    occurrence_gdf = occurrence_gdf[occurrence_gdf["occurrences"] > 1]
-
-    # Take the mean by region
-    mean_occurrences_by_region = (
-        occurrence_gdf
-        .groupby([region_type])
-        .mean()
-    )
-
-    # Take the mean by year
-    mean_occurrences_by_year = (
-        occurrence_gdf
-        .groupby(['year'])
-        .mean()
-    )
-
-    # Normalize by space and time for sampling effort
-    # This accounts for the number of active observers in each location and time of year
-    occurrence_gdf['norm_occurrences'] = (
-        occurrence_gdf
-        / mean_occurrences_by_region
-        / mean_occurrences_by_year
-    )
-
-    return occurrence_gdf
-
-# occurrence_gdf = count_yearly_ecoregions(gbif_ecoregion_gdf, 'ecoregion', 'name')
 
 def simplify_ecoregions_gdf(ecoregions_gdf):
     """
