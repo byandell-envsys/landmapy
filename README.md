@@ -251,8 +251,7 @@ See [Plot Functions](plots.md) for more information.
 | cdcplaces | download_census_tract | gdf | download | CDC Places | Download the census tracts |
 | cdcplaces | join_tract_cdc | gdf | merge | CDC Places | Join Census Tract and CDC Disease Data |
 | cdcplaces | shp_tract_path | str || CDC Places | Set tract path |
-| gbif | count_monthly_ecoregions | gdf || GBIF | Count the observations in each ecoregion each month |
-| gbif | count_yearly_ecoregions | gdf || GBIF | Count the observations in each ecoregion each year |
+| gbif | count_by_ecoregions | gdf || GBIF | Count the observations in each ecoregion each period |
 | gbif | download_gbif | str | download | GBIF | Download GBIF Entries as CSV file (only once) |
 | gbif | ecoregions | gdf || GBIF | Get ecoregion boundary as gdf |
 | gbif | gbif_credentials || environ | GBIF | Set up GBIF Credentials |
