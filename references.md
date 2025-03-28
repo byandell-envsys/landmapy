@@ -194,6 +194,40 @@ and
 - [Primer on Python Decorators (RealPython)](https://realpython.com/primer-on-python-decorators/)
 - [PEP 318 – Decorators for Functions and Methods](https://peps.python.org/pep-0318/)
 - [Python Decorators with Examples (Programiz)](https://www.programiz.com/python-programming/decorator)
+- [Practical Decorators by Reuven M Lerner](https://www.youtube.com/watch?v=MjHpMCIvwsY)
+- [Python Workout by Reuven M Lerner](https://www.manning.com/books/python-workout)
+- [Decorators with Parameters (StackOverflow)](https://stackoverflow.com/questions/5929107/decorators-with-parameters)
+
+One way of thinking about decorators with arguments is
+
+```{python}
+@decorator
+def foo(*args, **kwargs):
+    pass
+```
+
+translates to
+
+```{python}
+foo = decorator(foo)
+```
+
+So if the decorator had arguments,
+
+```{python}
+@decorator_with_args(arg)
+def foo(*args, **kwargs):
+    pass
+```
+
+translates to
+
+```{python}
+foo = decorator_with_args(arg)(foo)
+```
+
+That is, `decorator_with_args()` is a function which accepts a custom argument
+and which returns the actual decorator (that will be applied to the decorated function).
 
 ### Classes
 
