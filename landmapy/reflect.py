@@ -33,7 +33,7 @@ def read_wbd_file(wbd_filename, huc_level, cache_key):
         "/StagedProducts/Hydrography/WBD/HU2/Shape/"
         f"{wbd_filename}.zip")
     wbd_dir = et.data.get_data(url=wbd_url)
-                  
+                
     # Read desired data
     wbd_path = os.path.join(wbd_dir, 'Shape', f'WBDHU{huc_level}.shp')
     wbd_gdf = gpd.read_file(wbd_path, engine='pyogrio')
@@ -41,7 +41,8 @@ def read_wbd_file(wbd_filename, huc_level, cache_key):
 
 # read_wbd_file(wbd_filename, huc_level, cache_key)
 
-def read_delta_gdf(huc_level=12, watershed='080902030506'):
+def read_delta_gdf(huc_level=12, huc_region='08', watershed='080902030506',
+                   dissolve=True):
     """
     Read Delta WBD using cache decorator.
 
@@ -52,13 +53,18 @@ def read_delta_gdf(huc_level=12, watershed='080902030506'):
         delta_gdf (gdf): gdf of delta
     """
     wbd_gdf = read_wbd_file(
-        "WBD_08_HU2_Shape", huc_level, cache_key=f'hu{huc_level}')
+        f"WBD_{huc_region}_HU2_Shape", huc_level, cache_key=f'hu{huc_level}')
 
-    delta_gdf = (
-        wbd_gdf[wbd_gdf[f'huc{huc_level}']
-        .isin([watershed])]
-        .dissolve()
-    )
+    delta_gdf = wbd_gdf[f'huc{huc_level}']
+    if not watershed is None:
+        delta_gdf = wbd_gdf[delta_gdf.isin([watershed])]
+    if dissolve:
+        delta_gdf = delta_gdf.dissolve()
+#    delta_gdf = (
+#        wbd_gdf[wbd_gdf[f'huc{huc_level}']
+#        .isin([watershed])]
+#        .dissolve()
+#    )
     return delta_gdf
 
 # delta_gdf = read_delta_gdf(12)

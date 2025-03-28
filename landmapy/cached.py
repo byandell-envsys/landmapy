@@ -1,9 +1,9 @@
 def cached(func_key, override=False):
     """
-    A decorator to cache function results
+    A decorator to cache function results.
     
     Args:
-      key (str): File basename used to save pickled results
+      func_key (str): File basename used to save pickled results
       override (bool): When True, re-compute even if the results are already stored
     """
     def compute_and_cache_decorator(compute_function):
@@ -28,7 +28,9 @@ def cached(func_key, override=False):
             import earthpy as et
 
             # Add an identifier from the particular function call
+            print('check kwargs', kwargs)
             if 'cache_key' in kwargs:
+                print(kwargs['cache_key'])
                 key = '_'.join((func_key, kwargs['cache_key']))
             else:
                 key = func_key
