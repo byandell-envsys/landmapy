@@ -2,6 +2,15 @@ def cached(func_key, override=False):
     """
     A decorator to cache function results.
     
+    The decorator loads a cached pickle file
+    in the `jars` directory under the `HOME` directory
+    if it already exists
+    and the `override` argument is set to `False`,
+    or computes the decorated function and caches the results.
+    The decorator names the pickle file as 'f{func_key}.pickle'.
+    If a key word `cache_key` is an argument in the decorated function,
+    it is used to alter the file name to 'f{func_key}_{cache_key}.pickle'.
+    This `cache_key` keyword is detected by the decorator via `**kwargs`.
     Args:
       func_key (str): File basename used to save pickled results
       override (bool): When True, re-compute even if the results are already stored
@@ -28,9 +37,7 @@ def cached(func_key, override=False):
             import earthpy as et
 
             # Add an identifier from the particular function call
-            print('check kwargs', kwargs)
             if 'cache_key' in kwargs:
-                print(kwargs['cache_key'])
                 key = '_'.join((func_key, kwargs['cache_key']))
             else:
                 key = func_key

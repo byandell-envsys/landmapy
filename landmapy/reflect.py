@@ -11,8 +11,9 @@ reflectance_rgb: RGB saturation of reflectance
 """
 from landmapy.cached import cached
 
-@cached('wbd_08')
-def read_wbd_file(wbd_filename, huc_level, cache_key):
+def read_wbd_file(wbd_filename, huc_level,
+                  cache_key=f'hu{huc_level}',
+                  func_key='wbd_08', override=False):
     """
     Read WBD File using cache key.
     
@@ -20,40 +21,69 @@ def read_wbd_file(wbd_filename, huc_level, cache_key):
         wbd_filename (str): WBD file name 
         huc_level (int): HUC level
         cache_key (str): cache key to `cached` decorator
+        func_key (str, optional): File basename used to save pickled results
+        override (bool, optional): When True, re-compute even if the results are already stored
     Returns:
         wbd_gdf (gdf): GeoDataFrame
     """
-    import os
-    import earthpy as et
-    import geopandas as gpd
+    @cached(func_key, override)
+    def read_wbd_cached(wbd_filename, huc_level,
+                        cache_key=f'hu{huc_level}'):
+        """
+        Internal read WBD File using cache key.
+        
+        The `cache_key` must be passed as keyword in calls to `read_wbd_cached()`
+        so that the decorator can detect via `**kwargs`.
+        Args:
+            wbd_filename (str): WBD file name 
+            huc_level (int): HUC level
+            cache_key (str): cache key to `cached` decorator
+        Returns:
+            wbd_gdf (gdf): GeoDataFrame
+        """
+        import os
+        import earthpy as et
+        import geopandas as gpd
 
-    # Download and unzip
-    wbd_url = (
-        "https://prd-tnm.s3.amazonaws.com"
-        "/StagedProducts/Hydrography/WBD/HU2/Shape/"
-        f"{wbd_filename}.zip")
-    wbd_dir = et.data.get_data(url=wbd_url)
-                
-    # Read desired data
-    wbd_path = os.path.join(wbd_dir, 'Shape', f'WBDHU{huc_level}.shp')
-    wbd_gdf = gpd.read_file(wbd_path, engine='pyogrio')
+        # Download and unzip
+        wbd_url = (
+            "https://prd-tnm.s3.amazonaws.com"
+            "/StagedProducts/Hydrography/WBD/HU2/Shape/"
+            f"{wbd_filename}.zip")
+        wbd_dir = et.data.get_data(url=wbd_url)
+                    
+        # Read desired data
+        wbd_path = os.path.join(wbd_dir, 'Shape', f'WBDHU{huc_level}.shp')
+        wbd_gdf = gpd.read_file(wbd_path, engine='pyogrio')
+        return wbd_gdf
+    
+    # Read WBD file using `cache_key`.
+    # The `cache_key` is passed as keyword to the decorator via `**kwargs`.
+    wbd_gdf = read_wbd_cached(wbd_filename, huc_level, cache_key=cache_key)
     return wbd_gdf
 
 # read_wbd_file(wbd_filename, huc_level, cache_key)
 
 def read_delta_gdf(huc_level=12, huc_region='08', watershed='080902030506',
-                   dissolve=True):
+                   dissolve=True,
+                   func_key=f'wbd_{huc_region}', override=False):
     """
     Read Delta WBD using cache decorator.
 
     Args:
         huc_level (int): HUC level
+        huc_region (str): HUC region
+        dissolve (bool): When True, dissolve the watershed
         watershed (str): watershed ID
+        func_key (str, optional): File basename used to save pickled results
+        override (bool, optional): When True, re-compute even if the results are already stored
     Return:
         delta_gdf (gdf): gdf of delta
     """
     wbd_gdf = read_wbd_file(
-        f"WBD_{huc_region}_HU2_Shape", huc_level, cache_key=f'hu{huc_level}')
+        f"WBD_{huc_region}_HU2_Shape", huc_level,
+        cache_key=f'hu{huc_level}',
+        func_key=func_key, override=override)
 
     delta_gdf = wbd_gdf[f'huc{huc_level}']
     if not watershed is None:

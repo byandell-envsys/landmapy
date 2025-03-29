@@ -229,6 +229,67 @@ foo = decorator_with_args(arg)(foo)
 That is, `decorator_with_args()` is a function which accepts a custom argument
 and which returns the actual decorator (that will be applied to the decorated function).
 
+A decorator with arguments can be used in a notebook or document.
+However, in order to embed the arguments within a module takes a bit more care.
+For instance,
+[landmapy/reflect.py](https://github.com/byandell-envsys/landmapy/blob/main/landmapy/reflect.py)
+uses the `@cached` decorator
+from
+[landmapy/cached.py](https://github.com/byandell-envsys/landmapy/blob/main/landmapy/cached.py)
+to cache the results of the function.
+The original static use of the decorator was
+
+```{python}
+from landmapy.cached import cached
+
+@cached('wbd_08')
+def read_wbd_file(wbd_filename, huc_level, cache_key):
+    ...
+def read_delta_gdf(huc_level=12, huc_region='08', watershed='080902030506'):
+    wbd_gdf = read_wbd_file(
+        f"WBD_{huc_region}_HU2_Shape", huc_level, cache_key=f'hu{huc_level}')
+    ...
+```
+
+Note the keyword argument `cache_key` is used in the function `read_delta_gdf()` when
+calling the decorated function `read_wbd_file()`,
+with data cached in the `jars` directory as `f'wbd_08_hu{huc_level}.pickle'`,
+with the HUC level 12 changeable, but not the HUC region.
+To make this more flexible, the code was changed as follows:
+
+```{python}
+from landmapy.cached import cached
+
+def read_wbd_file(wbd_filename, huc_level,
+                  cache_key=f'hu{huc_level}',
+                  func_key='wbd_08', override=False):
+    @cached(func_key, override)
+    def read_wbd_cached(wbd_filename, huc_level,
+                        cache_key=f'hu{huc_level}'):
+    ...
+    wbd_gdf = read_wbd_cached(wbd_filename, huc_level, cache_key=cache_key)
+    return wbd_gdf
+def read_delta_gdf(huc_level=12, huc_region='08', watershed='080902030506',
+                   func_key=f'wbd_{huc_region}', override=False):
+    wbd_gdf = read_wbd_file(
+        f"WBD_{huc_region}_HU2_Shape", huc_level,
+        cache_key=f'hu{huc_level}',
+        func_key=func_key, override=override)
+    ...
+```
+
+Note that the function `read_delta_gdf()` is similar,
+but has added arguments for the @cached decorator `func_key` and `override`.
+In addition, `read_wbd_file()` is now an undecorated function that calls
+the decorated function `read_wbd_cached()`.
+The decorator `@cached` is now inside the function `read_wbd_file()`,
+called with arguments `func_key` and `override`.
+The keyword argument `cache_key` is still used in the function `read_delta_gdf()`
+and importantly in the call to the decorated function `read_wbd_cached()`
+from within `read_wbd_file()`.
+Data are now cached in the `jars` directory as `'f{func_key}_hu{huc_level}.pickle'`,
+which changes with the HUC level 12 and HUC region.
+
 ### Classes
 
 A 
