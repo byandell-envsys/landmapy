@@ -14,6 +14,9 @@ Please offer suggestions to improve.
     - [Spatial Libraries](#spatial-libraries)
     - [Interactive Plots](#interactive-plots)
   - [IPython Methods](#ipython-methods)
+    - [Data](#data)
+      - [Store Magic Data](#store-magic-data)
+      - [Cached Data via Decorator](#cached-data-via-decorator)
     - [Decorators](#decorators)
     - [Classes](#classes)
 
@@ -174,6 +177,57 @@ References:
   - [Interactive Computing](https://ipython.org/ipython-doc/3/interactive/tutorial.html)
 - [Store Magic](https://ipython.readthedocs.io/en/stable/config/extensions/storemagic.html)
 
+### Data
+
+Store Magic and caching are two ways to store data in Python using
+[pickle](https://docs.python.org/3/library/pickle.html).
+
+#### Store Magic Data
+
+[Store Magic](https://ipython.readthedocs.io/en/stable/config/extensions/storemagic.html)
+stores user data on demand via the magic command `%store blah` in a named file
+in `~/.ipython/profile_default/db/autorestore/`,
+and retrieve it with `%store -r blah`.
+This is useful for storing data between sessions or projects.
+
+The following code will try to retrieve the object `buffalo_gdf` if it was previously stored.
+The `try` statement checks if `buffalo_gdf` exists, creating a `NameError` exception if not,
+which leads to code to create and `%store` it.
+
+
+```{python}
+%store -r buffalo_gdf
+try:
+    buffalo_gdf
+except NameError:
+    import geopandas as gpd
+    # Assume `data_dir` is defined and `geojson` file is saved there.
+    # Read all grasslands GeoJSON into `grassland_gdf`.
+    grassland_url = f"{data_dir}/National_Grassland_Units_(Feature_Layer).geojson"
+    grassland_gdf = gpd.read_file(grassland_url)
+    # Subset to desired locations.
+    buffalo_gdf = grassland_gdf.loc[grassland_gdf['GRASSLANDNAME'].isin(
+        ["Buffalo Gap National Grassland", "Oglala National Grassland"])]
+    %store buffalo_gdf
+    print("buffalo_gdf created and stored")
+else:
+    print("buffalo_gdf retrieved from StoreMagic")
+```
+
+#### Cached Data via Decorator
+
+The
+[landmapy/cached.py](https://github.com/byandell-envsys/landmapy/blob/main/landmapy/cached.py)
+decorator caches data in the `jars` directory `~/earth-analytics/data/jars/`.
+The decorator `@cached` is used to cache the results of a function.
+See examples in
+[clustering.qmd](https://github.com/earthlab-education/clustering-byandell/blob/main/clustering.qmd)
+using functions in the
+[landmapy/reflect.py](https://github.com/byandell-envsys/landmapy/blob/main/landmapy/reflect.py)
+Some explanation of decorators is in the next section.
+There is no need to use Store Magic with this decorator,
+as it already caches the data in the `jars` directory.
+
 ### Decorators
 
 Code for a caching **decorator** is in
@@ -260,17 +314,15 @@ To make this more flexible, the code was changed as follows:
 ```{python}
 from landmapy.cached import cached
 
-def read_wbd_file(wbd_filename, huc_level,
-                  cache_key=f'hu{huc_level}',
+def read_wbd_file(wbd_filename, huc_level, cache_key,
                   func_key='wbd_08', override=False):
     @cached(func_key, override)
-    def read_wbd_cached(wbd_filename, huc_level,
-                        cache_key=f'hu{huc_level}'):
+    def read_wbd_cached(wbd_filename, huc_level, cache_key):
     ...
     wbd_gdf = read_wbd_cached(wbd_filename, huc_level, cache_key=cache_key)
     return wbd_gdf
 def read_delta_gdf(huc_level=12, huc_region='08', watershed='080902030506',
-                   func_key=f'wbd_{huc_region}', override=False):
+                   func_key='wbd_08', override=False):
     wbd_gdf = read_wbd_file(
         f"WBD_{huc_region}_HU2_Shape", huc_level,
         cache_key=f'hu{huc_level}',

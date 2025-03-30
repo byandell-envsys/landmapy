@@ -9,8 +9,7 @@ reflectance_kmeans: KMeans Clusters for Reflectance Bands
 reflectance_range: Check ranges of bands
 reflectance_rgb: RGB saturation of reflectance
 """
-def read_wbd_file(wbd_filename, huc_level,
-                  cache_key=f'hu{huc_level}',
+def read_wbd_file(wbd_filename, huc_level=12, cache_key=None,
                   func_key='wbd_08', override=False):
     """
     Read WBD File using cache key.
@@ -27,8 +26,7 @@ def read_wbd_file(wbd_filename, huc_level,
     from landmapy.cached import cached
 
     @cached(func_key, override)
-    def read_wbd_cached(wbd_filename, huc_level,
-                        cache_key=f'hu{huc_level}'):
+    def read_wbd_cached(wbd_filename, huc_level, cache_key):
         """
         Internal read WBD File using cache key decorated function.
         
@@ -53,6 +51,8 @@ def read_wbd_file(wbd_filename, huc_level,
     
     # Read WBD file using `cache_key`.
     # The `cache_key` is passed as keyword to the decorator via `**kwargs`.
+    if cache_key is None:
+        cache_key = f'hu{huc_level}'
     wbd_gdf = read_wbd_cached(wbd_filename, huc_level, cache_key=cache_key)
     return wbd_gdf
 
@@ -60,7 +60,7 @@ def read_wbd_file(wbd_filename, huc_level,
 
 def read_delta_gdf(huc_level=12, huc_region='08', watershed='080902030506',
                    dissolve=True,
-                   func_key=f'wbd_{huc_region}', override=False):
+                   func_key=None, override=False):
     """
     Read Delta WBD using cache decorator.
 
@@ -74,6 +74,8 @@ def read_delta_gdf(huc_level=12, huc_region='08', watershed='080902030506',
     Return:
         delta_gdf (gdf): gdf of delta
     """
+    if func_key is None:
+        func_key = f'wbd_{huc_region}'
     wbd_gdf = read_wbd_file(
         f"WBD_{huc_region}_HU2_Shape", huc_level,
         cache_key=f'hu{huc_level}',

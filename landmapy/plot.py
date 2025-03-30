@@ -318,7 +318,12 @@ def plot_cluster(rgb_sat, model_df):
     ax[0].imshow(img)
     ax[0].set_title('RGB Plot')
     ax[0].axis('off')
-    model_df.clusters.to_xarray().sortby(['x', 'y']).plot(ax=ax[1])
+    (
+        model_df
+        .clusters.to_xarray()
+        .sortby(['x', 'y'])
+        .plot(ax=ax[1], add_colorbar=False)
+    )
     ax[1].set_title('Clusters')
     ax[1].axis('off')
     ax[1].set_aspect('equal')
