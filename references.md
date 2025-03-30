@@ -15,6 +15,7 @@ Please offer suggestions to improve.
     - [Interactive Plots](#interactive-plots)
   - [IPython Methods](#ipython-methods)
     - [Data](#data)
+      - [Read and Write](#read-and-write)
       - [Store Magic Data](#store-magic-data)
       - [Cached Data via Decorator](#cached-data-via-decorator)
     - [Decorators](#decorators)
@@ -179,8 +180,35 @@ References:
 
 ### Data
 
-Store Magic and caching are two ways to store data in Python using
+Data can be explicitly stored in a file using `read` and `write` methods,
+or implicitly using the `pickle` module.
+Store Magic and caching are two ways to store data using
 [pickle](https://docs.python.org/3/library/pickle.html).
+
+#### Read and Write
+
+Many projects read and write to files.
+Following course guidelines, we use the `data_dir` variable to store data in a consistent location,
+which for EDA is `~/earth-analytics/data`.
+The
+[landmapy/initial.py](https://github.com/byandell-envsys/landmapy/blob/main/landmapy/initial.py)
+has function `create_data_dir()` to create a directory if it does not exist.
+
+```{python}
+def create_data_dir(new_dir):
+    import os
+    import pathlib
+
+    data_dir = os.path.join(
+        pathlib.Path.home(),
+        'earth-analytics',
+        'data',
+        new_dir
+    )
+    os.makedirs(data_dir, exist_ok=True)
+
+    return data_dir
+```
 
 #### Store Magic Data
 
