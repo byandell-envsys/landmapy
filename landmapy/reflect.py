@@ -9,8 +9,6 @@ reflectance_kmeans: KMeans Clusters for Reflectance Bands
 reflectance_range: Check ranges of bands
 reflectance_rgb: RGB saturation of reflectance
 """
-from landmapy.cached import cached
-
 def read_wbd_file(wbd_filename, huc_level,
                   cache_key=f'hu{huc_level}',
                   func_key='wbd_08', override=False):
@@ -26,20 +24,16 @@ def read_wbd_file(wbd_filename, huc_level,
     Returns:
         wbd_gdf (gdf): GeoDataFrame
     """
+    from landmapy.cached import cached
+
     @cached(func_key, override)
     def read_wbd_cached(wbd_filename, huc_level,
                         cache_key=f'hu{huc_level}'):
         """
-        Internal read WBD File using cache key.
+        Internal read WBD File using cache key decorated function.
         
         The `cache_key` must be passed as keyword in calls to `read_wbd_cached()`
         so that the decorator can detect via `**kwargs`.
-        Args:
-            wbd_filename (str): WBD file name 
-            huc_level (int): HUC level
-            cache_key (str): cache key to `cached` decorator
-        Returns:
-            wbd_gdf (gdf): GeoDataFrame
         """
         import os
         import earthpy as et
@@ -99,124 +93,144 @@ def read_delta_gdf(huc_level=12, huc_region='08', watershed='080902030506',
 
 # delta_gdf = read_delta_gdf(12)
 
-@cached('delta_reflectance_da_df')
-def compute_reflectance_da(search_results, boundary_gdf):
+def compute_reflectance_da(search_results, boundary_gdf,
+                           func_key='delta_reflectance_da_df',
+                           override=False):
     """
-    Connect to files over VSI, crop, cloud mask, and wrangle.
+    Compute reflectance as DataArray.
     
-    Returns a single reflectance DataFrame 
-    with all bands as columns and
-    centroid coordinates and datetime as the index.
+    Connects to files over VSI, crop, cloud mask, and wrangle.
+    Returns a single reflectance DataFrame with all bands as columns
+    and centroid coordinates and datetime as the index.
     
     Args:
         file_df (df): File connection and metadata (datetime, tile_id, band, and url)
         boundary_gdf (gdf): Boundary use to crop the data
+        func_key (str, optional): File basename used to save pickled results
+        override (bool, optional): When True, re-compute even if the results are already stored
     Returns:
         granule_da_df (df): Single granule reflectance
     """
-    from landmapy.earthaccess import get_earthaccess_links
-    import rioxarray as rxr
-    import numpy as np
-    import pandas as pd
-    from tqdm.notebook import tqdm
+    from landmapy.cached import cached
 
-    def open_dataarray(url, boundary_proj_gdf, scale=1, masked=True):
-        # Open masked DataArray
-        da = rxr.open_rasterio(url, masked=masked).squeeze() * scale
-        
-        # Reproject boundary if needed
-        if boundary_proj_gdf is None:
-            boundary_proj_gdf = boundary_gdf.to_crs(da.rio.crs)
+    @cached(func_key, override)
+    def compute_reflectance_cached(search_results, boundary_gdf):
+        """Internal compute reflectance decorated function."""
+        from landmapy.earthaccess import get_earthaccess_links
+        import rioxarray as rxr
+        import numpy as np
+        import pandas as pd
+        from tqdm.notebook import tqdm
+
+        def open_dataarray(url, boundary_proj_gdf, scale=1, masked=True):
+            """Open masked DataArray."""
+            da = rxr.open_rasterio(url, masked=masked).squeeze() * scale
             
-        # Crop
-        cropped = da.rio.clip_box(*boundary_proj_gdf.total_bounds)
-        return cropped
+            # Reproject boundary if needed
+            if boundary_proj_gdf is None:
+                boundary_proj_gdf = boundary_gdf.to_crs(da.rio.crs)
+                
+            # Crop
+            cropped = da.rio.clip_box(*boundary_proj_gdf.total_bounds)
+            return cropped
+        
+        def compute_quality_mask(da, mask_bits=[1, 2, 3]):
+            """Mask out low quality data by bit."""
+            # Unpack bits into a new axis
+            bits = (
+                np.unpackbits(
+                    da.astype(np.uint8), bitorder='little'
+                ).reshape(da.shape + (-1,))
+            )
+
+            # Select the required bits and check if any are flagged
+            mask = np.prod(bits[..., mask_bits]==0, axis=-1)
+            return mask
+
+        file_df = get_earthaccess_links(search_results)
+        
+        granule_da_rows= []
+        boundary_proj_gdf = None
+
+        # Loop through each image
+        group_iter = file_df.groupby(['datetime', 'tile_id'])
+        for (datetime, tile_id), granule_df in tqdm(group_iter):
+            print(f'Processing granule {tile_id} {datetime}')
+                
+            # Open granule cloud cover
+            cloud_mask_url = (
+                granule_df.loc[granule_df.band=='Fmask', 'url']
+                .values[0])
+            cloud_mask_cropped_da = open_dataarray(cloud_mask_url, boundary_proj_gdf, masked=False)
+
+            # Compute cloud mask
+            cloud_mask = compute_quality_mask(cloud_mask_cropped_da)
+
+            # Loop through each spectral band
+            da_list = []
+            df_list = []
+            for i, row in granule_df.iterrows():
+                if row.band.startswith('B'):
+                    # Open, crop, and mask the band
+                    band_cropped = open_dataarray(
+                        row.url, boundary_proj_gdf, scale=0.0001)
+                    band_cropped.name = row.band
+                    # Add the DataArray to the metadata DataFrame row
+                    row['da'] = band_cropped.where(cloud_mask)
+                    granule_da_rows.append(row.to_frame().T)
+        
+        # Reassemble the metadata DataFrame
+        return pd.concat(granule_da_rows)
     
-    def compute_quality_mask(da, mask_bits=[1, 2, 3]):
-        """Mask out low quality data by bit."""
-        # Unpack bits into a new axis
-        bits = (
-            np.unpackbits(
-                da.astype(np.uint8), bitorder='little'
-            ).reshape(da.shape + (-1,))
-        )
-
-        # Select the required bits and check if any are flagged
-        mask = np.prod(bits[..., mask_bits]==0, axis=-1)
-        return mask
-
-    file_df = get_earthaccess_links(search_results)
-    
-    granule_da_rows= []
-    boundary_proj_gdf = None
-
-    # Loop through each image
-    group_iter = file_df.groupby(['datetime', 'tile_id'])
-    for (datetime, tile_id), granule_df in tqdm(group_iter):
-        print(f'Processing granule {tile_id} {datetime}')
-              
-        # Open granule cloud cover
-        cloud_mask_url = (
-            granule_df.loc[granule_df.band=='Fmask', 'url']
-            .values[0])
-        cloud_mask_cropped_da = open_dataarray(cloud_mask_url, boundary_proj_gdf, masked=False)
-
-        # Compute cloud mask
-        cloud_mask = compute_quality_mask(cloud_mask_cropped_da)
-
-        # Loop through each spectral band
-        da_list = []
-        df_list = []
-        for i, row in granule_df.iterrows():
-            if row.band.startswith('B'):
-                # Open, crop, and mask the band
-                band_cropped = open_dataarray(
-                    row.url, boundary_proj_gdf, scale=0.0001)
-                band_cropped.name = row.band
-                # Add the DataArray to the metadata DataFrame row
-                row['da'] = band_cropped.where(cloud_mask)
-                granule_da_rows.append(row.to_frame().T)
-    
-    # Reassemble the metadata DataFrame
-    return pd.concat(granule_da_rows)
+    return compute_reflectance_cached(search_results, boundary_gdf)
 
 # reflectance_da_df = compute_reflectance_da(results, delta_gdf)
 
-@cached('delta_reflectance_da')
-def merge_and_composite_arrays(granule_da_df):
+def merge_and_composite_arrays(granule_da_df,
+                               func_key='delta_reflectance_da',
+                               override=False):
     """
     Merge and Composite Arrays.
 
     Args:
         granule_da_df (df): dataframe with granule information
+        func_key (str, optional): File basename used to save pickled results
+        override (bool, optional): When True, re-compute even if the results are already stored
     Returns:
         da: data array with merged band information
     """
-    from tqdm.notebook import tqdm
-    import rioxarray.merge as rxrmerge
-    import xarray as xr    
+    from landmapy.cached import cached
 
-    # Merge and composite and image for each band
-    df_list = []
-    da_list = []
-    for band, band_df in tqdm(granule_da_df.groupby('band')):
-        merged_das = []
-        for datetime, date_df in tqdm(band_df.groupby('datetime')):
-            # Merge granules for each date
-            merged_da = rxrmerge.merge_arrays(list(date_df.da))
-            # Mask negative values
-            merged_da = merged_da.where(merged_da>0)
-            merged_das.append(merged_da)
+    @cached(func_key, override)
+    def merge_and_composite_cached(granule_da_df):
+        """Internal Merge and Composite Arrays decorated function."""
+        from tqdm.notebook import tqdm
+        import rioxarray.merge as rxrmerge
+        import xarray as xr    
+
+        # Merge and composite and image for each band
+        df_list = []
+        da_list = []
+        for band, band_df in tqdm(granule_da_df.groupby('band')):
+            merged_das = []
+            for datetime, date_df in tqdm(band_df.groupby('datetime')):
+                # Merge granules for each date
+                merged_da = rxrmerge.merge_arrays(list(date_df.da))
+                # Mask negative values
+                merged_da = merged_da.where(merged_da>0)
+                merged_das.append(merged_da)
+                
+            # Composite images across dates
+            composite_da = xr.concat(merged_das, dim='datetime').median('datetime')
+            composite_da['band'] = int(band[1:])
+            composite_da.name = 'reflectance'
+            da_list.append(composite_da)
             
-        # Composite images across dates
-        composite_da = xr.concat(merged_das, dim='datetime').median('datetime')
-        composite_da['band'] = int(band[1:])
-        composite_da.name = 'reflectance'
-        da_list.append(composite_da)
-        
-    return xr.concat(da_list, dim='band')
+        return xr.concat(da_list, dim='band')
+    
+    return merge_and_composite_cached(granule_da_df)
 
-# reflectance_da = merge_and_composite_arrays(reflectance_da_df)
+# reflectance_da = merge_and_composite_arrays(granule_da_df)
 
 def reflectance_kmeans(reflectance_da):
     """
