@@ -252,6 +252,7 @@ See examples in
 [clustering.qmd](https://github.com/earthlab-education/clustering-byandell/blob/main/clustering.qmd)
 using functions in the
 [landmapy/reflect.py](https://github.com/byandell-envsys/landmapy/blob/main/landmapy/reflect.py)
+module.
 Some explanation of decorators is in the next section.
 There is no need to use Store Magic with this decorator,
 as it already caches the data in the `jars` directory.
@@ -358,10 +359,10 @@ def read_delta_gdf(huc_level=12, huc_region='08', watershed='080902030506',
     ...
 ```
 
-Note that the function `read_delta_gdf()` is similar,
-but has added arguments for the @cached decorator `func_key` and `override`.
+The revised function `read_delta_gdf()` has added arguments
+for the @cached decorator `func_key` and `override`.
 In addition, `read_wbd_file()` is now an undecorated function that calls
-the decorated function `read_wbd_cached()`.
+the internal decorated function `read_wbd_cached()`.
 The decorator `@cached` is now inside the function `read_wbd_file()`,
 called with arguments `func_key` and `override`.
 The keyword argument `cache_key` is still used in the function `read_delta_gdf()`
@@ -376,15 +377,22 @@ A
 [class](https://docs.python.org/3/tutorial/classes.html)
 is a function with output of an object that has new methods, which are in turn functions
 defined in the class.
-In addition, the `@property` decorator defines attributes for the object.
-The main use of classes are to:
+In addition, the `@property` decorator defines attributes for an object.
+The main uses of classes are to:
 
-- add functionality to class
-- streamline different functions with same parameters to keep track of metadata
+- add functionality to an existing class
+- streamline different functions with the same parameters to keep track of metadata
 
 **AI overview:**
-In Python, a class serves as a blueprint for creating objects, which are instances that encapsulate data (attributes) and behavior (methods). Classes facilitate object-oriented programming (OOP) principles, enabling code reusability, modularity, and organization.
-A class is defined using the class keyword, followed by the class name and a colon. Inside the class block, attributes and methods are defined. The __init__ method is a special method, known as the constructor, which is automatically called when an object of the class is created. It is used to initialize the object's attributes.
+In Python, a class serves as a blueprint for creating objects,
+which are instances that encapsulate data (attributes) and behavior (methods).
+Classes facilitate object-oriented programming (OOP) principles,
+enabling code reusability, modularity, and organization.
+A class is defined using the class keyword, followed by the class name and a colon.
+Inside the class block, attributes and methods are defined.
+The __init__ method is a special method, known as the constructor,
+which is automatically called when an object of the class is created
+to initialize the object's attributes.
 
 - [Habitat Suitability Notes](https://github.com/earthlab-education/habitat-suitability-byandell/blob/main/notes.qmd)
 - [Python 3 Documentation](https://docs.python.org/3/)
