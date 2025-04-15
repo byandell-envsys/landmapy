@@ -144,7 +144,6 @@ soil_da = rxr.open_rasterio(
 )
 ```
 
-
 ## Fuzzy Logic Model 27 Feb 2025
 
 You can find it under the "Modules" section on Canvas. Elsa has also provided a link to a conversation with ChatGPTLinks to an external site. that she had on how to implement fuzzy models using scikit-fuzzy in Python, as another resource for you. 
@@ -152,7 +151,7 @@ You can find it under the "Modules" section on Canvas. Elsa has also provided a 
 - Elsa demo
   - [Elsa Video on Fuzzy Logic](https://canvas.colorado.edu/courses/115453/modules/items/6282073)
   - [Elsa ChatGPT](https://chatgpt.com/share/67c094af-9724-8000-9004-6f25d266cd85)
-  - <notes_fuzzy.md> (source <notes_fuzzy.qmd>)
+  - [notes_fuzzy.md](notes_fuzzy.md) (source [notes_fuzzy.qmd](notes_fuzzy.qmd))
 - [Fall 2024 habitatSuitability/4_build](https://github.com/byandell-envsys/habitatSuitability/blob/main/4_build.ipynb)
 - [SciKit Fuzzy](https://pypi.org/project/scikit-fuzzy/)
   - [SciKit Fuzzy readthedocs](https://scikit-fuzzy.readthedocs.io/en/latest/)
