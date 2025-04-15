@@ -1,7 +1,5 @@
 ---
 title: "EDA Notes for Habitat Suitability"
-execute:
-  eval: false
 ---
 
 # EDA Notes for Habitat Suitability

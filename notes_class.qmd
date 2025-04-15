@@ -1,6 +1,8 @@
 ---
 title: Demo for objects and classes
 jupyter: python3
+execute:
+  eval: false
 ---
 
 ## Examples

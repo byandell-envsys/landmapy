@@ -1,6 +1,8 @@
 ---
 title: 'Habitat suitability under climate change: Step 1'
 jupyter: python3
+execute:
+  eval: false
 ---
 
 Demo going through parts of Step 1 of the latest coding assignment.
