@@ -37,7 +37,15 @@ and reports due probably the 10th.
   - [GBIF review 25 Feb 2025](#gbif-review-25-feb-2025)
   - [Classes 20 Feb 2025](#classes-20-feb-2025)
 
-See also `notes_*.qmd` files cited in named sections.
+See also `notes_*.md` files
+(or their source files `notes_*.qmd`) cited in named sections.
+They were rendered using the following Quarto commands:
+
+```bash
+quarto render notes_fuzzy.qmd -t markdown
+quarto render notes_gbif.qmd -t markdown
+quarto render notes_class.qmd -t markdown
+```
 
 ## Notes 3 Apr 2025
 
@@ -144,7 +152,7 @@ You can find it under the "Modules" section on Canvas. Elsa has also provided a 
 - Elsa demo
   - [Elsa Video on Fuzzy Logic](https://canvas.colorado.edu/courses/115453/modules/items/6282073)
   - [Elsa ChatGPT](https://chatgpt.com/share/67c094af-9724-8000-9004-6f25d266cd85)
-  - [notes_fuzzy.qmd](https://github.com/earthlab-education/habitat-suitability-byandell/blob/main/notes_fuzzy.qmd)
+  - <notes_fuzzy.md> (source <notes_fuzzy.qmd>)
 - [Fall 2024 habitatSuitability/4_build](https://github.com/byandell-envsys/habitatSuitability/blob/main/4_build.ipynb)
 - [SciKit Fuzzy](https://pypi.org/project/scikit-fuzzy/)
   - [SciKit Fuzzy readthedocs](https://scikit-fuzzy.readthedocs.io/en/latest/)
@@ -185,17 +193,17 @@ Resources:
 
 - [USDA Natural Resources Convervations Service: Plant Guide: Indiangrass](https://www.nrcs.usda.gov/plantmaterials/etpmcpg13196.pdf)
 
-- <notes_fuzzy.qmd>
-  - [Brian Notes](notes_fuzzy.qmd#brian-notes)
-  - [Elsa Notes](notes_fuzzy.qmd#elsa-notes)
+- <notes_fuzzy.md> (source <notes_fuzzy.qmd>)
+  - [Brian Notes](notes_fuzzy.md#brian-notes)
+  - [Elsa Notes](notes_fuzzy.md#elsa-notes)
 
 ## GBIF review 25 Feb 2025
 
 - Katherine Siegel Demo
   - [Katherine Siegel Video](https://canvas.colorado.edu/courses/115453/modules/items/6278820)
-  - <notes_gbif.qmd>
-    - [Brian Notes](notes_gbif.qmd#brian-notes)
-    - [Katherine Notes](notes_gbif.qmd#katherine-notes)
+  - <notes_gbif.md> (source <notes_gbif.qmd>)
+    - [Brian Notes](notes_gbif.md#brian-notes)
+    - [Katherine Notes](notes_gbif.md#katherine-notes)
 - https://pygbif.readthedocs.io/en/latest/
 - https://github.com/earthlab-education/species-distribution-coding-challenge-byandell/blob/main/notebooks/siberian-crane-species-download.ipynb 
 - earthlab-education and look at repos
@@ -207,7 +215,7 @@ Resources:
 ## Classes 20 Feb 2025
 
 - [Katherine Siegel Video on Classes](https://canvas.colorado.edu/courses/115453/modules/items/6273791)
-  - <notes_class.qmd>
+  - <notes_class.md> (source <notes_class.qmd>)
 - [EDA Reference for Python Coding: Classes](https://github.com/byandell-envsys/EarthDataAnalytics/blob/main/references.md#classes)
 for references and discussion of classes.
 
