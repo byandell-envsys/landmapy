@@ -192,7 +192,7 @@ Resources:
 
 - [USDA Natural Resources Convervations Service: Plant Guide: Indiangrass](https://www.nrcs.usda.gov/plantmaterials/etpmcpg13196.pdf)
 
-- <notes_fuzzy.md> (source <notes_fuzzy.qmd>)
+- [notes_fuzzy.md](notes_fuzzy.md) (source [notes_fuzzy.qmd](notes_fuzzy.qmd))
   - [Brian Notes](notes_fuzzy.md#brian-notes)
   - [Elsa Notes](notes_fuzzy.md#elsa-notes)
 
@@ -200,7 +200,7 @@ Resources:
 
 - Katherine Siegel Demo
   - [Katherine Siegel Video](https://canvas.colorado.edu/courses/115453/modules/items/6278820)
-  - <notes_gbif.md> (source <notes_gbif.qmd>)
+  - [notes_gbif.md](notes_gbif.md) (source [notes_gbif.qmd](notes_gbif.qmd))
     - [Brian Notes](notes_gbif.md#brian-notes)
     - [Katherine Notes](notes_gbif.md#katherine-notes)
 - https://pygbif.readthedocs.io/en/latest/
@@ -214,7 +214,7 @@ Resources:
 ## Classes 20 Feb 2025
 
 - [Katherine Siegel Video on Classes](https://canvas.colorado.edu/courses/115453/modules/items/6273791)
-  - <notes_class.md> (source <notes_class.qmd>)
+  - [notes_class.md](notes_class.md) (source [notes_class.qmd](notes_class.qmd))
 - [EDA Reference for Python Coding: Classes](https://github.com/byandell-envsys/EarthDataAnalytics/blob/main/references.md#classes)
 for references and discussion of classes.
 
