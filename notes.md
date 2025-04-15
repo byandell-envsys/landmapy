@@ -39,7 +39,9 @@ and reports due probably the 10th.
 
 See also `notes_*.md` files
 (or their source files `notes_*.qmd`) cited in named sections.
-They were rendered using the following Quarto commands:
+They were rendered for easy viewing in GitHub using the following
+[Quarto](https://quarto.org)
+commands via the shell:
 
 ```bash
 quarto render notes_fuzzy.qmd -t markdown
