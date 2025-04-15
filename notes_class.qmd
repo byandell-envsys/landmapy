@@ -3,6 +3,163 @@ title: Demo for objects and classes
 jupyter: python3
 ---
 
+## Examples
+
+Simple example with representer `__repr__`.
+
+```{python}
+import pandas as pd
+import xarray as xr
+
+class ArrayDataFrame(pd.DataFrame): # inherits pd.DataFrame class
+
+    def set_array_column(self, arrays):
+        self['arrays'] = arrays
+        return self
+
+    def __repr__(self):
+        for_printing = self.copy()
+        for_printing.arrays = [arr.min() for arr in self.arrays]
+        return for_printing.__repr__()
+```       
+
+```{python}
+ArrayDataFrame({'url': ['https://...']}).set_array_column([xr.DataArray()])
+```
+
+Show example where class would help.
+
+```{python}
+import random
+import numpy as np
+import xarray as xr
+
+def gen_data_array(size=10):
+    data = (
+        np.array([random.gauss(0,1) for _ in range(size**2)]).reshape(size, size))
+    data = xr.DataArray(
+        data = data,
+        coords = {
+            'x': [i * random.uniform(0,1) for i in range(size)],
+            'y': [i * random.uniform(0,1) for i in range(size)]
+        },
+        dims=['x','y']
+    )
+    return data
+```
+
+```{python}
+gen_data_array(10)
+```
+
+```{python}
+df_len = 10
+my_df = pd.DataFrame({
+    'id': list(range(df_len)),
+    'array': [gen_data_array(10) for _ in range(df_len)]
+})
+print(my_df)
+```
+
+```{python}
+class FunDataFrame(pd.DataFrame):
+    # represent
+    def __repr__(self):
+        return 'stuff!'
+```
+
+```{python}
+my_df
+```
+
+Add ipython method (under the hood concept)
+
+```{python}
+class FunDataFrame(pd.DataFrame):
+    # represent
+    def __repr__(self):
+        return 'stuff!'
+    # ipython method
+    def _repr_html_(self):
+        return 'more stuff!!!'
+```
+
+```{python}
+my_df
+```
+
+
+```{python}
+class FunDataFrame(pd.DataFrame):
+
+    # attribute to make a dataframe
+    @property
+    def _df_for_repr_(self):
+        df = self.drop(columns = ['array']).copy()
+        return df
+    # represent
+    def __repr__(self):
+        return self._df_for_repr_.__repr__()
+    # ipython method
+    def _repr_html_(self):
+        return self._df_for_repr_._repr_html_()
+```
+
+```{python}
+my_df
+```
+
+Set up my dataframe class to show what I want
+
+```{python}
+class FunDataFrame(pd.DataFrame):
+
+    # define array_types (does not appear to be used yet) 
+    array_types = [xr.DataArray]
+
+    # attribute to return `array_cols`
+    @property
+    def array_cols(self):
+        array_cols = []
+        for col in self:
+            if type(self[col][0]) == xr.DataArray:
+                array_cols.append(col)
+                return array_cols
+
+    # more complicated attribute
+    @property
+    def _df_for_repr_(self):
+        df = self.drop(columns = self.array_cols).copy()
+        for array_col in self.array_cols:
+            arr_str_list = []
+            for arr in self[array_col]:
+                arr_min = round(float(arr.x.min()), 2)
+                arr_max = round(float(arr.x.max()), 2)
+                arr_str_list.append(
+                    f'DataArray(x ({arr_min}, {arr_max}))'
+                )
+            df[array_col] = arr_str_list
+            #df[array_col] = ['DataArray' for _ in range(len(df))]
+        return df
+    
+    # represent
+    def __repr__(self):
+        return self._df_for_repr_.__repr__()
+    # ipython method
+    def _repr_html_(self):
+        return self._df_for_repr_._repr_html_()
+```
+
+```{python}
+my_df = FunDataFrame({
+    'id': list(range(df_len)),
+    'array': [gen_data_array(10) for _ in range(df_len)],
+    'array2': [gen_data_array(10) for _ in range(df_len)]})
+my_df
+```
+
+## Demo
+
 ### Set up
 
 ```{python}
@@ -58,6 +215,7 @@ my_df
 ```
 
 #### Attributes
+
 Attributes can be inconsistent. shape is an attribute:
 
 ```{python}
@@ -86,6 +244,7 @@ my_df.column_1
 ```
 
 ### Writing classes
+
 Example: writing a class to store our latitude and longitude
 
 ```{python}

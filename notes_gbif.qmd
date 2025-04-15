@@ -8,6 +8,146 @@ Katherine Siegel, 25 Feb 2025.
 
 - [Recording](https://canvas.colorado.edu/courses/115453/modules/items/6278820)
 - [Protected Areas Database (PAD-US)](https://www.usgs.gov/programs/gap-analysis-project/science/pad-us-data-download)
+- [Brian Notes](#brian-notes)
+- [Katherine Notes](#katherine-notes)
+
+## Brian Notes
+
+```{python}
+#| eval: false
+pip install pygbif
+```
+
+```{python}
+## reproducible file paths
+import os
+from glob import glob
+import pathlib
+
+## GBIF packages
+import pygbif.occurrences as occ
+import pygbif.species as species
+from getpass import getpass
+
+## unzip and handle gbif data
+import zipfile
+import time
+
+## spatial data
+import geopandas as gpd
+import xrspatial as xr
+
+## other data
+import numpy as np
+import pandas as pd
+import rioxarray as rxr
+import rioxarray.merge as rxrm
+
+## invalid geometries
+from shapely.geometry import MultiPolygon, Polygon
+
+## viz data
+import holoviews as hv
+import hvplot.pandas
+import hvplot.xarray
+```
+
+```{python}
+# make repro file paths
+data_dir = os.path.join(
+    # home directory
+	pathlib.Path.home(),
+	
+	### eda directory
+	'earth-analytics',
+    'data',
+    'hab_suit'
+)
+os.makedirs(data_dir, exist_ok = True)
+```
+
+Sutdy species: Lupinus argenteus (silvery lupine)
+
+```{python}
+gbif_dir = os.path.join(data_dir, 'gbif_lupine')
+```
+
+```{python}
+reset_credentials = False
+
+credentials = dict(
+    GBIF_USER=(input, 'GBIF username:'),
+    GBIF_PWD=(getpass, 'GBIF password:'),
+    GBIF_EMAIL=(input, 'GBIF email:')
+)
+for env_variable, (prompt_func, prompt_text) in credentials.items():
+    if reset_credentials and (env_variable in os.environ):
+        os.environ.pop(env_variable)
+    if not env_variable in os.environ:
+        os.environ[env_variable] = prompt_func(prompt_text)
+```
+
+Now in GBIF. Supply species code.
+
+```{python}
+species_name = 'Lupinus argenteus'
+species_info = species.name_lookup(species_name, rank='SPECIES')
+# grab first
+first_result = species_info['results'][0]
+species_key = first_result['nubKey']
+first_result['species'], species_key
+```
+
+```{python}
+## assign species code
+species_key = 2964374
+```
+
+Do this once.
+Had trouble withing loop below so tried outside.
+
+```python
+gbif_query = occ.download([
+        f"speciesKey = {species_key}",
+        "hasCoordinate = True"
+    ])
+gbif_query
+```
+
+```{python}
+gbif_pattern = os.path.join(gbif_dir, '*.csv')
+## download once
+if not glob(gbif_pattern):
+    #***with error status code 503check your number of active downloads***
+    gbif_query = occ.download([
+        f"speciesKey = {species_key}",
+        "hasCoordinate = True"
+    ])
+
+    if not 'GBIF_DOWNLOAD_KEY' in os.environ:
+        os.environ['GBIF_DOWNLOAD_KEY'] = gbif_query[0]
+        download_key = os.environ['GBIF_DOWNLOAD_KEY']
+        # wait for download to build
+        wait = occ.download_meta(download_key)
+        while not wait == 'SUCCEEDED':
+            wait = occ.download_meta(download_key)['status']
+            time.sleep(5)
+
+    # download data
+    # ***'function' object has no attribute 'get'***
+    download_info = occ.download_get(
+        os.environ['GBIF_DOWNLOAD_KEY'],
+        path = data_dir
+    )
+    # unzip
+    with zipfile.ZipFile(download_info['path']) as download_zip:
+        download_zip.extractall(path = gbif_dir)
+
+## find csv file path
+gbif_path = glob(gbif_pattern)[0]
+```
+
+## Katherine Notes
 
 #### Prep workspace
 
