@@ -21,9 +21,38 @@ python code development
 
 ## National Biodiversity Status & Trends
 
-Zach Steele 11:51
+Zach Steele 11:51-19:16
 
 R-shiny tool at national scale
+
+- <https://steelecology.shinyapps.io/RPA_Shiny/>
+- <https://github.com/zacksteel>
+- <https://zack-steel.com/>
+- [The fastest-growing and most destructive fires in the US (2001 to 2020)](https://www.science.org/doi/10.1126/science.adk5737)
+
+### Description
+
+RShiny app for National Biodiversity Status and Trends
+
+- Web-based tool to explore and visualize data on biodiversity and wildlife across the US
+- Goal: people can summarize data in specific National Forests/jurisdictions
+- Project: build out data visualization and other functions 
+    - Want to layer on ranges of threatened and endangered species, functionality to explore trend data where they have it 
+- Motivation: US Forest Service mandated to report on biodiversity status and trends at national scale. Want to be able to look across spatial scales.
+ Need experience with spatial data
+- Will be working with RShiny
+
+Overview of USFS motivation
+
+- fire management: putting out, after, rec & wildlife
+- increased freq & size of fires
+- management of sensitive species
+- how does fire impact species diversity
+- automated surveys at selected points
+- nationwide
+    - multiscale: continental mandates, forest units
+    - forest unit plans updated every 10-15 years
+    - species, forest actions
 
 ## NEON
 
