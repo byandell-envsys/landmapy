@@ -105,7 +105,7 @@ but they generate massive image objects--Mb vs Kb for
 similar image objects.
 
 - [HoloViews](http://holoviews.org/)
-  - [hvplot.py](hvplot.py)
+  - [hv_plots.py](hv_plots.py)
   - [GeoViews](http://geoviews.org/)
   - [gvplot.py](gvplot.py)
 

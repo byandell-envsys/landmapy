@@ -1,0 +1,58 @@
+---
+title: "Working with time-series from the USGS"
+format: html
+---
+
+## Working with time-series from the USGS
+In this notebook we'll walk you through how to access data from the USGS Water Data initiative. We'll look at a USGS stream gage that monitors flows on the White River located near Oglala, SD.
+
+Read more about this USGS stream gage here: <https://waterdata.usgs.gov/monitoring-location/USGS-06446000/>
+
+```{python}
+#| label: install-deps
+#| eval: false
+!pip install geopandas hvplot geoviews dataretrieval
+```
+
+```{python}
+#| label: fetch-data
+from landmapy.usgs import get_usgs_data
+
+# Fetch and visualize data using the landmapy function
+df_daily = get_usgs_data(
+    site_id="06446000",
+    site_name="White River near Oglala, SD",
+    latitude=43.2548611,
+    longitude=-102.8268889,
+    parameters=["00065", "00060"],
+    start_date="1990-10-01",
+    end_date="2026-02-03",
+    plot_map=True,
+    plot_series=True
+)
+
+df_daily.head()
+```
+
+# Now it is your turn
+Think of a heavy rainfall, flood, drought, or other hydrologic event that you would like to tell a story about using data. When did the event take place? Where did it happen?
+
+Select a USGS gaging station that will help you tell this data story.
+
+USGS NWIS Mapper: <https://maps.waterdata.usgs.gov/mapper/index.html>
+
+Once you have the unique site number and lat/lon, you can either:
+
+* Modify the code above that we used to look at the White River
+* Copy and paste the code from above, and then modify
+
+Add new code cells by with the `+ Code` button on the ribbon at the top of this notebook.
+
+# Answer the following questions. (**You can make edits to this text box by double clicking**)
+Site number:
+
+Site location:
+
+Hydrologic event of interest:
+
+Why did you select this location/event?
