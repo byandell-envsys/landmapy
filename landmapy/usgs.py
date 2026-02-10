@@ -129,6 +129,54 @@ def find_usgs_site(site_name, state_code):
     
     return filtered_df[available_cols]
 
+def get_site_metadata(site_id):
+    """
+    Retrieve available parameters and period of record for a USGS site.
+    
+    Args:
+        site_id (str): USGS site number.
+        
+    Returns:
+        dict: Metadata containing site_id, parameters, start_date, and end_date.
+    """
+    # Fetch site series catalog
+    df, meta = nwis.get_info(sites=site_id, seriesCatalogOutput=True)
+    
+    if df.empty:
+        return {
+            "site_id": site_id,
+            "parameters": [],
+            "start_date": None,
+            "end_date": None
+        }
+    
+    # Filter for daily values ('dv')
+    df_dv = df[df['data_type_cd'] == 'dv'].copy()
+    
+    if df_dv.empty:
+        # Fallback to all series if no 'dv' found, or handle as empty
+        params = []
+        start = None
+        end = None
+    else:
+        # Get unique parameter codes, dropping NaNs
+        params = df_dv['parm_cd'].dropna().unique().tolist()
+        
+        # Determine overall period of record for daily values
+        # Convert to datetime to find min/max
+        df_dv['begin_date'] = pd.to_datetime(df_dv['begin_date'])
+        df_dv['end_date'] = pd.to_datetime(df_dv['end_date'])
+        
+        start = df_dv['begin_date'].min().strftime('%Y-%m-%d')
+        end = df_dv['end_date'].max().strftime('%Y-%m-%d')
+    
+    return {
+        "site_id": site_id,
+        "parameters": params,
+        "start_date": start,
+        "end_date": end
+    }
+
 if __name__ == "__main__":
     # Example 1: Original usage
     result = get_usgs_data(plot_map=False, plot_series=False)
@@ -139,3 +187,8 @@ if __name__ == "__main__":
     print("\nSearching for 'White River' in SD:")
     sites = find_usgs_site("White River", "SD")
     print(sites.head())
+    
+    # Example 3: Fetching site metadata
+    print("\nFetching metadata for 06446000:")
+    meta = get_site_metadata("06446000")
+    print(meta)

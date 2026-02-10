@@ -11,26 +11,36 @@ Read more about this USGS stream gage here:
 <https://waterdata.usgs.gov/monitoring-location/USGS-06446000/>
 
 ``` python
-!pip install geopandas hvplot geoviews dataretrieval
+!pip install --quiet geopandas hvplot geoviews dataretrieval
 ```
 
 ``` python
-from landmapy.usgs import get_usgs_data
+from landmapy.usgs import get_usgs_data, find_usgs_site, get_site_metadata
 
-# Fetch and visualize data using the landmapy function
-df_daily = get_usgs_data(
-    site_id="06446000",
-    site_name="White River near Oglala, SD",
-    latitude=43.2548611,
-    longitude=-102.8268889,
-    parameters=["00065", "00060"],
-    start_date="1990-10-01",
-    end_date="2026-02-03",
-    plot_map=True,
-    plot_series=True
-)
+# Find the site information dynamically
+sites = find_usgs_site("White River near Oglala", "SD")
 
-df_daily.head()
+if not sites.empty:
+    site_info = sites.iloc[0]
+    site_id = site_info['site_no']
+    
+    # Get available parameters and period of record
+    meta = get_site_metadata(site_id)
+    
+    df_daily = get_usgs_data(
+        site_id=site_id,
+        site_name=site_info['station_nm'],
+        latitude=site_info['dec_lat_va'],
+        longitude=site_info['dec_long_va'],
+        parameters=meta['parameters'],
+        start_date=meta['start_date'],
+        end_date=meta['end_date'],
+        plot_map=True,
+        plot_series=True
+    )
+    print(df_daily.head())
+else:
+    print("Site not found.")
 ```
 
 <script type="esms-options">{"shimMode": true}</script><style>*[data-root-id],
@@ -54,12 +64,12 @@ df_daily.head()
 
     Unable to display output for mime type(s): application/javascript, application/vnd.holoviews_load.v0+json
 
-<div id='519e9b26-4ffd-44a5-beb4-f300e8630fbe'>
-  <div id="b5f900bd-da59-4ba8-9732-5afc314c534e" data-root-id="519e9b26-4ffd-44a5-beb4-f300e8630fbe" style="display: contents;"></div>
+<div id='de207f1b-a4b2-4693-9eab-bd5b11135d85'>
+  <div id="a165ec4e-bd5e-494c-8f09-737dde4e3234" data-root-id="de207f1b-a4b2-4693-9eab-bd5b11135d85" style="display: contents;"></div>
 </div>
 <script type="application/javascript">(function(root) {
-  var docs_json = {"ac0e5bb2-cab1-421e-81cd-b4616890692a":{"version":"3.5.2","title":"Bokeh Application","roots":[{"type":"object","name":"panel.models.browser.BrowserInfo","id":"519e9b26-4ffd-44a5-beb4-f300e8630fbe"},{"type":"object","name":"panel.models.comm_manager.CommManager","id":"60c13ed9-bf4e-49ab-b858-6b0cb10dbb13","attributes":{"plot_id":"519e9b26-4ffd-44a5-beb4-f300e8630fbe","comm_id":"b84e6432179e4f6da3bdfc6df2918914","client_comm_id":"f03bcafb8077479aa9953804b01f0ea9"}}],"defs":[{"type":"model","name":"ReactiveHTML1"},{"type":"model","name":"FlexBox1","properties":[{"name":"align_content","kind":"Any","default":"flex-start"},{"name":"align_items","kind":"Any","default":"flex-start"},{"name":"flex_direction","kind":"Any","default":"row"},{"name":"flex_wrap","kind":"Any","default":"wrap"},{"name":"gap","kind":"Any","default":""},{"name":"justify_content","kind":"Any","default":"flex-start"}]},{"type":"model","name":"FloatPanel1","properties":[{"name":"config","kind":"Any","default":{"type":"map"}},{"name":"contained","kind":"Any","default":true},{"name":"position","kind":"Any","default":"right-top"},{"name":"offsetx","kind":"Any","default":null},{"name":"offsety","kind":"Any","default":null},{"name":"theme","kind":"Any","default":"primary"},{"name":"status","kind":"Any","default":"normalized"}]},{"type":"model","name":"GridStack1","properties":[{"name":"mode","kind":"Any","default":"warn"},{"name":"ncols","kind":"Any","default":null},{"name":"nrows","kind":"Any","default":null},{"name":"allow_resize","kind":"Any","default":true},{"name":"allow_drag","kind":"Any","default":true},{"name":"state","kind":"Any","default":[]}]},{"type":"model","name":"drag1","properties":[{"name":"slider_width","kind":"Any","default":5},{"name":"slider_color","kind":"Any","default":"black"},{"name":"value","kind":"Any","default":50}]},{"type":"model","name":"click1","properties":[{"name":"terminal_output","kind":"Any","default":""},{"name":"debug_name","kind":"Any","default":""},{"name":"clears","kind":"Any","default":0}]},{"type":"model","name":"FastWrapper1","properties":[{"name":"object","kind":"Any","default":null},{"name":"style","kind":"Any","default":null}]},{"type":"model","name":"NotificationAreaBase1","properties":[{"name":"js_events","kind":"Any","default":{"type":"map"}},{"name":"position","kind":"Any","default":"bottom-right"},{"name":"_clear","kind":"Any","default":0}]},{"type":"model","name":"NotificationArea1","properties":[{"name":"js_events","kind":"Any","default":{"type":"map"}},{"name":"notifications","kind":"Any","default":[]},{"name":"position","kind":"Any","default":"bottom-right"},{"name":"_clear","kind":"Any","default":0},{"name":"types","kind":"Any","default":[{"type":"map","entries":[["type","warning"],["background","#ffc107"],["icon",{"type":"map","entries":[["className","fas fa-exclamation-triangle"],["tagName","i"],["color","white"]]}]]},{"type":"map","entries":[["type","info"],["background","#007bff"],["icon",{"type":"map","entries":[["className","fas fa-info-circle"],["tagName","i"],["color","white"]]}]]}]}]},{"type":"model","name":"Notification","properties":[{"name":"background","kind":"Any","default":null},{"name":"duration","kind":"Any","default":3000},{"name":"icon","kind":"Any","default":null},{"name":"message","kind":"Any","default":""},{"name":"notification_type","kind":"Any","default":null},{"name":"_destroyed","kind":"Any","default":false}]},{"type":"model","name":"TemplateActions1","properties":[{"name":"open_modal","kind":"Any","default":0},{"name":"close_modal","kind":"Any","default":0}]},{"type":"model","name":"BootstrapTemplateActions1","properties":[{"name":"open_modal","kind":"Any","default":0},{"name":"close_modal","kind":"Any","default":0}]},{"type":"model","name":"TemplateEditor1","properties":[{"name":"layout","kind":"Any","default":[]}]},{"type":"model","name":"MaterialTemplateActions1","properties":[{"name":"open_modal","kind":"Any","default":0},{"name":"close_modal","kind":"Any","default":0}]},{"type":"model","name":"ReactiveESM1","properties":[{"name":"esm_constants","kind":"Any","default":{"type":"map"}}]},{"type":"model","name":"JSComponent1","properties":[{"name":"esm_constants","kind":"Any","default":{"type":"map"}}]},{"type":"model","name":"ReactComponent1","properties":[{"name":"esm_constants","kind":"Any","default":{"type":"map"}}]},{"type":"model","name":"AnyWidgetComponent1","properties":[{"name":"esm_constants","kind":"Any","default":{"type":"map"}}]},{"type":"model","name":"request_value1","properties":[{"name":"fill","kind":"Any","default":"none"},{"name":"_synced","kind":"Any","default":null},{"name":"_request_sync","kind":"Any","default":0}]}]}};
-  var render_items = [{"docid":"ac0e5bb2-cab1-421e-81cd-b4616890692a","roots":{"519e9b26-4ffd-44a5-beb4-f300e8630fbe":"b5f900bd-da59-4ba8-9732-5afc314c534e"},"root_ids":["519e9b26-4ffd-44a5-beb4-f300e8630fbe"]}];
+  var docs_json = {"ab02d546-0a36-47ef-ab07-cd845f0a270a":{"version":"3.5.2","title":"Bokeh Application","roots":[{"type":"object","name":"panel.models.browser.BrowserInfo","id":"de207f1b-a4b2-4693-9eab-bd5b11135d85"},{"type":"object","name":"panel.models.comm_manager.CommManager","id":"19638d48-ca3c-4b2f-99a5-36fda30af53f","attributes":{"plot_id":"de207f1b-a4b2-4693-9eab-bd5b11135d85","comm_id":"66e16ea0fb4246b4b9b547d98cd2a4a2","client_comm_id":"7b6ad1dff6fa42ae91f936572b98ccca"}}],"defs":[{"type":"model","name":"ReactiveHTML1"},{"type":"model","name":"FlexBox1","properties":[{"name":"align_content","kind":"Any","default":"flex-start"},{"name":"align_items","kind":"Any","default":"flex-start"},{"name":"flex_direction","kind":"Any","default":"row"},{"name":"flex_wrap","kind":"Any","default":"wrap"},{"name":"gap","kind":"Any","default":""},{"name":"justify_content","kind":"Any","default":"flex-start"}]},{"type":"model","name":"FloatPanel1","properties":[{"name":"config","kind":"Any","default":{"type":"map"}},{"name":"contained","kind":"Any","default":true},{"name":"position","kind":"Any","default":"right-top"},{"name":"offsetx","kind":"Any","default":null},{"name":"offsety","kind":"Any","default":null},{"name":"theme","kind":"Any","default":"primary"},{"name":"status","kind":"Any","default":"normalized"}]},{"type":"model","name":"GridStack1","properties":[{"name":"mode","kind":"Any","default":"warn"},{"name":"ncols","kind":"Any","default":null},{"name":"nrows","kind":"Any","default":null},{"name":"allow_resize","kind":"Any","default":true},{"name":"allow_drag","kind":"Any","default":true},{"name":"state","kind":"Any","default":[]}]},{"type":"model","name":"drag1","properties":[{"name":"slider_width","kind":"Any","default":5},{"name":"slider_color","kind":"Any","default":"black"},{"name":"value","kind":"Any","default":50}]},{"type":"model","name":"click1","properties":[{"name":"terminal_output","kind":"Any","default":""},{"name":"debug_name","kind":"Any","default":""},{"name":"clears","kind":"Any","default":0}]},{"type":"model","name":"FastWrapper1","properties":[{"name":"object","kind":"Any","default":null},{"name":"style","kind":"Any","default":null}]},{"type":"model","name":"NotificationAreaBase1","properties":[{"name":"js_events","kind":"Any","default":{"type":"map"}},{"name":"position","kind":"Any","default":"bottom-right"},{"name":"_clear","kind":"Any","default":0}]},{"type":"model","name":"NotificationArea1","properties":[{"name":"js_events","kind":"Any","default":{"type":"map"}},{"name":"notifications","kind":"Any","default":[]},{"name":"position","kind":"Any","default":"bottom-right"},{"name":"_clear","kind":"Any","default":0},{"name":"types","kind":"Any","default":[{"type":"map","entries":[["type","warning"],["background","#ffc107"],["icon",{"type":"map","entries":[["className","fas fa-exclamation-triangle"],["tagName","i"],["color","white"]]}]]},{"type":"map","entries":[["type","info"],["background","#007bff"],["icon",{"type":"map","entries":[["className","fas fa-info-circle"],["tagName","i"],["color","white"]]}]]}]}]},{"type":"model","name":"Notification","properties":[{"name":"background","kind":"Any","default":null},{"name":"duration","kind":"Any","default":3000},{"name":"icon","kind":"Any","default":null},{"name":"message","kind":"Any","default":""},{"name":"notification_type","kind":"Any","default":null},{"name":"_destroyed","kind":"Any","default":false}]},{"type":"model","name":"TemplateActions1","properties":[{"name":"open_modal","kind":"Any","default":0},{"name":"close_modal","kind":"Any","default":0}]},{"type":"model","name":"BootstrapTemplateActions1","properties":[{"name":"open_modal","kind":"Any","default":0},{"name":"close_modal","kind":"Any","default":0}]},{"type":"model","name":"TemplateEditor1","properties":[{"name":"layout","kind":"Any","default":[]}]},{"type":"model","name":"MaterialTemplateActions1","properties":[{"name":"open_modal","kind":"Any","default":0},{"name":"close_modal","kind":"Any","default":0}]},{"type":"model","name":"ReactiveESM1","properties":[{"name":"esm_constants","kind":"Any","default":{"type":"map"}}]},{"type":"model","name":"JSComponent1","properties":[{"name":"esm_constants","kind":"Any","default":{"type":"map"}}]},{"type":"model","name":"ReactComponent1","properties":[{"name":"esm_constants","kind":"Any","default":{"type":"map"}}]},{"type":"model","name":"AnyWidgetComponent1","properties":[{"name":"esm_constants","kind":"Any","default":{"type":"map"}}]},{"type":"model","name":"request_value1","properties":[{"name":"fill","kind":"Any","default":"none"},{"name":"_synced","kind":"Any","default":null},{"name":"_request_sync","kind":"Any","default":0}]}]}};
+  var render_items = [{"docid":"ab02d546-0a36-47ef-ab07-cd845f0a270a","roots":{"de207f1b-a4b2-4693-9eab-bd5b11135d85":"a165ec4e-bd5e-494c-8f09-737dde4e3234"},"root_ids":["de207f1b-a4b2-4693-9eab-bd5b11135d85"]}];
   var docs = Object.values(docs_json)
   if (!docs) {
     return
@@ -125,6 +135,8 @@ df_daily.head()
   }
 })(window);</script>
 
+    /users/brianyandell/miniconda3/envs/earth-analytics-python/lib/python3.11/site-packages/dataretrieval/nwis.py:692: UserWarning: WARNING: Starting in March 2024, the NWIS qw data endpoint is retiring and no longer receives updates. For more information, refer to https://waterdata.usgs.gov.nwis/qwdata and https://doi-usgs.github.io/dataRetrieval/articles/Status.html or email CompTools@usgs.gov.
+      warnings.warn(
     /users/brianyandell/miniconda3/envs/earth-analytics-python/lib/python3.11/site-packages/dask/dataframe/__init__.py:49: FutureWarning: 
     Dask dataframe query planning is disabled because dask-expr is not installed.
 
@@ -163,7 +175,9 @@ Once you have the unique site number and lat/lon, you can either:
 Add new code cells by with the `+ Code` button on the ribbon at the top
 of this notebook.
 
-# Answer the following questions. (**You can make edits to this text box by double clicking**)
+# Answer the following questions.
+
+# (**You can make edits to this text box by double clicking**)
 
 Site number:
 
