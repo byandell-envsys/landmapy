@@ -14,7 +14,7 @@ Read more about this USGS stream gage here:
 ```{python}
 #| label: install-deps
 #| eval: false
-!pip install --quiet geopandas hvplot geoviews dataretrieval
+# !pip install --quiet geopandas hvplot geoviews dataretrieval
 ```
 
 ```{python}

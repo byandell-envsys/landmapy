@@ -10,6 +10,15 @@ import numpy as np
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import hvplot.pandas  # This activates .hvplot() on DataFrames
+import holoviews as hv
+from IPython.display import display
+
+# Initialize HoloViews extension for Bokeh
+try:
+    hv.extension('bokeh')
+except Exception:
+    # Fallback or ignore if not in an environment that supports it
+    pass
 
 def get_usgs_data(site_id="06446000", site_name="White River near Oglala, SD", 
                   latitude=43.2548611, longitude=-102.8268889,
@@ -67,8 +76,8 @@ def get_usgs_data(site_id="06446000", site_name="White River near Oglala, SD",
             xlim=(longitude - 0.05, longitude + 0.05),
             ylim=(latitude - 0.05, latitude + 0.05)
         )
-        # Note: In a notebook environment, returning this or calling display() would show it.
-        # For now, we just prepare it.
+        # Display the map in notebook environments
+        display(map_plot)
 
     # Create df using data from USGS
     df = nwis.get_record(sites=site_id, parameterCd=parameters, start=start_date, end=end_date)
@@ -77,15 +86,18 @@ def get_usgs_data(site_id="06446000", site_name="White River near Oglala, SD",
     df = df.replace(-999999, np.nan)
     
     if plot_series:
-        plt.figure(figsize=(20, 10))
-        # Plot the first parameter code provided (usually discharge 00060 or gage height 00065)
-        main_param = parameters[1] if len(parameters) > 1 and "00060" in parameters else parameters[0]
-        plt.plot(df.index, df[main_param], marker='o', linestyle='-')
-        plt.xlabel("Date")
-        plt.ylabel(f"Value ({main_param})")
-        plt.title(f"USGS Data - {site_name} ({site_id})")
-        plt.grid()
-        plt.show()
+        # Determine the primary parameter code (usually discharge 00060 or gage height 00065)
+        main_param = "00060" if "00060" in parameters else parameters[0]
+        
+        series_plot = df.hvplot(
+            y=main_param,
+            width=800,
+            height=400,
+            title=f"USGS Data: {site_name} ({site_id})",
+            ylabel=f"Value ({main_param})",
+            xlabel="Date"
+        )
+        display(series_plot)
 
     df.index = pd.to_datetime(df.index)
     
