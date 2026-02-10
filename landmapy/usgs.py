@@ -101,8 +101,41 @@ def get_usgs_data(site_id="06446000", site_name="White River near Oglala, SD",
 
     return df_daily
 
+def find_usgs_site(site_name, state_code):
+    """
+    Find USGS site information by station name and state code.
+    
+    Args:
+        site_name (str): Partial or full name of the station to search for.
+        state_code (str): Two-letter state code (e.g., "SD", "WI").
+        
+    Returns:
+        pd.DataFrame: DataFrame containing site_id, station_nm, lat, and lon.
+    """
+    # Fetch all sites in the given state
+    df, meta = nwis.what_sites(stateCd=state_code)
+    
+    if df.empty:
+        return pd.DataFrame()
+    
+    # Filter by name (case-insensitive)
+    mask = df['station_nm'].str.contains(site_name, case=False, na=False)
+    filtered_df = df[mask].copy()
+    
+    # Keep only relevant columns
+    cols = ['site_no', 'station_nm', 'dec_lat_va', 'dec_long_va']
+    # Filter columns that exist
+    available_cols = [c for c in cols if c in filtered_df.columns]
+    
+    return filtered_df[available_cols]
+
 if __name__ == "__main__":
-    # Example usage with original data
+    # Example 1: Original usage
     result = get_usgs_data(plot_map=False, plot_series=False)
     print("Daily data head:")
     print(result.head())
+    
+    # Example 2: Finding a site by name
+    print("\nSearching for 'White River' in SD:")
+    sites = find_usgs_site("White River", "SD")
+    print(sites.head())
