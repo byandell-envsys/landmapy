@@ -1,6 +1,9 @@
 ---
 title: "Working with time-series from the USGS"
 format: html
+jupyter: python3
+execute:
+  eval: true
 ---
 
 ## Working with time-series from the USGS
@@ -14,12 +17,12 @@ Read more about this USGS stream gage here:
 ```{python}
 #| label: install-deps
 #| eval: false
-# !pip install --quiet geopandas hvplot geoviews dataretrieval
+# !pip install --quiet geopandas hvplot geoviews dataretrieval contextily
 ```
 
 ```{python}
 #| label: fetch-data
-from landmapy.usgs import get_usgs_data, find_usgs_site, get_site_metadata
+from landmapy.usgs import get_usgs_data, find_usgs_site, get_site_metadata, plot_usgs_map
 
 # Find the site information dynamically
 sites = find_usgs_site("White River near Oglala", "SD")
@@ -28,23 +31,49 @@ if not sites.empty:
     site_info = sites.iloc[0]
     site_id = site_info['site_no']
     
+    # Plot the site location on a map (static)
+    plot_usgs_map(
+        site_id=site_id,
+        site_name=site_info['station_nm'],
+        latitude=site_info['dec_lat_va'],
+        longitude=site_info['dec_long_va']
+    )
+    
     # Get available parameters and period of record
     meta = get_site_metadata(site_id)
     
     df_daily = get_usgs_data(
         site_id=site_id,
-        site_name=site_info['station_nm'],
-        latitude=site_info['dec_lat_va'],
-        longitude=site_info['dec_long_va'],
         parameters=meta['parameters'],
         start_date=meta['start_date'],
         end_date=meta['end_date'],
-        plot_map=True,
-        plot_series=True
+        plot_series=True,
+        site_name=site_info['station_nm']
     )
     print(df_daily.head())
 else:
     print("Site not found.")
+```
+
+### Interactive Map (Optional)
+
+This section displays an interactive map using `hvplot` if you are running this in a Jupyter notebook or interactive session.
+
+```{python}
+#| label: interactive-map
+from IPython import get_ipython
+
+# Display the interactive map only in interactive sessions
+if get_ipython() is not None and "IPKernelApp" in get_ipython().config:
+    from landmapy.usgs import hvplot_usgs_map
+    hvplot_usgs_map(
+        site_id=site_id,
+        site_name=site_info['station_nm'],
+        latitude=site_info['dec_lat_va'],
+        longitude=site_info['dec_long_va']
+    )
+else:
+    print("Interactive map skipped (non-interactive session).")
 ```
 
 # Now it is your turn
