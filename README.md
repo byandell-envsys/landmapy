@@ -14,8 +14,8 @@
 
 Additional links:
 
-- [References](references.md)
-- [Coding Strategy](strategy.md)
+- [Python References](https://github.com/byandell/Documentation/blob/main/python_references.md)
+- [Python Coding Strategy](https://github.com/byandell/Documentation/blob/main/python_strategy.md)
 - [EDA Notes](notes.md)
 
 ## Introduction
