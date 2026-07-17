@@ -234,3 +234,5 @@ occurrence_hvplot.save('siberian-crane-decades.html', embed=True)
 occurrence_hvplot
 ```
 
+<iframe src="siberian-crane-decades.html" width="100%" height="650px" style="border: none;"></iframe>
+

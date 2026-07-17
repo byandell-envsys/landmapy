@@ -255,6 +255,8 @@ occurrence_hvplot.save('sandhill-crane-migration.html', embed=True)
 occurrence_hvplot
 ```
 
+<iframe src="sandhill-crane-migration.html" width="100%" height="650px" style="border: none;"></iframe>
+
 #### April Observations
 
 ```{python}
