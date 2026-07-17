@@ -49,7 +49,6 @@ def hvplot_matrix(model_df):
     Returns:
         matrix_hv (hvplot): plot
     """
-    import hvplot.xarray
 
     # Plot scatter matrix to identify variables that need transformation
     matrix_hv = hvplot.scatter_matrix(
