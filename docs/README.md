@@ -56,6 +56,7 @@ and plot modules):
   - [Siberian Crane](siberian_crane.html)
   - [Original project](https://github.com/earthlab-education/species-distribution-coding-challenge-byandell)
   - modules: [gbif](https://github.com/byandell-envsys/landmapyr/blob/main/landmapyr/gbif.py)
+- [Dynamic Map Images](images.md)
 
 ## Genesis of `landmapyr` Package
 
