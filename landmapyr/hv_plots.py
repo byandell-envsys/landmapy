@@ -12,6 +12,7 @@ hvplot_occurrence: Holoviews map of monthly occurrences
 """
 
 import hvplot.pandas  # noqa: F401
+import hvplot.xarray  # noqa: F401
 
 
 def hvplot_tract_gdf(place_tract_gdf):

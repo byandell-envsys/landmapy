@@ -262,28 +262,28 @@ cross_val_score(
 Not shown by default.
 
 ```{python}
-#| eval: false
+#| eval: true
+#| output: false
 import hvplot.pandas
 from landmapyr.hv_plots import hvplot_index_grade
 ndvi_hv, grade_hv = hvplot_index_grade(redlining_ndvi_gdf, city)
-(ndvi_hv + grade_hv)
 ```
 
 ```{python}
-#| eval: false
+#| eval: true
+#| output: false
 from landmapyr.hv_plots import hvplot_index_pred
 pred_hv = hvplot_index_pred(redlining_ndvi_gdf, tree_classifier, city)
-pred_hv
 ```
 
 ```{python}
-#| eval: false
+#| eval: true
 # Plot NDVI, predicted and redlining grade in linked subplots
 madison_hv = (ndvi_hv + pred_hv + grade_hv)
 
 # Save the linked plots as a file to put on the web
 import holoviews as hv
 hv.save(madison_hv, 'madison.html')
-
-madison_hv
 ```
+
+<iframe src="madison.html" width="100%" height="500px" style="border: none;"></iframe>

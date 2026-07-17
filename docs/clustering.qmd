@@ -136,10 +136,14 @@ plot_delta_gdf(delta_gdf)
 Alternative HV plot:
 
 ```{python}
-#| eval: false
+#| eval: true
 from landmapyr.hv_plots import hvplot_delta_gdf
-hvplot_delta_gdf(delta_gdf)
+delta_hv = hvplot_delta_gdf(delta_gdf)
+import holoviews as hv
+hv.save(delta_hv, 'delta_map.html')
 ```
+
+<iframe src="delta_map.html" width="100%" height="350px" style="border: none;"></iframe>
 
 We chose this watershed because it covers parts of New Orleans and is
 near the Mississippi Delta.
@@ -211,7 +215,13 @@ These can be overridden with the `override=True` argument to
 respectively.
 
 ```{python}
-results = search_earthaccess(delta_gdf, ("2023-05", "2023-09"))
+import os
+import earthpy as et
+cache_path = os.path.join(et.io.HOME, et.io.DATA_NAME, "jars", "delta_reflectance_da_df.pickle")
+if not os.path.exists(cache_path):
+    results = search_earthaccess(delta_gdf, ("2023-05", "2023-09"))
+else:
+    results = None
 reflectance_da_df = compute_reflectance_da(results, delta_gdf)
 ```
 
@@ -312,10 +322,15 @@ plot_cluster(rgb_sat, model_df)
 Above is not perfect. Alternative HV plot:
 
 ```{python}
-#| eval: false
+#| eval: true
+import hvplot.xarray
 from landmapyr.hv_plots import hvplot_cluster
-hvplot_cluster(rgb_sat, model_df)
+cluster_hv = hvplot_cluster(rgb_sat, model_df)
+import holoviews as hv
+hv.save(cluster_hv, 'cluster_map.html')
 ```
+
+<iframe src="cluster_map.html" width="100%" height="650px" style="border: none;"></iframe>
 
 Interpret your plot.
 
