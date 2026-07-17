@@ -286,4 +286,13 @@ import holoviews as hv
 hv.save(madison_hv, 'madison_map.html')
 ```
 
-<iframe src="madison_map.html" width="100%" height="500px" style="border: none;"></iframe>
+```
+<iframe src="madison_map.html" width="100%" height="500px"
+        style="border: none;"></iframe>
+```
+
+<iframe src="madison_map.html" width="100%" height="500px"
+        style="border: none;"></iframe>
+
+If not shown, see
+[Dynamic Images from Environmental Data Analytics Projects](images.md).

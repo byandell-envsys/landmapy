@@ -319,7 +319,9 @@ rgb_sat = reflectance_rgb(reflectance_da)
 plot_cluster(rgb_sat, model_df)
 ```
 
-Above is not perfect. Alternative HV plot:
+Above is not perfect. 
+
+## Alternative HV Dynamic Plot
 
 ```{python}
 #| eval: true
@@ -330,8 +332,17 @@ import holoviews as hv
 hv.save(cluster_hv, 'cluster_map.html')
 ```
 
-<iframe src="cluster_map.html" width="100%" height="650px" style="border: none;"></iframe>
+```
+<iframe src="cluster_map.html" width="100%" height="650px"
+        style="border: none;"></iframe>
+```
 
-Interpret your plot.
+<iframe src="cluster_map.html" width="100%" height="650px"
+        style="border: none;"></iframe>
+
+If not shown, see
+[Dynamic Images from Environmental Data Analytics Projects](images.md).
+
+## Interpret your plot.
 
 **YOUR PLOT HEADLINE AND DESCRIPTION HERE**

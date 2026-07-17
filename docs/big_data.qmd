@@ -546,7 +546,7 @@ some possible explanations for any bias you see in your model?
 plot_gdfs_map(logndvi_cdc_gdf, column=['asthma','resid','edge_density'], color=['Blues','RdBu','Greens'])
 ```
 
-GeoViews code not shown:
+### GeoViews Dynamic Map
 
 ```{python}
 #| eval: true
@@ -559,7 +559,16 @@ models_gv = (model_fit[0] + resid + model_fit[1])
 hv.save(models_gv, 'bigdata_model.html')
 ```
 
-<iframe src="bigdata_model.html" width="100%" height="500px" style="border: none;"></iframe>
+```
+<iframe src="bigdata_model.html" width="100%" height="500px"
+        style="border: none;"></iframe>
+```
+
+<iframe src="bigdata_model.html" width="100%" height="500px"
+        style="border: none;"></iframe>
+
+If not shown, see
+[Dynamic Images from Environmental Data Analytics Projects](images.md).
 
 **Reflect and Respond**
 
