@@ -243,11 +243,19 @@ def hvplot_occurrence(occurrence_gdf, unit="month"):
     # Define the slider widget
     if unit == "month":
         options = {calendar.month_name[i]: i for i in range(1, 13)}
-    else:  # 'year'
-        options = sorted(
-            occurrence_gdf.index.get_level_values("year").unique().astype(int)
-        )
-    #        {i: i for i in range(1970, 2024)}
+    elif unit == "decade":
+        decades = occurrence_gdf.index.get_level_values("decade").dropna().unique()
+        options = {f"{int(d)}s": int(d) for d in sorted(decades)}
+    elif unit == "year":
+        years = occurrence_gdf.index.get_level_values("year").dropna().unique()
+        options = sorted([int(y) for y in years])
+    else:
+        # Fallback for any other custom level
+        levels = occurrence_gdf.index.get_level_values(unit).dropna().unique()
+        try:
+            options = sorted([int(x) for x in levels])
+        except Exception:
+            options = sorted(list(levels))
     slider = pn.widgets.DiscreteSlider(name=unit, options=options)
 
     occurrence_hvplot = occurrence_gdf.hvplot(

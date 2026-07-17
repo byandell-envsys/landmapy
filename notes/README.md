@@ -26,6 +26,7 @@ and reports due probably the 10th.
 - [EDA Notes for Habitat Suitability](#eda-notes-for-habitat-suitability)
     - [Rest of semester](#rest-of-semester)
     - [Table of Contents](#table-of-contents)
+  - [Notes 17 Jul 2026](#notes-17-jul-2026)
   - [Notes 3 Apr 2025](#notes-3-apr-2025)
   - [Notes 1 Apr 2025](#notes-1-apr-2025)
     - [Open-source reference manager](#open-source-reference-manager)
@@ -229,3 +230,21 @@ The main use of classes are to:
 
 - add functionality to class
 - streamline different functions with same parameters to keep track of metadata
+
+## Notes 17 Jul 2026
+
+### Decade-based Occurrence Mapping and Layout Optimization
+
+We modified the package to support plotting species occurrence data by decade in addition to year and month, and introduced grid layout options for static plots.
+
+- **Dynamic Decades in `count_by_ecoregions`**: Setting `period='decade'` automatically computes the decade column from the years (e.g. `10 * (year // 10)`) if it does not already exist.
+- **Layout Optimization in `plot_occurrence`**: 
+  - Subplot heights are scaled dynamically relative to the width of the data's geographic bounding box to avoid squished maps.
+  - Added an optional `ncols` parameter to customize the layout grid (default is up to 4 columns).
+  - Setting `ncols=1` optimizes the layout for a single column (setting width to `8.0` inches and matching the aspect ratio tightly), which eliminates unused vertical white space.
+  - Removed axis sharing (`sharex`/`sharey`) in subplots to prevent matplotlib from compressing or distorting map elements under geographic aspect ratio constraints.
+  - Placed the geographic limits configuration before the basemap download to guarantee background tiles render over the entire dataset bounding box rather than just local subsets.
+- **Discrete Slider Options in `hvplot_occurrence`**: When `unit='decade'`, the panel interactive widget displays decades as `1980s`, `1990s`, etc.
+- **Example Notebooks**: 
+  - [siberian_crane.qmd](file:///Users/brianyandell/Documents/GitHub/landmapyr/docs/siberian_crane.qmd) was updated to plot occurrences by decade and use `ncols=1`.
+  - [sandhill_crane.qmd](file:///Users/brianyandell/Documents/GitHub/landmapyr/docs/sandhill_crane.qmd) was updated to use `ncols=1` for monthly maps.

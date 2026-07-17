@@ -160,11 +160,19 @@ Changes made:
 - Added `plot_index_grade` and `plot_index_pred` to `landmapyr.plots` to plot zonal index means, redlining grades, and prediction errors using `matplotlib`, replacing the `hvplot` equivalents.
 - Updated `examples/madison.qmd` to utilize the new `plot_index_grade` and `plot_index_pred` functions.
 
+### 8. Decade-based Occurrence Plotting and Layout Optimization (July 2026)
+
+- **Decade-based Aggregation**: Enabled aggregation by decade (using `period='decade'`) in `count_by_ecoregions()`. This dynamically creates a `"decade"` column based on the year (e.g. `10 * (year // 10)`) if not already present.
+- **Dynamic Layout Size**: Updated `plot_occurrence()` to compute the aspect ratio of the dataset's bounding box and dynamically set subplot dimensions (`figsize`), ensuring maps occupy the maximum plotting area without vertical squishing. Added a customizable `ncols` argument.
+- **Layout Robustness Fixes**: Removed axis sharing (`sharex`/`sharey`) to prevent matplotlib map subplot compression, and configured geographical limits to set *before* downloading basemaps to ensure consistent full-extent background rendering.
+- **Interactive Decade Sliders**: Extended `hvplot_occurrence()` discrete slider options for `unit='decade'` to map nice decade labels (like `1980s` to `1980`).
+- **Example Notebooks Updated**: Modified both `docs/siberian_crane.qmd` (decade-based maps) and `docs/sandhill_crane.qmd` (monthly maps) to use `ncols=1` for single-column vertical streaming.
+
 ## Validation Results
 
 All tools now run cleanly across the codebase:
 
-- `pytest tests/`: **2 passed**
+- `pytest tests/`: **3 passed**
 - `ruff check .`: **All checks passed**
 - `mypy landmapyr/`: Type checking is initialized and running against the modules.
 

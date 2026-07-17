@@ -175,7 +175,7 @@ gbif_ecoregion_gdf = join_ecoregions_monthly(ecoregions_gdf, monthly_gdf)
 gbif_ecoregion_gdf
 ```
 
-Count the observations in each ecoregion each year and month
+Count the observations in each ecoregion each decade and month
 
 ```{python}
 occurrence_month_df = count_by_ecoregions(gbif_ecoregion_gdf,
@@ -184,16 +184,16 @@ occurrence_month_df
 ```
 
 ```{python}
-occurrence_year_df = count_by_ecoregions(gbif_ecoregion_gdf,
-                        'ecoregion', 'name', 'year')
-occurrence_year_df
+occurrence_decade_df = count_by_ecoregions(gbif_ecoregion_gdf,
+                        'ecoregion', 'name', 'decade')
+occurrence_decade_df
 ```
 
 ```{python}
-#| label: fig-occurrences-by-year
-# plot to check distrubions 
-occurrence_year_df.reset_index().plot.scatter(
-    x='year', y='occurrences', c='ecoregion',
+#| label: fig-occurrences-by-decade
+# plot to check distributions 
+occurrence_decade_df.reset_index().plot.scatter(
+    x='decade', y='occurrences', c='ecoregion',
     logy=True
 )
 ```
@@ -205,28 +205,28 @@ ecoregions_gdf = simplify_ecoregions_gdf(ecoregions_gdf)
 ecoregions_gdf
 ```
 
-### Mapping yearly distribution
+### Mapping decadal distribution
 
 ```{python}
-occurrence_gdf = join_occurrence(ecoregions_gdf, occurrence_year_df)
+occurrence_gdf = join_occurrence(ecoregions_gdf, occurrence_decade_df)
 occurrence_gdf
 ```
 
 #### Static Plot
 
 ```{python}
-#| label: fig-occurrence-map-years
+#| label: fig-occurrence-map-decades
 from landmapyr.plots import plot_occurrence
-plot_occurrence(occurrence_gdf, 'year')
+plot_occurrence(occurrence_gdf, 'decade', ncols=1)
 ```
 
 #### Optional Dynamic Plot
 
 ```{python}
 from landmapyr.hv_plots import hvplot_occurrence
-occurrence_hvplot = hvplot_occurrence(occurrence_gdf, 'year')
+occurrence_hvplot = hvplot_occurrence(occurrence_gdf, 'decade')
 # Save the plot
-occurrence_hvplot.save('siberian-crane-years.html', embed=True)
+occurrence_hvplot.save('siberian-crane-decades.html', embed=True)
 ```
 
 ```{python}

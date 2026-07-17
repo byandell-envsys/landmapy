@@ -292,9 +292,12 @@ def count_by_ecoregions(
         occurrence_gdf (gdf): GeoDataFrame with occurrences by region.
     """
 
-    if period not in ["month", "year"]:
+    if period not in ["month", "year", "decade"]:
         period = "month"
-        print("Parameter 'period' must be 'month' or 'year'. Using 'month'.")
+        print("Parameter 'period' must be 'month', 'year', or 'decade'. Using 'month'.")
+    if period == "decade" and "decade" not in gbif_ecoregions_gdf.columns:
+        gbif_ecoregions_gdf = gbif_ecoregions_gdf.copy()
+        gbif_ecoregions_gdf["decade"] = 10 * (gbif_ecoregions_gdf["year"] // 10)
     occurrence_gdf = (
         gbif_ecoregions_gdf
         # For each region, for each month...

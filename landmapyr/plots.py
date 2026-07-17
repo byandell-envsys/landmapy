@@ -380,13 +380,14 @@ def plot_cluster(rgb_sat, model_df):
 # plot_cluster(reflectance_da)
 
 
-def plot_occurrence(occurrence_gdf, unit="month"):
+def plot_occurrence(occurrence_gdf, unit="month", ncols=None):
     """
     Plot map of occurrences.
 
     Args:
         occurrence_gdf (gdf): monthly occurrences of species
         unit (str, optional): 'month' or 'year'
+        ncols (int, optional): number of columns in plot layout. Default None (up to 4).
     """
     import matplotlib.pyplot as plt
     import contextily as ctx
@@ -409,18 +410,37 @@ def plot_occurrence(occurrence_gdf, unit="month"):
     if n_units == 0:
         return
 
-    ncols = min(4, n_units)
+    if ncols is None:
+        ncols = min(4, n_units)
+    else:
+        ncols = min(ncols, n_units)
     nrows = math.ceil(n_units / ncols)
 
+    xmin, ymin, xmax, ymax = occurrence_gdf.total_bounds
+    data_width = xmax - xmin
+    data_height = ymax - ymin
+    aspect = data_height / data_width if data_width > 0 else 1.0
+
+    if ncols == 1:
+        col_width = 8.0
+        title_padding = 0.6
+        row_height = col_width * aspect + title_padding
+        row_height = max(2.5, row_height)
+    else:
+        col_width = 5.0
+        title_padding = 0.5
+        row_height = col_width * aspect + title_padding
+        row_height = min(7.5, max(3.0, row_height))
+
     fig, axes = plt.subplots(
-        nrows, ncols, figsize=(ncols * 5, nrows * 5), sharex=True, sharey=True
+        nrows,
+        ncols,
+        figsize=(ncols * col_width, nrows * row_height),
     )
     if n_units == 1:
         axes = [axes]
     elif nrows > 1 or ncols > 1:
         axes = axes.flatten()
-
-    xmin, ymin, xmax, ymax = occurrence_gdf.total_bounds
 
     # Pre-calculate vmin and vmax for colorbar consistency
     if "norm_occurrences" in occurrence_gdf.columns:
@@ -443,8 +463,17 @@ def plot_occurrence(occurrence_gdf, unit="month"):
         # For month, use calendar name
         if unit == "month" and u is not None:
             title = calendar.month_name[int(u)]
+        elif unit == "decade" and u is not None:
+            try:
+                title = f"Decade: {int(u)}s"
+            except Exception:
+                title = f"Decade: {u}"
         elif u is not None:
-            title = f"{unit.capitalize()}: {u}"
+            try:
+                val = int(u) if float(u).is_integer() else u
+            except Exception:
+                val = u
+            title = f"{unit.capitalize()}: {val}"
         else:
             title = "Occurrences"
 
@@ -463,6 +492,10 @@ def plot_occurrence(occurrence_gdf, unit="month"):
         else:
             subset.plot(ax=ax, color="blue", edgecolor="none", legend=False)
 
+        # Set limits first so that the basemap is fetched for the full extent
+        ax.set_xlim([xmin, xmax])
+        ax.set_ylim([ymin, ymax])
+
         # Add basemap
         try:
             ctx.add_basemap(
@@ -472,10 +505,6 @@ def plot_occurrence(occurrence_gdf, unit="month"):
             )
         except Exception:
             pass  # Fallback if contextily fails
-
-        # Set limits
-        ax.set_xlim([xmin, xmax])
-        ax.set_ylim([ymin, ymax])
 
         # Turn off axis labels/ticks for cleaner map
         ax.set_axis_off()

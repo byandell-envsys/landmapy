@@ -237,7 +237,7 @@ occurrence_gdf
 ```{python}
 #| label: fig-occurrence-map-months
 from landmapyr.plots import plot_occurrence
-plot_occurrence(occurrence_gdf)
+plot_occurrence(occurrence_gdf, ncols=1)
 ```
 
 
