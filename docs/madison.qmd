@@ -283,7 +283,7 @@ madison_hv = (ndvi_hv + pred_hv + grade_hv)
 
 # Save the linked plots as a file to put on the web
 import holoviews as hv
-hv.save(madison_hv, 'madison.html')
+hv.save(madison_hv, 'madison_map.html')
 ```
 
-<iframe src="madison.html" width="100%" height="500px" style="border: none;"></iframe>
+<iframe src="madison_map.html" width="100%" height="500px" style="border: none;"></iframe>
