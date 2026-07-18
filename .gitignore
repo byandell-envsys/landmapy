@@ -168,6 +168,7 @@ cython_debug/
 docs/site_libs/*
 search.json
 docs/index.html
+docs/images.html
 .Rproj.user
 *.Rproj
 
