@@ -17,10 +17,15 @@ of both `Python` and `R` packages.
 ## Example EDA Projects Using `landmapyr`
 
 To date, this package has been used in the following
-[EDA projects](https://github.com/byandell-envsys/EarthDataAnalytics/blob/main/README.md#projects)
-(with modules other than
-[initial](https://github.com/byandell-envsys/landmapyr/blob/main/landmapyr/initial.py)
-and plot modules):
+[EDA projects](https://github.com/byandell-envsys/EarthDataAnalytics/blob/main/README.md#projects).
+The published pages (click highlighted project title)
+render static map images and try to render
+dynamic plot images.
+See more about
+[Interactive and Dynamic Plots](https://byandell.github.io/Documentation/python/interactive.html).
+Note that dynamic map images (such as over time, and interactive maps)
+render better in the separate
+[Dynamic Images from EDA Projects](images.md) page.
 
 - [Habitat2: Buffalo Grasslands Habitat Suitability](climate.html)
   - [climate.qmd](climate.qmd)
@@ -56,7 +61,7 @@ and plot modules):
   - [Siberian Crane](siberian_crane.html)
   - [Original project](https://github.com/earthlab-education/species-distribution-coding-challenge-byandell)
   - modules: [gbif](https://github.com/byandell-envsys/landmapyr/blob/main/landmapyr/gbif.py)
-- [Dynamic Map Images](images.md)
+- [Dynamic Images from EDA Projects](images.md)
 
 ## Genesis of `landmapyr` Package
 

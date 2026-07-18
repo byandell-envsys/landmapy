@@ -1,4 +1,14 @@
-# Dynamic Images from Environmental Data Analytics Projects
+# Dynamic Images from EDA Projects
+
+Dynamic images from Environmental Data Analytics (EDA) projects
+are cool, but are sometimes much larger files and can
+fail to render properly.
+See more about
+[Interactive and Dynamic Plots](https://byandell.github.io/Documentation/python/interactive.html).
+Below are the
+[iframe tags](https://www.w3schools.com/tags/tag_iframe.asp)
+used to display the images, followed by the rendered dynamic plots, pulled from each project.
+Click on titles to see each project page.
 
 ## [Big Data: Chicago Greenspace Analysis](big_data.html)
 
