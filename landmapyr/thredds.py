@@ -3,8 +3,8 @@ THREDDS Functions.
 
 process_maca: Process MACA Monthly Data
 maca_year: Extract and print year data
+melt_maca: Melt MACA data to long format
 """
-
 
 def process_maca(
     sites, scenarios=["pr"], climates=["rcp85", "rcp45"], years=[2026], buffer=0.1
@@ -130,3 +130,42 @@ def maca_year(maca_da, year=2027):
 # maca_2010 = maca_year(maca_da[0], 2010)
 # from landmapyr.plots import plot_gdf_da
 # plot_gdf_da(buffalo_gdf, maca_2010, edgecolor="white")
+
+def melt_maca(maca_da, rcp = ['85','45'], yearone = 2006):
+    """
+    Pivot (melt) MACA climate data arrays to a long-format DataFrame.
+
+    This function processes MACA DataArrays for different RCP scenarios and
+    time periods, merges them, and melts the result into a tidy format suitable
+    for plotting (e.g., facet grids).
+
+    Args:
+        maca_da (list or dict): Container of MACA climate DataArrays. Typically maca_da[0]
+            and maca_da[1] correspond to different scenarios.
+        rcp (list of str, optional): RCP scenario labels. Defaults to ['85', '45'].
+        yearone (int, optional): Starting year for time indexing. Defaults to 2006.
+
+    Returns:
+        out_df (DataFrame): Melted DataFrame with columns ['lat', 'lon', 'time', 'rcp', 'period', 'value'].
+    """
+    import pandas as pd
+    from landmapyr.process import merge_da_df
+
+    out_df = pd.DataFrame(columns=['lat', 'lon','time','rcp'])
+    for i in [1,0]:
+        tmp = maca_da[i]
+        ntime = tmp.shape[0]
+        tmp = {time: tmp[time, :, :] for time in range(ntime)}
+        new_df = merge_da_df(tmp, quiet=True).melt(
+            id_vars=['lat','lon'], var_name='time')
+        new_df['time'] = new_df['time'].astype(int)
+        new_df['rcp'] = rcp[i]
+        new_df['period'] = ['now' if time < (ntime / 2) else 'fut' for time in new_df['time']]
+        new_df['time'] += yearone
+        out_df = pd.concat([out_df, new_df], ignore_index=True)
+
+    # Make sure time is integer
+    out_df['time'] = out_df['time'].astype(int)
+    out_df['rcp'] = pd.Categorical(out_df['rcp'], categories=['45', '85'], ordered=True)
+    out_df['period'] = pd.Categorical(out_df['period'], categories=['now', 'fut'], ordered=True)
+    return out_df

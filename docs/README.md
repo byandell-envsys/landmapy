@@ -30,6 +30,7 @@ render better in the separate
 - [Habitat2: Buffalo Grasslands Habitat Suitability](climate.html)
   - [climate.qmd](climate.qmd)
   - [Original project](https://github.com/earthlab-education/habitat-suitability-byandell/blob/main/climate.md)
+  - [Original use of ggplot](https://github.com/earthlab-education/habitat-suitability-byandell/blob/main/climate_ggplot.qmd)
   - modules: [polaris](https://github.com/byandell-envsys/landmapyr/blob/main/landmapyr/polaris.py),
     [srtm](https://github.com/byandell-envsys/landmapyr/blob/main/landmapyr/srtm.py),
     [thredds](https://github.com/byandell-envsys/landmapyr/blob/main/landmapyr/thredds.py),

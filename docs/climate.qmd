@@ -28,6 +28,11 @@ Python code setup:
 ```
 
 ```{python}
+#| eval: false
+pip install -q plotnine scikit-misc
+```
+
+```{python}
 import pandas as pd
 import geopandas as gpd # read geojson file into gdf
 import matplotlib.pyplot as plt # Overlay raster and vector data
@@ -37,11 +42,12 @@ from landmapyr.initial import create_data_dir # create (or retrieve) data direct
 from landmapyr.plots import plot_gdf_state # plot gdf with state overlay
 from landmapyr.plots import plot_gdf_da # plot GDF over DA
 from landmapyr.plots import plot_das # plot DAs in rows
-from landmapyr.process import da_combine
+from landmapyr.process import da_combine, merge_da_df
 from landmapyr.polaris import merge_soil # merge soil data from GDF
 from landmapyr.srtm import srtm_download, srtm_slope # process SRTM data
-from landmapyr.thredds import process_maca, maca_year # process MACA THREDDS
+from landmapyr.thredds import process_maca, maca_year, melt_maca # process MACA THREDDS
 from landmapyr.explore import ramp_logic # ramp for fuzzy logic
+from landmapyr.ggplot import ggplot_xy # plot with ggplot (plotnine)
 ```
 
 ## INTRODUCTION
@@ -731,6 +737,140 @@ ramp_logic(sand_da, (50, 60), (80, 90)).plot()
 #| eval: false
 #| label: fig-rampslope
 ramp_logic(slope_da, (0, 5), (15, 20)).plot()
+```
+
+## Scatter Plots with GGplot
+
+Python package [plotnine](https://plotnine.readthedocs.io/)
+uses the same
+[**grammar of graphics**](https://towardsdatascience.com/a-comprehensive-guide-to-the-grammar-of-graphics-for-effective-visualization-of-multi-dimensional-1f92b4ed4149/)
+as R's [ggplot2](https://ggplot2.tidyverse.org/).
+Here we demonstrate its use for the climate project.
+
+```{python}
+%store -r buffalo_gdf buffalo_da slope_da maca_da
+```
+
+```{python}
+print(slope_da.shape)
+print(buffalo_da.shape)
+print(maca_da[0].shape)
+```
+
+While images are typically reprojected to a higher resolution,
+associations among measurements should 
+be assessed on the lower resolution
+to avoid artificially inflating sample sizes and reduce spatial autocorrelation.
+
+```{python}
+maca_das = xr.concat(
+    [maca_da[1][list(range(30))].mean(dim='time'),
+    maca_da[0][list(range(30))].mean(dim='time'),
+    maca_da[1][list(range(30,60))].mean(dim='time'),
+    maca_da[0][list(range(30,60))].mean(dim='time')],
+    dim = 'era_rcp')
+era_rcp = ['now45','now85','fut45','fut85']
+maca_das = maca_das.assign_coords(era_rcp=era_rcp)
+```
+
+```{python}
+sand_low_da = buffalo_da.rio.reproject_match(maca_das[0]).rio.clip(buffalo_gdf.geometry)
+slope_low_da = slope_da.rio.reproject_match(maca_das[0]).rio.clip(buffalo_gdf.geometry)
+```
+
+```{python}
+maca_low_da = {}
+for i in list(range(maca_das.shape[0])):
+    maca_low_da[era_rcp[i]] = maca_das[i].rio.clip(buffalo_gdf.geometry)
+```
+
+```{python}
+print(sand_low_da.shape)
+print(slope_low_da.shape)
+for i in list(range(maca_das.shape[0])):
+    print(maca_low_da[era_rcp[i]].shape)
+```
+
+Create DataFrame with all measurements.
+
+```{python}
+maca_df = merge_da_df(maca_low_da)
+```
+
+```{python}
+hab_df = merge_da_df({'sand': sand_low_da, 'slope': slope_low_da})
+hab_df = hab_df.rename(columns={'y': 'lat', 'x': 'lon'})
+hab_df = pd.merge(maca_df, hab_df, on=['lat','lon'])
+```
+
+```{python}
+hab_df
+```
+
+```{python}
+#| fig-title: "ggplot now 45 vs 85"
+ggplot_xy(hab_df, 'now45', 'now85', identity=True)
+```
+
+```{python}
+#| fig-title: "ggplot now 45 vs fut 45"
+ggplot_xy(hab_df, 'now45', 'fut45', identity=True)
+```
+
+```{python}
+#| fig-title: "ggplot sand vs slope"
+ggplot_xy(hab_df, 'sand', 'slope', log = ['x','y'])
+```
+
+```{python}
+#| fig-title: "ggplot now 45 vs slope"
+ggplot_xy(hab_df, 'now45', 'slope', log = ['y'])
+```
+
+```{python}
+p_sand = [ggplot_xy(hab_df, y, 'sand', log=['y']) for y in era_rcp]
+for p in p_sand:
+    print(p)
+```
+
+### Look over time at MACA
+
+Pivot (melt) data to longer format to make time series plots.
+
+For one set:
+
+```{python}
+tmp = maca_da[1][list(range(30))]
+now45_dict = {time: tmp[time, :, :] for time in range(tmp.shape[0])}
+now45_df = merge_da_df(now45_dict, quiet=True).melt(id_vars=['lat','lon'], var_name='time')
+now45_df['time'] = 2006 + now45_df['time'].astype(int)
+```
+
+```{python}
+#| fig-title: "ggplot now 45 time with loess"
+ggplot_xy(now45_df, 'time','value', method="loess")
+```
+
+For all sets:
+
+    [maca_da[1][list(range(30))].mean(dim='time'),
+    maca_da[0][list(range(30))].mean(dim='time'),
+    maca_da[1][list(range(30,60))].mean(dim='time'),
+    maca_da[0][list(range(30,60))].mean(dim='time')],
+era_rcp = ['now45','now85','fut45','fut85']
+
+```{python}
+year_df = melt_maca(maca_da)
+year_df
+```
+
+```{python}
+#| fig-title: "ggplot time with loess curve"
+from plotnine import facet_grid
+(
+    ggplot_xy(year_df, 'time','value', method="loess") +
+    facet_grid(rows = "rcp", cols = "period", scales="free_x")
+)
 ```
 
 ## STEP 5: PRESENT YOUR RESULTS
