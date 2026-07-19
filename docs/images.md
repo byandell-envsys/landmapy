@@ -83,19 +83,19 @@ Sandhill Crane migration in 2023:
 Siberian Crane presence by decades:
 
 ```
-<iframe src="siberian-crane-decades.html" width="100%" height="650px"
+<iframe src="siberian-crane-decades.html" width="100%" height="500px"
         style="border: none;"></iframe>
 ```
 
-<iframe src="siberian-crane-decades.html" width="100%" height="650px"
+<iframe src="siberian-crane-decades.html" width="100%" height="500px"
         style="border: none;"></iframe>
 
 Siberian Crane presence by years:
 
 ```
-<iframe src="siberian-crane-years.html" width="100%" height="650px"
+<iframe src="siberian-crane-years.html" width="100%" height="500px"
         style="border: none;"></iframe>
 ```
 
-<iframe src="siberian-crane-years.html" width="100%" height="650px"
+<iframe src="siberian-crane-years.html" width="100%" height="500px"
         style="border: none;"></iframe>

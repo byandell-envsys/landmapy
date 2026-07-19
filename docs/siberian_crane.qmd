@@ -224,7 +224,8 @@ plot_occurrence(occurrence_gdf, 'decade', ncols=1)
 
 ```{python}
 from landmapyr.hv_plots import hvplot_occurrence
-occurrence_hvplot = hvplot_occurrence(occurrence_gdf, 'decade', title="Grus leucogeranus Siberian Crane Decadal Tracking")
+occurrence_hvplot = hvplot_occurrence(occurrence_gdf, 'decade',
+  title="Grus leucogeranus Siberian Crane Decadal Tracking")
 # Save the plot
 occurrence_hvplot.save('siberian-crane-decades.html', embed=True)
 ```
@@ -235,11 +236,11 @@ occurrence_hvplot
 ```
 
 ```
-<iframe src="siberian-crane-decades.html" width="100%" height="650px"
+<iframe src="siberian-crane-decades.html" width="100%" height="500px"
         style="border: none;"></iframe>
 ```
 
-<iframe src="siberian-crane-decades.html" width="100%" height="650px"
+<iframe src="siberian-crane-decades.html" width="100%" height="500px"
         style="border: none;"></iframe>
 
 If not shown, see
