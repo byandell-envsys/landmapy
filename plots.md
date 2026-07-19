@@ -55,6 +55,11 @@ Plots of GDF with state boundary overlay and basemap.
     - `gdf_aiannh.boundary.plot()`
     - `gdf.plot()`
     - `ctx.add_basemap()` from OpenStreetMap
+- `plot_tract_gdf(gdf)`
+  - Plot census tracts with satellite imagery background.
+  - overlay gdf boundary on Esri WorldImagery
+    - `gdf.plot()`
+    - `ctx.add_basemap(source=ctx.providers.Esri.WorldImagery)`
 - `plot_gdfs_map(gdf)`
   - [big-data-byandell/big-data.qmd](https://github.com/earthlab-education/big-data-byandell/blob/main/big-data.md)
   - multiple figures in row

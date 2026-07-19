@@ -137,7 +137,7 @@ def train_test(model_df, resp="asthma", trans="log", test_size=0.33, random_stat
     model_df["pred"] = np.exp(
         reg.predict(model_df[["edge_density", "mean_patch_size"]])
     )
-    model_df["resid"] = model_df["pred"] - model_df[f"{trans}_{resp}"]
+    model_df["resid"] = np.log(model_df["pred"]) - model_df[f"{trans}_{resp}"]
 
     return y_test, reg, model_df
 

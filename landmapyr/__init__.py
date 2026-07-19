@@ -49,6 +49,7 @@ Functions:
     plot.plot_index(index_da, place)
     plot.plot_gdf_da(place_gdf, index_da)
     plot.plot_gdf_state(place_gdf)
+    plot.plot_tract_gdf(place_tract_gdf)
     plot.plot_gdfs_map(place_gdf)
     plot.plot_matrix(model_df)
     plot.plot_train_test(y_test)

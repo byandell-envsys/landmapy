@@ -46,9 +46,10 @@ def gvplot_chloropleth(gdf, **opts):
     import geoviews as gv
     from cartopy import crs as ccrs
 
-    return gv.Polygons(gdf.to_crs(ccrs.Mercator()), crs=ccrs.Mercator()).opts(
+    polygons = gv.Polygons(gdf.to_crs(ccrs.Mercator()), crs=ccrs.Mercator()).opts(
         xaxis=None, yaxis=None, colorbar=True, **opts
     )
+    return gv.tile_sources.OSM * polygons
 
 
 # gvplot_chloropleth(gdf)

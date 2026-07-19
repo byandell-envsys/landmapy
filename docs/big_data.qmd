@@ -101,8 +101,22 @@ by a momentary connection lapse – see the code cell below.
 %pip install -q -e ..
 ```
 
+Landmapyr routines
 ```{python}
 from landmapyr.initial import robust_code, create_data_dir
+from landmapyr.cdcplaces import shp_tract_path, download_census_tract, download_cdc_disease, join_tract_cdc
+from landmapyr.naip import naip_path, download_naip_scenes, ndvi_naip_df, merge_ndvi_cdc
+from landmapyr.explore import var_trans, train_test
+from landmapyr.plots import plot_gdfs_map, plot_matrix, plot_train_test, plot_tract_gdf
+```
+
+Landmapry routines with hvplot
+
+```{python}
+import hvplot.pandas
+import holoviews as hv
+from landmapyr.hv_plots import hvplot_tract_gdf
+from landmapyr.gvplot import gvplot_ndvi_index, gvplot_resid
 ```
 
 ```{python}
@@ -143,27 +157,35 @@ There is no need to cache the full dataset – stick with your pared down
 version containing only Chicago.
 
 ```{python}
-from landmapyr.cdcplaces import shp_tract_path, download_census_tract
-```
-
-```{python}
 # Set up the census tract path
 tract_path = shp_tract_path(data_dir, 'chicago-tract')
 chi_tract_gdf = download_census_tract(tract_path, 'Chicago')
 ```
 
-Code to save HV plot:
+```{python}
+#| label: fig-chicagotracts
+#| fig-cap: "Chicago Census Tracts"
+plot_tract_gdf(chi_tract_gdf)
+```
+
+### Code to save HV plot
 
 ```{python}
 #| eval: true
-import hvplot.pandas
-from landmapyr.hv_plots import hvplot_tract_gdf
-
 chi_tract_hv = hvplot_tract_gdf(chi_tract_gdf)
 hvplot.save(chi_tract_hv, "chi_tract.html")
 ```
 
-<iframe src="chi_tract.html" width="100%" height="600px" style="border: none;"></iframe>
+```
+<iframe src="chi_tract.html" width="100%" height="600px"
+        style="border: none;"></iframe>
+```
+
+<iframe src="chi_tract.html" width="100%" height="600px"
+        style="border: none;"></iframe>
+
+If not shown, see
+[Dynamic Images from Environmental Data Analytics Projects](images.md).
 
 **NOW NEED TO incorporate this image**
 
@@ -214,12 +236,6 @@ downloaded. You can find more information on the
 - You should also clean up this data by renaming the
 `'data_value'` to something descriptive, and possibly
 selecting a subset of columns.
-
-```{python}
-from landmapyr.cdcplaces import download_cdc_disease, join_tract_cdc
-from landmapyr.plots import plot_gdfs_map
-from landmapyr.naip import naip_path, download_naip_scenes, ndvi_naip_df
-```
 
 ```{python}
 # Preview asthma data
@@ -407,12 +423,6 @@ Create a plot that contains:
 - Make sure to include a title and labeled color bars
 
 ```{python}
-from landmapyr.naip import merge_ndvi_cdc
-from landmapyr.explore import var_trans, train_test
-from landmapyr.plots import plot_gdfs_map, plot_matrix, plot_train_test
-```
-
-```{python}
 #| label: fig-gdfsmap
 #| fig-cap: Asthma and Edge Density
 ndvi_cdc_gdf = merge_ndvi_cdc(tract_cdc_gdf, ndvi_index_df)
@@ -550,9 +560,6 @@ plot_gdfs_map(logndvi_cdc_gdf, column=['asthma','resid','edge_density'], color=[
 
 ```{python}
 #| eval: true
-import holoviews as hv
-from landmapyr.gvplot import gvplot_ndvi_index, gvplot_resid
-
 model_fit = gvplot_ndvi_index(ndvi_cdc_gdf)
 resid = gvplot_resid(logndvi_cdc_gdf)
 models_gv = (model_fit[0] + resid + model_fit[1])

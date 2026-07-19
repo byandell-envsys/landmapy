@@ -118,6 +118,29 @@ def plot_gdf_state(place_gdf, aiannh=False):
 # plot_gdf_state(place_gdf)
 
 
+def plot_tract_gdf(place_tract_gdf):
+    """
+    Plot census tracts with satellite imagery background.
+
+    Args:
+        place_tract_gdf (GeoDataFrame): gdf for place
+    """
+    import matplotlib.pyplot as plt
+    import contextily as ctx
+
+    fig, ax = plt.subplots(figsize=(10, 10))
+    place_tract_gdf.plot(ax=ax, facecolor="none", edgecolor="orange")
+    ctx.add_basemap(
+        ax,
+        source=ctx.providers.Esri.WorldImagery,
+        crs=place_tract_gdf.crs.to_string(),
+    )
+    return plt.show()
+
+
+# plot_tract_gdf(place_tract_gdf)
+
+
 def plot_gdfs_map(
     place_gdf, column=["asthma", "edge_density"], color=["Blues", "Greens"], map=True
 ):
