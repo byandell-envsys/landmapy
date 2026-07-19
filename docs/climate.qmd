@@ -592,7 +592,7 @@ plot_das(maca_fut_da, onebar=False)
 
 **Reflect and Respond:**
 Make sure to include a description of the climate data and how you selected your models.
-Include a citation of the MACAv2 data</p></div></div>
+Include a citation of the MACAv2 data.
 
 YOUR CLIMATE DATA DESCRIPTION AND CITATIONS HERE
 
