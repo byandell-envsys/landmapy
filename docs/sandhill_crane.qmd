@@ -244,7 +244,7 @@ plot_occurrence(occurrence_gdf, ncols=1)
 #### Optional Dynamic Plot
 ```{python}
 from landmapyr.hv_plots import hvplot_occurrence
-occurrence_hvplot = hvplot_occurrence(occurrence_gdf)
+occurrence_hvplot = hvplot_occurrence(occurrence_gdf, title="Antigone canadensis Sandhill Crane Migration")
 # Save the plot
 occurrence_hvplot.save('sandhill-crane-migration.html', embed=True)
 ```

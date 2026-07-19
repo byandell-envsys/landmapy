@@ -219,13 +219,14 @@ def hvplot_cluster(rgb_sat, model_df):
 # hvplot_cluster(reflectance_da)
 
 
-def hvplot_occurrence(occurrence_gdf, unit="month"):
+def hvplot_occurrence(occurrence_gdf, unit="month", title=None):
     """
     Holoviews map of monthly occurrences.
 
     Args:
         occurrence_gdf (gdf): monthly occurrences of species
         unit (str, optional): 'month' or 'year'
+        title (str, optional): title of the plot
     Returns:
         occurrence_hvplot (hvplot): Holoviews plot of occurrence over time with slider
     """
@@ -258,23 +259,26 @@ def hvplot_occurrence(occurrence_gdf, unit="month"):
             options = sorted(list(levels))
     slider = pn.widgets.DiscreteSlider(name=unit, options=options)
 
+    if title is None:
+        title = f"Species Occurrence by {unit.title()}"
+
     occurrence_hvplot = occurrence_gdf.hvplot(
         c="norm_occurrences",
         groupby=unit,
         # Use background tiles
-        title="Antigone canadensis Sandhill Crane Migration",
+        title=title,
         # geo=True,
         # crs=ccrs.Mercator(),
         tiles="CartoLight",
         xlim=(xmin, xmax),
         ylim=(ymin, ymax),
-        frame_height=600,
-        frame_width=1400,
+        frame_height=350,
+        frame_width=500,
         colorbar=False,
         widgets={unit: slider},
         widget_location="bottom",
         width=500,
-        height=500,
+        height=400,
     )
     return occurrence_hvplot
 
