@@ -15,6 +15,8 @@
 
 Additional links:
 
+- [Developer Guide (`DEVELOPER.md`)](DEVELOPER.md)
+- [Planning & Execution Record (`guides.md`)](guides.md)
 - [Python References](https://github.com/byandell/Documentation/blob/main/python_references.md)
 - [Python Coding Strategy](https://github.com/byandell/Documentation/blob/main/python_strategy.md)
 - [EDA Notes](notes/README.md)
@@ -88,6 +90,8 @@ ruff format .     # Formatting
 mypy landmapyr/    # Type checking
 pytest tests/     # Unit tests
 ```
+
+For detailed system architecture notes, 3-level module hierarchy, and developer guidelines for both Python and the planned R package translation, see the [Developer Guide](DEVELOPER.md).
 
 ### Legacy Compatibility
 
